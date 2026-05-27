@@ -1,0 +1,21 @@
+
+package layouts
+
+import "github.com/tm-ox/go-datastar/views/modules"
+
+templ BaseLayout(items []modules.NavItem, currentPath string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<link rel="stylesheet" href="/static/app.css"/>
+			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
+		</head>
+		<body>
+			@modules.Navbar(items, currentPath)
+			<main>
+				{ children... }
+			</main>
+		</body>
+	</html>
+}

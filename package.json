@@ -1,0 +1,21 @@
+{
+  "name": "go-datastar",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/bun": "latest",
+    "browser-sync": "^3.0.4",
+    "tailwindcss": "^4.3.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./static/input.css -o ./static/app.css",
+    "watch:css": "tailwindcss -i ./static/input.css -o ./static/app.css --watch=always",
+    "sync": "browser-sync start --proxy 'localhost:7331' --files 'static/app.css' --port 3000 --no-open --no-notify"
+  }
+}

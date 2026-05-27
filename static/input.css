@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@source "../views/**/*.templ";
+
+@theme {
+    --font-sans: "Plus Jakarta Sans", sans-serif;
+    --color-canvas: #1f2937; /* gray-800  — bg-bg      */
+    --color-surface: #111827; /* gray-900  — bg-surface  */
+    --color-border: #4b5563; /* gray-600  — border-border */
+    --color-text: #f3f4f6; /* gray-100  — text-text   */
+    --color-muted: #9ca3af; /* gray-400  — text-muted  */
+    --color-accent: #818cf8; /* indigo-400 — bg-accent  */
+}
+
+@layer base {
+    body {
+        @apply bg-canvas text-text tracking-wide;
+    }
+
+    header {
+        @apply fixed top-0 inset-x-0 z-50 bg-surface border-b border-border;
+    }
+
+    nav {
+        @apply flex items-center gap-6;
+    }
+
+    nav a {
+        @apply text-muted hover:text-text transition-colors;
+    }
+
+    /*main {
+        @apply px-12;
+    }*/
+
+    section {
+        @apply max-w-6xl mx-auto py-24;
+    }
+
+    h1 {
+        @apply text-8xl mb-12;
+    }
+
+    h2 {
+        @apply text-6xl mb-8;
+    }
+
+    h4 {
+        @apply text-2xl mb-3;
+    }
+
+    h5 {
+        @apply leading-loose;
+    }
+
+    p {
+        @apply text-lg text-muted;
+    }
+
+    table {
+        @apply w-full text-sm;
+    }
+    thead {
+        @apply border-b border-border text-left text-muted;
+    }
+    th {
+        @apply px-4 py-3 font-medium tracking-wide uppercase text-xs;
+    }
+    td {
+        @apply px-4 py-3 border-b border-border/50;
+    }
+    tbody tr {
+        @apply hover:bg-surface transition-colors relative;
+    }
+
+    select {
+        @apply bg-canvas text-muted text-sm rounded px-3 py-2 pr-8 cursor-pointer;
+        @apply hover:text-text focus:outline-none focus:border-none transition-colors;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.9rem center;
+    }
+}

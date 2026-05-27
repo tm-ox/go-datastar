@@ -1,0 +1,40 @@
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/views/layouts"
+	"github.com/tm-ox/go-datastar/views/modules"
+)
+
+templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.WorkEntry, years []string, tools []string) {
+	@layouts.BaseLayout(items, currentPath) {
+		<section data-signals="{year: '', tool: ''}">
+			<h2>Work</h2>
+			<div class="flex gap-4 w-full justify-end">
+				<select data-bind="year" data-on:change="@get('/work/filter')">
+					<option value="">All Years</option>
+					for _, y := range years {
+						<option value={ y }>{ y }</option>
+					}
+				</select>
+				<select data-bind="tool" data-on:change="@get('/work/filter')">
+					<option value="">All Tools</option>
+					for _, t := range tools {
+						<option value={ t }>{ t }</option>
+					}
+				</select>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>Project</th>
+						<th>Client</th>
+						<th>Year</th>
+						<th>Tools</th>
+					</tr>
+				</thead>
+				@WorkRows(entries)
+			</table>
+		</section>
+	}
+}

@@ -1,0 +1,16 @@
+home:
+  title: Project Name
+  tagline: Project tagline.
+  cards:
+    - title: About
+      description: Background, tools, and approach.
+      href: /about
+      order: 1
+    - title: Work
+      description: Selected projects in brand, digital, and motion.
+      href: /work
+      order: 2
+
+about:
+  title: About
+  body: Brief bio here.

@@ -1,0 +1,21 @@
+
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/internal/content"
+	"strconv"
+	"strings"
+)
+
+templ WorkRows(entries []content.WorkEntry) {
+	<tbody id="work-tbody">
+		for _, entry := range entries {
+			<tr>
+				<td><a href={ templ.URL("/work/" + entry.Slug) } i class="after:absolute after:inset-0">{ entry.Title }</a></td>
+				<td>{ entry.Client }</td>
+				<td>{ strconv.Itoa(entry.Year) }</td>
+				<td>{ strings.Join(entry.Tools, ", ") }</td>
+			</tr>
+		}
+	</tbody>
+}

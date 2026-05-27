@@ -1,0 +1,35 @@
+# dependencies
+node_modules/
+
+# go build output
+bin/
+
+# generated — tailwind output
+static/app.css
+
+# generated — local datastar bundle (use CDN instead)
+static/datastar.js
+
+# bun init artifact
+CLAUDE.md
+
+# dotenv
+.env
+.env.*
+!.env.example
+
+# logs
+logs/
+*.log
+
+# caches
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# os
+.DS_Store
+
+# editors
+.idea/
+.vscode/

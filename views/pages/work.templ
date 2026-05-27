@@ -1,0 +1,21 @@
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/views/layouts"
+	"github.com/tm-ox/go-datastar/views/modules"
+	"strconv"
+	"strings"
+)
+
+templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry) {
+	@layouts.BaseLayout(items, currentPath) {
+		<section>
+			<h2>{ entry.Title }</h2>
+			<h5>Client: <span class="text-muted">{ entry.Client }</span></h5>
+			<h5>Year: <span class="text-muted">{ strconv.Itoa(entry.Year) }</span></h5>
+			<h5>Tools: <span class="text-muted">{ strings.Join(entry.Tools, ", ") }</span></h5>
+			<h5>Description: <span class="text-muted">{ entry.Description }</span></h5>
+		</section>
+	}
+}
