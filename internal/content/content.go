@@ -32,6 +32,7 @@ type AboutPage struct {
 type WorkEntry struct {
 	Slug        string   `yaml:"-"`
 	Title       string   `yaml:"title"`
+	Type        string   `yaml:"type"`
 	Client      string   `yaml:"client"`
 	Year        int      `yaml:"year"`
 	Tools       []string `yaml:"tools"`

@@ -47,7 +47,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-signals=\"{year: '', tool: ''}\"><h2>Work</h2><div class=\"flex gap-4 w-full justify-end\"><select data-bind=\"year\" data-on:change=\"@get('/work/filter')\"><option value=\"\">All Years</option> ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-signals=\"{year: '', tool: ''}\"><h2>Work</h2><div class=\"flex gap-4 w-full items-center justify-end\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" class=\"text-muted\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M3 6h18M6 12h12m-9 6h6\"></path></svg> <select data-bind=\"year\" data-on:change=\"@get('/work/filter')\"><option value=\"\" class=\"\">All Years</option> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -59,7 +59,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(y)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 17, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 20, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -72,7 +72,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(y)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 17, Col: 29}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 20, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -95,7 +95,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(t)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 23, Col: 23}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 26, Col: 23}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -108,7 +108,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(t)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 23, Col: 29}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work_index.templ`, Line: 26, Col: 29}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -119,7 +119,7 @@ func WorkIndex(items []modules.NavItem, currentPath string, entries []content.Wo
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</select></div><table><thead><tr><th>Project</th><th>Client</th><th>Year</th><th>Tools</th></tr></thead>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</select></div><table><thead><tr><th>Project</th><th>Type</th><th>Client</th><th>Year</th><th>Tools</th></tr></thead>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

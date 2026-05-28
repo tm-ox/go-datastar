@@ -12,6 +12,7 @@ templ WorkDetail(items []modules.NavItem, currentPath string, entry content.Work
 	@layouts.BaseLayout(items, currentPath) {
 		<section>
 			<h2>{ entry.Title }</h2>
+			<h5>Type: <span class="text-muted">{ entry.Type }</span></h5>
 			<h5>Client: <span class="text-muted">{ entry.Client }</span></h5>
 			<h5>Year: <span class="text-muted">{ strconv.Itoa(entry.Year) }</span></h5>
 			<h5>Tools: <span class="text-muted">{ strings.Join(entry.Tools, ", ") }</span></h5>
