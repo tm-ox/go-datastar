@@ -15,6 +15,10 @@
 }
 
 @layer base {
+    html {
+        @apply scrollbar-gutter-stable;
+    }
+
     body {
         @apply bg-canvas text-text tracking-wide;
     }
@@ -66,7 +70,10 @@
         @apply border-y border-border text-left text-muted;
     }
     th {
-        @apply px-4 py-3 font-medium tracking-wide uppercase text-xs;
+        @apply px-4 py-3 font-medium tracking-wide uppercase text-xs cursor-pointer hover:text-text;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.9rem center;
     }
     td {
         @apply px-4 py-3 border-b border-border/50;
@@ -76,7 +83,7 @@
     }
 
     select {
-        @apply bg-canvas text-muted text-sm rounded px-3 py-2 pr-8 cursor-pointer;
+        @apply bg-canvas text-muted text-sm rounded px-3 py-2 pr-8 cursor-pointer w-32;
         @apply hover:text-text focus:outline-none focus:border-none transition-colors;
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");

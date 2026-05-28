@@ -4,6 +4,7 @@ import (
 	"embed"
 	"sort"
 	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -155,5 +156,46 @@ func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolF
 		}
 		out = append(out, e)
 	}
+	return out
+}
+
+func SortWork(entries []WorkEntry, by string) []WorkEntry {
+	out := make([]WorkEntry, len(entries))
+	copy(out, entries)
+	parts := strings.SplitN(by, "-", 2)
+	if len(parts) != 2 {
+		return out
+	}
+	col, dir := parts[0], parts[1]
+	sort.Slice(out, func(i, j int) bool {
+		switch col {
+		case "title":
+			if dir == "asc" {
+				return out[i].Title < out[j].Title
+			}
+			return out[i].Title > out[j].Title
+		case "type":
+			if dir == "asc" {
+				return out[i].Type < out[j].Type
+			}
+			return out[i].Type > out[j].Type
+		case "client":
+			if dir == "asc" {
+				return out[i].Client < out[j].Client
+			}
+			return out[i].Client > out[j].Client
+		case "year":
+			if dir == "asc" {
+				return out[i].Year < out[j].Year
+			}
+			return out[i].Year > out[j].Year
+		case "tools":
+			if dir == "asc" {
+				return strings.Join(out[i].Tools, ",") < strings.Join(out[j].Tools, ",")
+			}
+			return strings.Join(out[i].Tools, ",") > strings.Join(out[j].Tools, ",")
+		}
+		return false
+	})
 	return out
 }

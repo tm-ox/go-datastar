@@ -71,12 +71,14 @@ func main() {
 				Client string `json:"client"`
 				Year   string `json:"year"`
 				Tool   string `json:"tool"`
+				Sort   string `json:"sort"`
 			}
 			if err := datastar.ReadSignals(r, &sig); err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
 			filtered := content.FilterWork(workEntries, sig.Type, sig.Client, sig.Year, sig.Tool)
+			filtered = content.SortWork(filtered, sig.Sort)
 			sse := datastar.NewSSE(w, r)
 			sse.PatchElementTempl(views.WorkRows(filtered))
 
