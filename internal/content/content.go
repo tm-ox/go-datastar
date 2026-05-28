@@ -75,6 +75,32 @@ func LoadWork() ([]WorkEntry, error) {
 	return entries, nil
 }
 
+func UniqueTypes(entries []WorkEntry) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, e := range entries {
+		if e.Type != "" && !seen[e.Type] {
+			seen[e.Type] = true
+			out = append(out, e.Type)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
+func UniqueClients(entries []WorkEntry) []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, e := range entries {
+		if e.Client != "" && !seen[e.Client] {
+			seen[e.Client] = true
+			out = append(out, e.Client)
+		}
+	}
+	sort.Strings(out)
+	return out
+}
+
 func UniqueYears(entries []WorkEntry) []string {
 	seen := map[int]bool{}
 	var out []string
@@ -103,16 +129,22 @@ func UniqueTools(entries []WorkEntry) []string {
 	return out
 }
 
-func FilterWork(entries []WorkEntry, year, tool string) []WorkEntry {
+func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolFilter string) []WorkEntry {
 	var out []WorkEntry
 	for _, e := range entries {
-		if year != "" && strconv.Itoa(e.Year) != year {
+		if typeFilter != "" && e.Type != typeFilter {
 			continue
 		}
-		if tool != "" {
+		if clientFilter != "" && e.Client != clientFilter {
+			continue
+		}
+		if yearFilter != "" && strconv.Itoa(e.Year) != yearFilter {
+			continue
+		}
+		if toolFilter != "" {
 			match := false
 			for _, t := range e.Tools {
-				if t == tool {
+				if t == toolFilter {
 					match = true
 					break
 				}

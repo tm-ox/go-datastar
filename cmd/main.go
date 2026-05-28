@@ -50,9 +50,11 @@ func main() {
 			templ.Handler(views.About(navItems, "/about", site.About)).ServeHTTP(w, r)
 		}},
 		{Path: "/work", Label: "Work", Handler: func(w http.ResponseWriter, r *http.Request) {
+			types := content.UniqueTypes(workEntries)
+			clients := content.UniqueClients(workEntries)
 			years := content.UniqueYears(workEntries)
 			tools := content.UniqueTools(workEntries)
-			templ.Handler(views.WorkIndex(navItems, "/work", workEntries, years, tools)).ServeHTTP(w, r)
+			templ.Handler(views.WorkIndex(navItems, "/work", workEntries, types, clients, years, tools)).ServeHTTP(w, r)
 		}},
 		{Path: "/work/{slug}", Handler: func(w http.ResponseWriter, r *http.Request) {
 			slug := r.PathValue("slug")
@@ -65,14 +67,16 @@ func main() {
 		}},
 		{Path: "/work/filter", Handler: func(w http.ResponseWriter, r *http.Request) {
 			var sig struct {
-				Year string `json:"year"`
-				Tool string `json:"tool"`
+				Type   string `json:"type"`
+				Client string `json:"client"`
+				Year   string `json:"year"`
+				Tool   string `json:"tool"`
 			}
 			if err := datastar.ReadSignals(r, &sig); err != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
-			filtered := content.FilterWork(workEntries, sig.Year, sig.Tool)
+			filtered := content.FilterWork(workEntries, sig.Type, sig.Client, sig.Year, sig.Tool)
 			sse := datastar.NewSSE(w, r)
 			sse.PatchElementTempl(views.WorkRows(filtered))
 

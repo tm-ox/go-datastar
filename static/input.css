@@ -63,7 +63,7 @@
         @apply w-full text-sm;
     }
     thead {
-        @apply border-b border-border text-left text-muted;
+        @apply border-y border-border text-left text-muted;
     }
     th {
         @apply px-4 py-3 font-medium tracking-wide uppercase text-xs;

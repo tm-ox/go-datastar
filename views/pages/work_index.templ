@@ -6,14 +6,26 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.WorkEntry, years []string, tools []string) {
+templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.WorkEntry, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath) {
-		<section data-signals="{year: '', tool: ''}">
+		<section data-signals="{type: '', client: '', year: '', tool: ''}">
 			<h2>Work</h2>
-			<div class="flex gap-4 w-full items-center justify-end">
+			<div class="flex gap-4 w-full items-center justify-end mb-3">
 				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="text-muted">
 					<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 12h12m-9 6h6"></path>
 				</svg>
+				<select data-bind="type" data-on:change="@get('/work/filter')">
+					<option value="" class="">All Typess</option>
+					for _, c := range types {
+						<option value={ c }>{ c }</option>
+					}
+				</select>
+				<select data-bind="client" data-on:change="@get('/work/filter')">
+					<option value="" class="">All Clients</option>
+					for _, c := range clients {
+						<option value={ c }>{ c }</option>
+					}
+				</select>
 				<select data-bind="year" data-on:change="@get('/work/filter')">
 					<option value="" class="">All Years</option>
 					for _, y := range years {
@@ -26,6 +38,12 @@ templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.W
 						<option value={ t }>{ t }</option>
 					}
 				</select>
+				<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
+						<!-- Icon from Carbon by IBM - undefined -->
+						<path fill="currentColor" d="M18 28A12 12 0 1 0 6 16v6.2l-3.6-3.6L1 20l6 6l6-6l-1.4-1.4L8 22.2V16a10 10 0 1 1 10 10Z"></path>
+					</svg>
+				</button>
 			</div>
 			<table>
 				<thead>
