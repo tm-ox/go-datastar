@@ -44,13 +44,21 @@ Open `http://localhost:3000`.
 ## Structure
 
 ```
-cmd/main.go                  — server, routing
-internal/content/            — YAML content loader
-  content.yaml               — page data
-  work/*.yaml                — one file per work entry
+cmd/main.go                  — server wiring, route registration, startup
+internal/
+  content/
+    site.go                  — site types (HomePage, AboutPage) + Load()
+    work.go                  — WorkEntry, LoadWork(), filter/sort helpers
+    content.yaml             — home + about data
+    work/*.yaml              — one file per work entry
+  handler/
+    site.go                  — Index, About handlers
+    work.go                  — WorkIndex, WorkDetail, Filter handlers
+  middleware/
+    logging.go               — request logging middleware
 views/
   layouts/base.templ         — base HTML layout
-  modules/                   — shared components (navbar, hero)
+  modules/                   — shared components (navbar, hero, card)
   pages/                     — page templates
 static/input.css             — Tailwind source (theme tokens, base styles)
 ```

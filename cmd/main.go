@@ -11,6 +11,7 @@ import (
 
 	"github.com/tm-ox/go-datastar/internal/content"
 	"github.com/tm-ox/go-datastar/internal/handler"
+	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -50,7 +51,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	srv := &http.Server{Addr: ":8081", Handler: mux}
+	srv := &http.Server{Addr: ":8081", Handler: middleware.Logging(mux)}
 	fmt.Println("Listening on :8081")
 	go srv.ListenAndServe()
 	<-ctx.Done()
