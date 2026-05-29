@@ -10,10 +10,17 @@ templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.W
 	@layouts.BaseLayout(items, currentPath) {
 		<section data-signals="{type: '', client: '', year: '', tool: '', sort: ''}">
 			<h2>Work</h2>
-			<div class="flex gap-4 w-full items-center justify-end mb-3">
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="text-muted">
-					<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 12h12m-9 6h6"></path>
-				</svg>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" class="text-muted">
+						<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 12h12m-9 6h6"></path>
+					</svg>
+					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
+							<path fill="currentColor" d="M18 28A12 12 0 1 0 6 16v6.2l-3.6-3.6L1 20l6 6l6-6l-1.4-1.4L8 22.2V16a10 10 0 1 1 10 10Z"></path>
+						</svg>
+					</button>
+				</div>
 				<select data-bind="type" data-on:change="@get('/work/filter')">
 					<option value="" class="">All Types</option>
 					for _, c := range types {
@@ -38,11 +45,6 @@ templ WorkIndex(items []modules.NavItem, currentPath string, entries []content.W
 						<option value={ t }>{ t }</option>
 					}
 				</select>
-				<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
-						<path fill="currentColor" d="M18 28A12 12 0 1 0 6 16v6.2l-3.6-3.6L1 20l6 6l6-6l-1.4-1.4L8 22.2V16a10 10 0 1 1 10 10Z"></path>
-					</svg>
-				</button>
 			</div>
 			<table>
 				<thead>
