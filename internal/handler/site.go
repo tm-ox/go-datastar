@@ -22,6 +22,11 @@ func NewSiteHandler(nav []modules.NavItem, site content.SiteContent) *SiteHandle
 }
 
 func (h *SiteHandler) Index(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
+		templ.Handler(views.NotFound(h.nav, r.URL.Path, modules.Meta{Title: "404", Description: "Page not found"})).ServeHTTP(w, r)
+		return
+	}
 	meta := modules.Meta{
 		Title:       h.site.Home.Meta.Title,
 		Description: h.site.Home.Meta.Description,
