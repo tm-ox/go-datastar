@@ -1,0 +1,9 @@
+[build]
+  cmd = "go build -o tmp/server ./cmd/main.go"
+  bin = "tmp/server"
+  include_ext = ["go", "yaml"]
+  exclude_dir = ["tmp", "vendor"]
+  delay = 200
+
+[misc]
+  clean_on_exit = true

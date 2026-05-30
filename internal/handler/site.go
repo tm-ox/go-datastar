@@ -22,9 +22,17 @@ func NewSiteHandler(nav []modules.NavItem, site content.SiteContent) *SiteHandle
 }
 
 func (h *SiteHandler) Index(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(views.Index(h.nav, "/", h.site.Home)).ServeHTTP(w, r)
+	meta := modules.Meta{
+		Title:       h.site.Home.Meta.Title,
+		Description: h.site.Home.Meta.Description,
+	}
+	templ.Handler(views.Index(h.nav, "/", h.site.Home, meta)).ServeHTTP(w, r)
 }
 
 func (h *SiteHandler) About(w http.ResponseWriter, r *http.Request) {
-	templ.Handler(views.About(h.nav, "/about", h.site.About)).ServeHTTP(w, r)
+	meta := modules.Meta{
+		Title:       h.site.About.Meta.Title,
+		Description: h.site.About.Meta.Description,
+	}
+	templ.Handler(views.About(h.nav, "/about", h.site.About, meta)).ServeHTTP(w, r)
 }

@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry) {
-	@layouts.BaseLayout(items, currentPath) {
+templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry, meta modules.Meta) {
+	@layouts.BaseLayout(items, currentPath, meta) {
 		<section>
 			<h2>{ entry.Title }</h2>
 			<h5>Type: <span class="text-muted">{ entry.Type }</span></h5>

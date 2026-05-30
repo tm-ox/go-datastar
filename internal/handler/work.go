@@ -25,11 +25,15 @@ func NewWorkHandler(nav []modules.NavItem, entries []content.WorkEntry, bySlug m
 }
 
 func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
+	meta := modules.Meta{
+		Title:       "Work",
+		Description: "",
+	}
 	types := content.UniqueTypes(h.entries)
 	clients := content.UniqueClients(h.entries)
 	years := content.UniqueYears(h.entries)
 	tools := content.UniqueTools(h.entries)
-	templ.Handler(views.WorkIndex(h.nav, "/work", h.entries, types, clients, years, tools)).ServeHTTP(w, r)
+	templ.Handler(views.WorkIndex(h.nav, "/work", meta, h.entries, types, clients, years, tools)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +43,11 @@ func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	templ.Handler(views.WorkDetail(h.nav, r.URL.Path, entry)).ServeHTTP(w, r)
+	meta := modules.Meta{
+		Title:       entry.Title,
+		Description: entry.Description,
+	}
+	templ.Handler(views.WorkDetail(h.nav, r.URL.Path, entry, meta)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {

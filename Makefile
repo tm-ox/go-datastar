@@ -4,7 +4,7 @@ dev:
 	$(MAKE) -j4 templ css run sync
 
 templ:
-	templ generate --watch --proxy="http://localhost:8081" --open-browser=false
+	templ generate --watch
 
 sync:
 	bun run sync
@@ -13,7 +13,7 @@ css:
 	bun run watch:css
 
 run:
-	go run ./cmd/main.go
+	air
 
 build:
 	templ generate

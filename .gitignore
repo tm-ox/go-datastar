@@ -3,6 +3,8 @@ node_modules/
 
 # go build output
 bin/
+tmp/
+
 
 # generated — tailwind output
 static/app.css

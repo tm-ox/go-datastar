@@ -7,8 +7,8 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ Index(items []modules.NavItem, currentPath string, home content.HomePage) {
-	@layouts.BaseLayout(items, currentPath) {
+templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta) {
+	@layouts.BaseLayout(items, currentPath, meta) {
 		@modules.Hero(home.Title, home.Tagline)
 		<section class="grid grid-cols-2 gap-4 mt-8">
 			for _, c := range home.Cards {

@@ -10,10 +10,16 @@ import (
 //go:embed content.yaml
 var siteData []byte
 
+type PageMeta struct {
+	Title       string `yaml:"title"`
+	Description string `yaml:"description"`
+}
+
 type HomePage struct {
-	Title   string `yaml:"title"`
-	Tagline string `yaml:"tagline"`
-	Cards   []Card `yaml:"cards"`
+	Meta    PageMeta `yaml:"meta"`
+	Title   string   `yaml:"title"`
+	Tagline string   `yaml:"tagline"`
+	Cards   []Card   `yaml:"cards"`
 }
 
 type Card struct {
@@ -24,8 +30,9 @@ type Card struct {
 }
 
 type AboutPage struct {
-	Title string `yaml:"title"`
-	Body  string `yaml:"body"`
+	Meta  PageMeta `yaml:"meta"`
+	Title string   `yaml:"title"`
+	Body  string   `yaml:"body"`
 }
 
 type SiteContent struct {

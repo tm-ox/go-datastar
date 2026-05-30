@@ -1,0 +1,14 @@
+package modules
+
+type Meta struct {
+	Title       string
+	Description string
+}
+
+templ SEO(m Meta) {
+	<title>{ m.Title }</title>
+	<meta name="description" content={ m.Description }/>
+	<meta property="og:title" content={ m.Title }/>
+	<meta property="og:description" content={ m.Description }/>
+	<meta property="og:type" content="website"/>
+}

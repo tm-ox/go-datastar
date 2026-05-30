@@ -1,4 +1,7 @@
 home:
+  meta:
+    title: Home
+    description: Project description.
   title: Project Name
   tagline: Project tagline.
   cards:
@@ -12,5 +15,8 @@ home:
       order: 2
 
 about:
+  meta:
+    title: About
+    description: About description.
   title: About
   body: Brief bio here.
