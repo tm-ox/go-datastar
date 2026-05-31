@@ -39,6 +39,7 @@ func LoadWork() ([]WorkEntry, error) {
 			return nil, err
 		}
 		e.Slug = name[:len(name)-5]
+		sort.Strings(e.Tools)
 		entries = append(entries, e)
 	}
 	return entries, nil
