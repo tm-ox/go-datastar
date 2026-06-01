@@ -1,0 +1,84 @@
+package modules
+
+type ButtonVariant string
+type ButtonSize string
+type ButtonType string
+
+const (
+	ButtonVariantDefault ButtonVariant = "default"
+	ButtonVariantCTA     ButtonVariant = "cta"
+)
+
+const (
+	ButtonTypeButton ButtonType = "button"
+	ButtonTypeReset  ButtonType = "reset"
+	ButtonTypeSubmit ButtonType = "submit"
+)
+
+const (
+	ButtonSizeDefault ButtonSize = "default"
+	ButtonSizeSm      ButtonSize = "sm"
+	ButtonSizeLg      ButtonSize = "lg"
+)
+
+type ButtonProps struct {
+	ID         string
+	Class      string
+	Attributes templ.Attributes
+	Variant    ButtonVariant
+	Size       ButtonSize
+	FullWidth  bool
+	Href       string
+	Target     string
+	Disabled   bool
+	Type       ButtonType
+}
+
+templ Button(props ...ButtonProps) {
+	{{ var p ButtonProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Type == "" {
+		{{ p.Type = ButtonTypeButton }}
+	}
+	{{
+		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
+			p.variantClasses() + " " + p.sizeClasses()
+	}}
+	if p.FullWidth {
+		{{ classes += " w-full" }}
+	}
+	if p.Class != "" {
+		{{ classes += " " + p.Class }}
+	}
+	if p.Href != "" && !p.Disabled {
+		<a href={ templ.SafeURL(p.Href) } class={ classes } { p.Attributes... }>
+			{ children... }
+		</a>
+	} else {
+		<button class={ classes } type={ string(p.Type) } disabled?={ p.Disabled } { p.Attributes... }>
+			{ children... }
+		</button>
+	}
+}
+
+func (b ButtonProps) variantClasses() string {
+	switch b.Variant {
+	case ButtonVariantCTA:
+		return "bg-surface text-text hover:bg-surface/50"
+	default:
+		return "bg-primary text-primary-foreground hover:bg-primary/90"
+	}
+}
+
+func (b ButtonProps) sizeClasses() string {
+	switch b.Size {
+	case ButtonSizeSm:
+		return "h-8 px-3 text-xs"
+	case ButtonSizeLg:
+		return "h-10 px-6 text-lg"
+	default:
+		return "h-9 px-4 py-2"
+	}
+}

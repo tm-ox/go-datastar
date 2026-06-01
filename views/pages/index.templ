@@ -8,7 +8,15 @@ import (
 
 templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		@modules.Hero(home.Title, home.Tagline)
+		@modules.Hero(home.Title, home.Tagline) {
+			@modules.Button(modules.ButtonProps{
+				Variant: modules.ButtonVariantCTA,
+				Href:    "/work",
+				Size:    modules.ButtonSizeLg,
+			}) {
+				Browse Work
+			}
+		}
 		<section class="grid grid-cols-2 gap-4 mt-8">
 			for _, c := range home.Cards {
 				@modules.Card(c)
