@@ -6,13 +6,37 @@ home:
   tagline: Project tagline.
   cards:
     - title: About
+      icon: bug
       description: Background, tools, and approach.
       href: /about
+      button:
+        text: Learn More
+        href: /about
       order: 1
     - title: Work
+      icon: bug
       description: Selected projects in brand, digital, and motion.
       href: /work
+      button:
+        text: Browse Work
+        href: /work
       order: 2
+    - title: Another Card
+      icon: bug
+      description: Another card description.
+      href: /work
+      button:
+        text: Another Burron
+        href: /work
+      order: 3
+    - title: Another Card
+      icon: bug
+      description: Another card description.
+      href: /work
+      button:
+        text: Another Button
+        href: /work
+      order: 4
 
 about:
   meta:

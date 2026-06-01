@@ -7,14 +7,29 @@ type NavItem struct {
 
 templ Navbar(items []NavItem, currentPath string) {
 	<header>
-		<div class="max-w-6xl mx-auto h-16 flex items-center justify-between">
-			<a href="/" class="font-semibold text-lg tracking-tight text-white">LOGO</a>
+		<div class="max-w-6xl mx-auto flex items-center justify-between">
+			<a href="/" class=" flex items-center gap-4 mb-2 font-semibold text-lg tracking-tight text-text uppercase">
+				@IconBug(IconProps{Size: "24", Class: "text-accent"})
+				Logo
+			</a>
 			<nav>
 				for _, item := range items {
 					if item.URL == currentPath {
-						<a href={ templ.URL(item.URL) } class="font-medium text-white">{ item.Label }</a>
+						@Button(ButtonProps{
+							Variant: ButtonVariantTabActive,
+							Href:    item.URL,
+							Size:    ButtonSizeTab,
+						}) {
+							{ item.Label }
+						}
 					} else {
-						<a href={ templ.URL(item.URL) }>{ item.Label }</a>
+						@Button(ButtonProps{
+							Variant: ButtonVariantTab,
+							Href:    item.URL,
+							Size:    ButtonSizeTab,
+						}) {
+							{ item.Label }
+						}
 					}
 				}
 			</nav>

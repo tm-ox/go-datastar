@@ -13,8 +13,10 @@ type ButtonSize string
 type ButtonType string
 
 const (
-	ButtonVariantDefault ButtonVariant = "default"
-	ButtonVariantCTA     ButtonVariant = "cta"
+	ButtonVariantDefault   ButtonVariant = "default"
+	ButtonVariantCTA       ButtonVariant = "cta"
+	ButtonVariantTab       ButtonVariant = "tab"
+	ButtonVariantTabActive ButtonVariant = "tabActive"
 )
 
 const (
@@ -26,6 +28,7 @@ const (
 const (
 	ButtonSizeDefault ButtonSize = "default"
 	ButtonSizeSm      ButtonSize = "sm"
+	ButtonSizeTab     ButtonSize = "tab"
 	ButtonSizeLg      ButtonSize = "lg"
 )
 
@@ -70,7 +73,7 @@ func Button(props ...ButtonProps) templ.Component {
 		if p.Type == "" {
 			p.Type = ButtonTypeButton
 		}
-		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
+		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
 			p.variantClasses() + " " + p.sizeClasses()
 		if p.FullWidth {
 			classes += " w-full"
@@ -91,7 +94,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var3 templ.SafeURL
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(p.Href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 56, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 59, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +159,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(p.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 60, Col: 49}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 63, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -196,20 +199,26 @@ func Button(props ...ButtonProps) templ.Component {
 func (b ButtonProps) variantClasses() string {
 	switch b.Variant {
 	case ButtonVariantCTA:
-		return "bg-surface text-text hover:bg-surface/50"
+		return "bg-surface text-accent hover:bg-surface/50 hover:border-accent"
+	case ButtonVariantTab:
+		return "bg-surface text-muted rounded-b-none border-b-2 border-b-transparent hover:bg-canvas/50"
+	case ButtonVariantTabActive:
+		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
 	default:
-		return "bg-primary text-primary-foreground hover:bg-primary/90"
+		return "bg-canvas text-accent hover:bg-primary/90 hover:border-accent"
 	}
 }
 
 func (b ButtonProps) sizeClasses() string {
 	switch b.Size {
 	case ButtonSizeSm:
-		return "h-8 px-3 text-xs"
+		return "py-2 px-3 text-xs"
+	case ButtonSizeTab:
+		return "py-2 px-6 text-xs"
 	case ButtonSizeLg:
-		return "h-10 px-6 text-lg"
+		return "py-3 px-6 text-lg"
 	default:
-		return "h-9 px-4 py-2"
+		return "py-2 px-4"
 	}
 }
 
