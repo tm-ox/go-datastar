@@ -96,7 +96,10 @@ func Index(items []modules.NavItem, currentPath string, home content.HomePage, m
 				return templ_7745c5c3_Err
 			}
 			for _, c := range home.Cards {
-				templ_7745c5c3_Err = modules.Card(c).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = modules.Card(modules.CardProps{
+					Card:      c,
+					IconProps: modules.IconProps{Size: "48", Class: "text-accent"},
+				}).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

@@ -3,9 +3,57 @@ package modules
 
 import "github.com/tm-ox/go-datastar/internal/content"
 
-templ Card(c content.Card) {
-	<a href={ templ.URL(c.Href) } class="block border border-border p-6 bg-surface rounded">
-		<h4>{ c.Title }</h4>
-		<p>{ c.Description }</p>
-	</a>
+type CardVariant string
+
+const (
+	CardVariantDefault CardVariant = "default"
+	CardVariantLink    CardVariant = "link"
+)
+
+type CardProps struct {
+	Card      content.Card
+	Variant   CardVariant
+	IconProps IconProps
+}
+
+func iconForName(name string, p IconProps) templ.Component {
+	switch name {
+	case "bug":
+		return IconBug(p)
+	default:
+		return nil
+	}
+}
+
+templ Card(props CardProps) {
+	if props.Variant == CardVariantLink {
+		<a href={ templ.URL(props.Card.Href) } class="block border border-border p-6 bg-surface rounded-lg">
+			if props.Card.Icon != "" {
+				<div class="mb-4">
+					@iconForName(props.Card.Icon, props.IconProps)
+				</div>
+			}
+			<h4>{ props.Card.Title }</h4>
+			<p>{ props.Card.Description }</p>
+			{ children... }
+		</a>
+	} else {
+		<div class="block border border-border p-6 bg-surface rounded-lg">
+			if props.Card.Icon != "" {
+				<div class="mb-6">
+					@iconForName(props.Card.Icon, props.IconProps)
+				</div>
+			}
+			<h4>{ props.Card.Title }</h4>
+			<p class="mb-4">{ props.Card.Description }</p>
+			if props.Card.Button.Text != "" {
+				@Button(ButtonProps{
+					Href: props.Card.Button.Href,
+					Size: ButtonSizeSm,
+				}) {
+					{ props.Card.Button.Text }
+				}
+			}
+		</div>
+	}
 }

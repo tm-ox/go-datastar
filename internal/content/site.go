@@ -22,11 +22,18 @@ type HomePage struct {
 	Cards   []Card   `yaml:"cards"`
 }
 
+type Button struct {
+	Text string `yaml:"text"`
+	Href string `yaml:"href"`
+}
+
 type Card struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
 	Href        string `yaml:"href"`
 	Order       int    `yaml:"order"`
+	Button      Button `yaml:"button"`
+	Icon        string `yaml:"icon"`
 }
 
 type AboutPage struct {
