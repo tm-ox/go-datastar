@@ -40,6 +40,8 @@ func main() {
 
 	site_h := handler.NewSiteHandler(nav, site)
 	work_h := handler.NewWorkHandler(nav, workEntries, workMap)
+	shop_h := handler.NewShopHandler(nav)
+	settings_h := handler.NewSettingsHandler(nav)
 
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
@@ -48,8 +50,8 @@ func main() {
 	mux.HandleFunc("/work", work_h.Index)
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)
-	mux.HandleFunc("/shop", site_h.Shop)
-	mux.HandleFunc("/settings", site_h.Settings)
+	mux.HandleFunc("/shop", shop_h.Index)
+	mux.HandleFunc("/settings", settings_h.Index)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
