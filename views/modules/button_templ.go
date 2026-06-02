@@ -73,7 +73,7 @@ func Button(props ...ButtonProps) templ.Component {
 		if p.Type == "" {
 			p.Type = ButtonTypeButton
 		}
-		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
+		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
 			p.variantClasses() + " " + p.sizeClasses()
 		if p.FullWidth {
 			classes += " w-full"
@@ -201,7 +201,7 @@ func (b ButtonProps) variantClasses() string {
 	case ButtonVariantCTA:
 		return "bg-surface text-accent hover:bg-surface/50 hover:border-accent"
 	case ButtonVariantTab:
-		return "bg-surface text-muted rounded-b-none border-b-2 border-b-transparent hover:bg-canvas/50"
+		return "bg-surface text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabActive:
 		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
 	default:

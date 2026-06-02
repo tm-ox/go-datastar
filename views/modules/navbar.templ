@@ -8,11 +8,11 @@ type NavItem struct {
 templ Navbar(items []NavItem, currentPath string) {
 	<header>
 		<div class="max-w-6xl mx-auto flex items-center justify-between">
-			<a href="/" class=" flex items-center gap-4 mb-2 font-semibold text-lg tracking-tight text-text uppercase">
+			<a href="/" class="flex items-center gap-4 font-semibold text-lg tracking-tight text-text uppercase">
 				@IconBug(IconProps{Size: "24", Class: "text-accent"})
 				Logo
 			</a>
-			<nav>
+			<nav class="mt-4">
 				for _, item := range items {
 					if item.URL == currentPath {
 						@Button(ButtonProps{
@@ -31,6 +31,15 @@ templ Navbar(items []NavItem, currentPath string) {
 							{ item.Label }
 						}
 					}
+				}
+				if currentPath == "/settings" {
+					<a href="/settings" class="ml-2 mb-1 text-accent transition-colors">
+						@IconSettings(IconProps{Size: "24"})
+					</a>
+				} else {
+					<a href="/settings" class="ml-2 mb-1 text-muted hover:text-accent transition-colors">
+						@IconSettings(IconProps{Size: "24"})
+					</a>
 				}
 			</nav>
 		</div>
