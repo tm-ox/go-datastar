@@ -35,6 +35,7 @@ func main() {
 		{Label: "Home", URL: "/"},
 		{Label: "About", URL: "/about"},
 		{Label: "Work", URL: "/work"},
+		{Label: "Shop", URL: "/shop"},
 	}
 
 	site_h := handler.NewSiteHandler(nav, site)
@@ -47,6 +48,8 @@ func main() {
 	mux.HandleFunc("/work", work_h.Index)
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)
+	mux.HandleFunc("/shop", site_h.Shop)
+	mux.HandleFunc("/settings", site_h.Settings)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

@@ -21,22 +21,22 @@ home:
         text: Browse Work
         href: /work
       order: 2
-    - title: Another Card
+    - title: Shop
       icon: bug
-      description: Another card description.
-      href: /work
+      description: Visit our shop.
+      href: /shop
       button:
-        text: Another Burron
-        href: /work
+        text: Shop
+        href: /shop
       order: 3
-    - title: Another Card
-      icon: bug
-      description: Another card description.
-      href: /work
-      button:
-        text: Another Button
-        href: /work
-      order: 4
+    # - title: Settings
+    #   icon: bug
+    #   description: Adjust your settings.
+    #   href: /settings
+    #   button:
+    #     text: Settings
+    #     href: /settings
+    #   order: 4
 
 about:
   meta:

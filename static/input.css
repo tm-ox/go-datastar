@@ -7,7 +7,7 @@
 @theme {
     --font-sans: "Plus Jakarta Sans", sans-serif;
     --color-canvas: #1f2937; /* gray-800  — bg-bg      */
-    --color-surface: #111827; /* gray-900  — bg-surface  */
+    --color-surface: #1b1f22; /* gray-900  — bg-surface  */
     --color-border: #4b5563; /* gray-600  — border-border */
     --color-text: #f3f4f6; /* gray-100  — text-text   */
     --color-muted: #9ca3af; /* gray-400  — text-muted  */
@@ -24,7 +24,11 @@
     }
 
     header {
-        @apply fixed top-0 inset-x-0 z-50 pt-6 bg-surface border-b border-border;
+        @apply fixed top-0 inset-x-0 z-50 pt-3 bg-surface border-b border-border;
+    }
+
+    footer {
+        @apply flex justify-center items-center py-5 bg-surface border-t border-border;
     }
 
     nav {
@@ -96,4 +100,14 @@
         background-repeat: no-repeat;
         background-position: right 0.9rem center;
     }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: linear-gradient(transparent, #ff5964);
+    /*background: #ff5964;*/
 }

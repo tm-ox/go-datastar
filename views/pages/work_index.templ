@@ -8,7 +8,7 @@ import (
 
 templ WorkIndex(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section data-signals="{type: '', client: '', year: '', tool: '', sort: ''}">
+		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: ''}">
 			<h2>Work</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">

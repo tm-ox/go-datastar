@@ -10,7 +10,7 @@ import (
 
 templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section>
+		<section class="min-h-screen">
 			<h2>{ entry.Title }</h2>
 			<h5>Type: <span class="text-muted">{ entry.Type }</span></h5>
 			<h5>Client: <span class="text-muted">{ entry.Client }</span></h5>

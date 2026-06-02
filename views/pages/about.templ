@@ -8,7 +8,7 @@ import (
 
 templ About(items []modules.NavItem, currentPath string, page content.AboutPage, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section>
+		<section class="min-h-screen">
 			<h2>{ page.Title }</h2>
 			<p>{ page.Body }</p>
 		</section>

@@ -17,6 +17,7 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta)
 			<main>
 				{ children... }
 			</main>
+			@modules.Footer()
 		</body>
 	</html>
 }
