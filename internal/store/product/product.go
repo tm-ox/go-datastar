@@ -1,7 +1,10 @@
 package product
 
+import "database/sql"
+
 type Product struct {
 	ID          int
+	Image       sql.NullString
 	Name        string
 	Description string
 	Price       int

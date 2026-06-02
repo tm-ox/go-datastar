@@ -55,16 +55,20 @@
         @apply text-accent text-6xl mb-8;
     }
 
+    h3 {
+        @apply text-accent text-3xl my-2;
+    }
+
     h4 {
         @apply text-2xl mb-3;
     }
 
     h5 {
-        @apply leading-loose;
+        @apply text-sm text-muted leading-loose;
     }
 
     p {
-        @apply text-lg text-muted;
+        @apply text-lg text-muted mb-1;
     }
 
     hr {

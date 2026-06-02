@@ -9,6 +9,7 @@ const (
 	ButtonVariantCTA       ButtonVariant = "cta"
 	ButtonVariantTab       ButtonVariant = "tab"
 	ButtonVariantTabActive ButtonVariant = "tabActive"
+	ButtonVariantPill      ButtonVariant = "pill"
 )
 
 const (
@@ -19,6 +20,7 @@ const (
 
 const (
 	ButtonSizeDefault ButtonSize = "default"
+	ButtonSizeXs      ButtonSize = "xs"
 	ButtonSizeSm      ButtonSize = "sm"
 	ButtonSizeTab     ButtonSize = "tab"
 	ButtonSizeLg      ButtonSize = "lg"
@@ -74,6 +76,8 @@ func (b ButtonProps) variantClasses() string {
 		return "bg-surface text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabActive:
 		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
+	case ButtonVariantPill:
+		return "bg-canvas text-accent/50 !rounded-full !border-accent/50"
 	default:
 		return "bg-canvas text-accent hover:bg-primary/90 hover:border-accent"
 	}
@@ -81,6 +85,8 @@ func (b ButtonProps) variantClasses() string {
 
 func (b ButtonProps) sizeClasses() string {
 	switch b.Size {
+	case ButtonSizeXs:
+		return "py-1 px-4 text-xs"
 	case ButtonSizeSm:
 		return "py-2 px-3 text-xs"
 	case ButtonSizeTab:

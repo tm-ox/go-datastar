@@ -19,6 +19,32 @@ templ IconBug(props ...IconProps) {
 	</svg>
 }
 
+templ IconFilter(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "16" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } viewBox="0 0 24 24" class={ p.Class }>
+		<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 12h12m-9 6h6"></path>
+	</svg>
+}
+
+templ IconReset(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "16" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } viewBox="0 0 32 32" class={ p.Class }>
+		<path fill="currentColor" d="M18 28A12 12 0 1 0 6 16v6.2l-3.6-3.6L1 20l6 6l6-6l-1.4-1.4L8 22.2V16a10 10 0 1 1 10 10Z"></path>
+	</svg>
+}
+
 templ IconSettings(props ...IconProps) {
 	{{ var p IconProps }}
 	if len(props) > 0 {
