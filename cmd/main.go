@@ -13,6 +13,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/db"
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
+	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -49,9 +50,11 @@ func main() {
 		log.Fatalf("failed to run migrations: %v", err)
 	}
 
+	productStore := product.NewSQLiteProductStore(database)
+
 	site_h := handler.NewSiteHandler(nav, site)
 	work_h := handler.NewWorkHandler(nav, workEntries, workMap)
-	shop_h := handler.NewShopHandler(nav)
+	shop_h := handler.NewShopHandler(nav, productStore)
 	settings_h := handler.NewSettingsHandler(nav)
 
 	mux := http.NewServeMux()
