@@ -1,19 +1,25 @@
 
 package modules
 
-import "github.com/tm-ox/go-datastar/internal/content"
+import (
+	"fmt"
+	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/store/product"
+)
 
 type CardVariant string
 
 const (
 	CardVariantDefault CardVariant = "default"
 	CardVariantLink    CardVariant = "link"
+	CardVariantProduct CardVariant = "product"
 )
 
 type CardProps struct {
 	Card      content.Card
 	Variant   CardVariant
 	IconProps IconProps
+	Product   *product.Product
 }
 
 func iconForName(name string, p IconProps) templ.Component {
@@ -37,6 +43,40 @@ templ Card(props CardProps) {
 			<p>{ props.Card.Description }</p>
 			{ children... }
 		</a>
+	} else if props.Variant == CardVariantProduct {
+		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 bg-surface rounded-lg overflow-hidden mb-4">
+			if props.Product.Image.Valid {
+				<img src={ props.Product.Image.String } alt={ props.Product.Name } class="w-full aspect-video object-cover border-b border-border mb-3"/>
+			}
+			<p class="text-bold text-text mx-5">{ props.Product.Name }</p>
+			<h5 class="mx-5">{ props.Product.Description }</h5>
+			<p class="text-bold text-accent mx-5 my-1">{ fmt.Sprintf("$%.2f", float64(props.Product.Price)/100) }</p>
+			<div class="flex mx-5 my-2">
+				@Button(ButtonProps{
+					Href:      props.Product.Slug,
+					Size:      ButtonSizeSm,
+					FullWidth: true,
+					Class:     "rounded-r-none",
+				}) {
+					View details
+				}
+				@Button(ButtonProps{
+					Href:      props.Product.Slug,
+					Size:      ButtonSizeSm,
+					FullWidth: true,
+					Class:     "rounded-l-none",
+				}) {
+					Add to cart
+				}
+			</div>
+			@Button(ButtonProps{
+				Variant: ButtonVariantPill,
+				Size:    ButtonSizeXs,
+				Class:   "justify-self-center mx-5 mt-2",
+			}) {
+				{ props.Product.Category }
+			}
+		</div>
 	} else {
 		<div class="block border border-border p-6 bg-surface rounded-lg">
 			if props.Card.Icon != "" {

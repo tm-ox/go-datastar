@@ -11,6 +11,7 @@ func Migrate(db *sql.DB) error {
 			price REAL NOT NULL,
 			category TEXT,
 			slug TEXT UNIQUE NOT NULL,
+			image TEXT,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		);
 	`)

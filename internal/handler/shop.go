@@ -20,5 +20,10 @@ func NewShopHandler(nav []modules.NavItem, store product.ProductStore) *ShopHand
 
 func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 	meta := modules.Meta{Title: "Shop", Description: "Shop"}
-	templ.Handler(views.Shop(h.nav, "/shop", meta)).ServeHTTP(w, r)
+	products, err := h.store.List()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	templ.Handler(views.Shop(h.nav, "/shop", meta, products)).ServeHTTP(w, r)
 }

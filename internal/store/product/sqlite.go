@@ -11,7 +11,7 @@ func NewSQLiteProductStore(db *sql.DB) *SQLiteProductStore {
 }
 
 func (s *SQLiteProductStore) List() ([]Product, error) {
-	rows, err := s.db.Query("SELECT id, name, description, price, category, slug, created_at FROM products")
+	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at FROM products")
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func (s *SQLiteProductStore) List() ([]Product, error) {
 	for rows.Next() {
 		var p Product
 
-		err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -31,7 +31,7 @@ func (s *SQLiteProductStore) List() ([]Product, error) {
 }
 
 func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
-	rows, err := s.db.Query("SELECT id, name, description, price, category, slug, created_at FROM products WHERE slug = ?", slug)
+	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at FROM products WHERE slug = ?", slug)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 
 	var p Product
 	if rows.Next() {
-		err := rows.Scan(&p.ID, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
 		if err != nil {
 			return nil, err
 		}

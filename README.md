@@ -25,6 +25,16 @@ templ generate
 bun run build:css
 ```
 
+## Seed
+
+Populate the database with sample products:
+
+```bash
+go run cmd/seed/main.go
+```
+
+Run once after first startup. Safe to re-run — uses `INSERT OR IGNORE`.
+
 ## Dev
 
 ```bash
@@ -53,9 +63,15 @@ internal/
     work/*.yaml              — one file per work entry
   handler/
     site.go                  — Index, About handlers
-    shop.go                  — Shop handler (placeholder)
-    settings.go              — Settings handler (placeholder)
+    shop.go                  — ShopHandler — product listing
+    settings.go              — SettingsHandler (placeholder)
     work.go                  — WorkIndex, WorkDetail, Filter handlers
+  db/
+    db.go                    — SQLite connection (modernc.org/sqlite)
+    migrate.go               — schema migrations, run at startup
+  store/product/
+    product.go               — Product struct, ProductStore interface
+    sqlite.go                — SQLiteProductStore implementation
   middleware/
     logging.go               — request logging middleware
 views/
@@ -63,4 +79,5 @@ views/
   modules/                   — shared components (navbar, hero, card, button, icon, footer)
   pages/                     — page templates
 static/input.css             — Tailwind source (theme tokens, base styles)
+cmd/seed/main.go             — development seed script
 ```

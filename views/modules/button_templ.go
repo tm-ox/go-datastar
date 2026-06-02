@@ -17,6 +17,7 @@ const (
 	ButtonVariantCTA       ButtonVariant = "cta"
 	ButtonVariantTab       ButtonVariant = "tab"
 	ButtonVariantTabActive ButtonVariant = "tabActive"
+	ButtonVariantPill      ButtonVariant = "pill"
 )
 
 const (
@@ -27,6 +28,7 @@ const (
 
 const (
 	ButtonSizeDefault ButtonSize = "default"
+	ButtonSizeXs      ButtonSize = "xs"
 	ButtonSizeSm      ButtonSize = "sm"
 	ButtonSizeTab     ButtonSize = "tab"
 	ButtonSizeLg      ButtonSize = "lg"
@@ -94,7 +96,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var3 templ.SafeURL
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(p.Href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 59, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 61, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -159,7 +161,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(p.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 63, Col: 49}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 65, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -204,6 +206,8 @@ func (b ButtonProps) variantClasses() string {
 		return "bg-surface text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabActive:
 		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
+	case ButtonVariantPill:
+		return "bg-canvas text-accent/50 !rounded-full !border-accent/50"
 	default:
 		return "bg-canvas text-accent hover:bg-primary/90 hover:border-accent"
 	}
@@ -211,6 +215,8 @@ func (b ButtonProps) variantClasses() string {
 
 func (b ButtonProps) sizeClasses() string {
 	switch b.Size {
+	case ButtonSizeXs:
+		return "py-1 px-4 text-xs"
 	case ButtonSizeSm:
 		return "py-2 px-3 text-xs"
 	case ButtonSizeTab:
