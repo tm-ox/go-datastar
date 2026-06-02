@@ -1,0 +1,15 @@
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/views/layouts"
+	"github.com/tm-ox/go-datastar/views/modules"
+)
+
+templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta) {
+	@layouts.BaseLayout(items, currentPath, meta) {
+		<section class="min-h-screen">
+			<h2>Shop</h2>
+			<p>Coming soon.</p>
+		</section>
+	}
+}
