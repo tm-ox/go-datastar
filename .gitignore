@@ -5,6 +5,9 @@ node_modules/
 bin/
 tmp/
 
+# sqlite database
+*.db
+
 
 # generated — tailwind output
 static/app.css

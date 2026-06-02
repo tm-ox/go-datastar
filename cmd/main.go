@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/db"
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -36,6 +37,16 @@ func main() {
 		{Label: "About", URL: "/about"},
 		{Label: "Work", URL: "/work"},
 		{Label: "Shop", URL: "/shop"},
+	}
+
+	database, err := db.Open("./data.db")
+	if err != nil {
+		log.Fatalf("failed to open database: %v", err)
+	}
+	defer database.Close()
+
+	if err := db.Migrate(database); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
 	}
 
 	site_h := handler.NewSiteHandler(nav, site)
