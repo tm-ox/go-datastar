@@ -53,12 +53,14 @@ internal/
     work/*.yaml              — one file per work entry
   handler/
     site.go                  — Index, About handlers
+    shop.go                  — Shop handler (placeholder)
+    settings.go              — Settings handler (placeholder)
     work.go                  — WorkIndex, WorkDetail, Filter handlers
   middleware/
     logging.go               — request logging middleware
 views/
   layouts/base.templ         — base HTML layout
-  modules/                   — shared components (navbar, hero, card)
+  modules/                   — shared components (navbar, hero, card, button, icon, footer)
   pages/                     — page templates
 static/input.css             — Tailwind source (theme tokens, base styles)
 ```
