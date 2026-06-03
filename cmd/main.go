@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/tm-ox/go-datastar/internal/content"
 	"github.com/tm-ox/go-datastar/internal/db"
@@ -74,5 +75,7 @@ func main() {
 	fmt.Println("Listening on :8081")
 	go srv.ListenAndServe()
 	<-ctx.Done()
-	srv.Shutdown(context.Background())
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	srv.Shutdown(shutdownCtx)
 }

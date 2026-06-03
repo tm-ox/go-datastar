@@ -8,7 +8,7 @@ func Migrate(db *sql.DB) error {
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			name TEXT NOT NULL,
 			description TEXT,
-			price REAL NOT NULL,
+			price INTEGER NOT NULL,
 			category TEXT,
 			slug TEXT UNIQUE NOT NULL,
 			image TEXT,

@@ -31,18 +31,14 @@ func (s *SQLiteProductStore) List() ([]Product, error) {
 }
 
 func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
-	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at FROM products WHERE slug = ?", slug)
+	var p Product
+	err := s.db.QueryRow("SELECT id, image, name, description, price, category, slug, created_at FROM products WHERE slug = ?", slug).
+		Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-
-	var p Product
-	if rows.Next() {
-		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return &p, rows.Err()
+	return &p, nil
 }
