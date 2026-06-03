@@ -37,7 +37,7 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
-	slug := r.URL.Path[len("/work/"):]
+	slug := r.PathValue("slug")
 	entry, ok := h.bySlug[slug]
 	if !ok {
 		w.WriteHeader(http.StatusNotFound)
