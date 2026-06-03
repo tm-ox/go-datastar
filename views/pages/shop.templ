@@ -12,10 +12,9 @@ templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produ
 			<h2>Shop</h2>
 			<div class="grid grid-cols-3 grid-rows-[auto_auto_auto_auto_auto_auto] gap-x-4">
 				for _, p := range products {
-					@modules.Card(modules.CardProps{
-						Variant: modules.CardVariantProduct,
+					@modules.CardProduct(&p) {
 						Product: &p,
-					})
+					}
 				}
 			</div>
 		</section>
