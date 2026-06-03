@@ -70,7 +70,7 @@ templ CardProduct(p *product.Product) {
 			}
 			<p class="text-bold text-text mx-5">{ p.Name }</p>
 			<h5 class="mx-5">{ p.Description }</h5>
-			<p class="text-bold text-accent mx-5 my-1">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</p>
+			<h5 class="text-bold text-accent mx-5 my-3">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
 			<div class="flex mx-5 my-2">
 				@Button(ButtonProps{
 					Href:      p.Slug,

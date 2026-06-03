@@ -66,6 +66,7 @@ func main() {
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)
 	mux.HandleFunc("/shop", shop_h.Index)
+	mux.HandleFunc("/shop/filter", shop_h.Filter)
 	mux.HandleFunc("/settings", settings_h.Index)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
