@@ -6,17 +6,25 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product) {
+templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen">
+		<section class="min-h-screen" data-signals="{category: ''}">
 			<h2>Shop</h2>
-			<div class="grid grid-cols-3 grid-rows-[auto_auto_auto_auto_auto_auto] gap-x-4">
-				for _, p := range products {
-					@modules.CardProduct(&p) {
-						Product: &p,
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$category = ''; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				<select data-bind="category" data-on:change="@get('/shop/filter')">
+					<option value="">All Categories</option>
+					for _, c := range categories {
+						<option value={ c }>{ c }</option>
 					}
-				}
+				</select>
 			</div>
+			@ShopGrid(products)
 		</section>
 	}
 }

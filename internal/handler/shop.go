@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/a-h/templ"
+	"github.com/starfederation/datastar-go/datastar"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
@@ -25,5 +26,27 @@ func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	templ.Handler(views.Shop(h.nav, "/shop", meta, products)).ServeHTTP(w, r)
+	categories, err := h.store.UniqueCategories()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories)).ServeHTTP(w, r)
+}
+
+func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
+	var sig struct {
+		Category string `json:"category"`
+	}
+	if err := datastar.ReadSignals(r, &sig); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	products, err := h.store.Filter(sig.Category)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElementTempl(views.ShopGrid(products))
 }

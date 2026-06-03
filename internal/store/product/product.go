@@ -16,4 +16,6 @@ type Product struct {
 type ProductStore interface {
 	List() ([]Product, error)
 	GetBySlug(slug string) (*Product, error)
+	Filter(category string) ([]Product, error)
+	UniqueCategories() ([]string, error)
 }

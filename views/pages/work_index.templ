@@ -17,30 +17,32 @@ templ WorkIndex(items []modules.NavItem, currentPath string, meta modules.Meta, 
 						@modules.IconReset()
 					</button>
 				</div>
-				<select data-bind="type" data-on:change="@get('/work/filter')">
-					<option value="" class="">All Types</option>
-					for _, c := range types {
-						<option value={ c }>{ c }</option>
-					}
-				</select>
-				<select data-bind="client" data-on:change="@get('/work/filter')">
-					<option value="" class="">All Clients</option>
-					for _, c := range clients {
-						<option value={ c }>{ c }</option>
-					}
-				</select>
-				<select data-bind="year" data-on:change="@get('/work/filter')">
-					<option value="" class="">All Years</option>
-					for _, y := range years {
-						<option value={ y }>{ y }</option>
-					}
-				</select>
-				<select data-bind="tool" data-on:change="@get('/work/filter')">
-					<option value="">All Tools</option>
-					for _, t := range tools {
-						<option value={ t }>{ t }</option>
-					}
-				</select>
+				<div class="grid grid-cols-4 gap-4 w-fit">
+					<select data-bind="type" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Types</option>
+						for _, c := range types {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="client" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Clients</option>
+						for _, c := range clients {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="year" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Years</option>
+						for _, y := range years {
+							<option value={ y }>{ y }</option>
+						}
+					</select>
+					<select data-bind="tool" data-on:change="@get('/work/filter')">
+						<option value="">All Tools</option>
+						for _, t := range tools {
+							<option value={ t }>{ t }</option>
+						}
+					</select>
+				</div>
 			</div>
 			<table>
 				<thead>
