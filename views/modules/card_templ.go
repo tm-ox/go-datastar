@@ -338,7 +338,7 @@ func CardProduct(p *product.Product) templ.Component {
 				return nil
 			})
 			templ_7745c5c3_Err = Button(ButtonProps{
-				Href:      p.Slug,
+				Href:      "/shop/" + p.Slug,
 				Size:      ButtonSizeSm,
 				FullWidth: true,
 				Class:     "rounded-r-none",
@@ -365,7 +365,7 @@ func CardProduct(p *product.Product) templ.Component {
 				return nil
 			})
 			templ_7745c5c3_Err = Button(ButtonProps{
-				Href:      p.Slug,
+				Href:      "/shop/" + p.Slug,
 				Size:      ButtonSizeSm,
 				FullWidth: true,
 				Class:     "rounded-l-none",

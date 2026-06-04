@@ -73,7 +73,7 @@ templ CardProduct(p *product.Product) {
 			<h5 class="text-bold text-accent mx-5 my-3">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
 			<div class="flex mx-5 my-2">
 				@Button(ButtonProps{
-					Href:      p.Slug,
+					Href:      "/shop/" + p.Slug,
 					Size:      ButtonSizeSm,
 					FullWidth: true,
 					Class:     "rounded-r-none",
@@ -81,7 +81,7 @@ templ CardProduct(p *product.Product) {
 					View details
 				}
 				@Button(ButtonProps{
-					Href:      p.Slug,
+					Href:      "/shop/" + p.Slug,
 					Size:      ButtonSizeSm,
 					FullWidth: true,
 					Class:     "rounded-l-none",

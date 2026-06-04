@@ -66,6 +66,7 @@ func main() {
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)
 	mux.HandleFunc("/shop", shop_h.Index)
+	mux.HandleFunc("/shop/{slug}", shop_h.Detail)
 	mux.HandleFunc("/shop/filter", shop_h.Filter)
 	mux.HandleFunc("/settings", settings_h.Index)
 
