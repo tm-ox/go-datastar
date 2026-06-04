@@ -50,3 +50,18 @@ func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	sse := datastar.NewSSE(w, r)
 	sse.PatchElementTempl(views.ShopGrid(products))
 }
+
+func (h *ShopHandler) Detail(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+	p, err := h.store.GetBySlug(slug)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if p == nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	meta := modules.Meta{Title: p.Name, Description: p.Description}
+	templ.Handler(views.ShopDetail(h.nav, r.URL.Path, meta, p)).ServeHTTP(w, r)
+}
