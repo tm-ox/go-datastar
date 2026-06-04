@@ -51,6 +51,9 @@ templ Button(props ...ButtonProps) {
 		classes := "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium tracking-wider border border-border  transition-all cursor-pointer " +
 			p.variantClasses() + " " + p.sizeClasses()
 	}}
+	if p.Disabled {
+		{{ classes += " opacity-50 text-muted pointer-events-none cursor-not-allowed" }}
+	}
 	if p.FullWidth {
 		{{ classes += " w-full" }}
 	}

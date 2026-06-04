@@ -1,6 +1,9 @@
 package product
 
-import "database/sql"
+import (
+	"database/sql"
+	"strings"
+)
 
 type SQLiteProductStore struct {
 	db *sql.DB
@@ -10,30 +13,36 @@ func NewSQLiteProductStore(db *sql.DB) *SQLiteProductStore {
 	return &SQLiteProductStore{db: db}
 }
 
-func (s *SQLiteProductStore) List() ([]Product, error) {
-	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at FROM products")
+func (s *SQLiteProductStore) List(page, limit int) ([]Product, int, error) {
+	var total int
+	err := s.db.QueryRow("SELECT COUNT(*) FROM products").Scan(&total)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * limit
+	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at, stock FROM products LIMIT ? OFFSET ?", limit, offset)
+	if err != nil {
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var products []Product
 	for rows.Next() {
 		var p Product
-
-		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		products = append(products, p)
 	}
-	return products, rows.Err()
+	return products, total, rows.Err()
 }
 
 func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 	var p Product
-	err := s.db.QueryRow("SELECT id, image, name, description, price, category, slug, created_at FROM products WHERE slug = ?", slug).
-		Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+	err := s.db.QueryRow("SELECT id, image, name, description, price, category, slug, created_at, stock FROM products WHERE slug = ?", slug).
+		Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -43,26 +52,48 @@ func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 	return &p, nil
 }
 
-func (s *SQLiteProductStore) Filter(category string) ([]Product, error) {
-	if category == "" {
-		return s.List()
+func (s *SQLiteProductStore) Filter(category string, inStock bool, page, limit int) ([]Product, int, error) {
+	if category == "" && !inStock {
+		return s.List(page, limit)
 	}
-	rows, err := s.db.Query("SELECT id, image, name, description, price, category, slug, created_at FROM products WHERE category = ?", category)
+
+	where := []string{}
+	args := []any{}
+	if category != "" {
+		where = append(where, "category = ?")
+		args = append(args, category)
+	}
+	if inStock {
+		where = append(where, "stock > 0")
+	}
+
+	clause := " WHERE " + strings.Join(where, " AND ")
+	countQuery := "SELECT COUNT(*) FROM products" + clause
+	selectQuery := "SELECT id, image, name, description, price, category, slug, created_at, stock FROM products" + clause
+
+	var total int
+	err := s.db.QueryRow(countQuery, args...).Scan(&total)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+
+	offset := (page - 1) * limit
+	rows, err := s.db.Query(selectQuery+" LIMIT ? OFFSET ?", append(args, limit, offset)...)
+	if err != nil {
+		return nil, 0, err
 	}
 	defer rows.Close()
 
 	var products []Product
 	for rows.Next() {
 		var p Product
-		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt)
+		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		products = append(products, p)
 	}
-	return products, rows.Err()
+	return products, total, rows.Err()
 }
 
 func (s *SQLiteProductStore) UniqueCategories() ([]string, error) {

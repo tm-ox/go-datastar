@@ -6,14 +6,14 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string) {
+templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, page int, total int, limit int) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen" data-signals="{category: ''}">
+		<section class="min-h-screen" data-signals="{category: '', inStock: false, page: 1}">
 			<h2>Shop</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">
 					@modules.IconFilter()
-					<button data-on:click="$category = ''; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<button data-on:click="$category = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 						@modules.IconReset()
 					</button>
 				</div>
@@ -23,8 +23,12 @@ templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produ
 						<option value={ c }>{ c }</option>
 					}
 				</select>
+				<label class="flex items-center ml-auto gap-2 text-sm cursor-pointer">
+					<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
+					<span class="text-muted peer-checked:text-accent">In Stock</span>
+				</label>
 			</div>
-			@ShopGrid(products)
+			@ShopGrid(products, page, total, limit)
 		</section>
 	}
 }

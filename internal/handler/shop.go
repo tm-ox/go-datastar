@@ -15,13 +15,15 @@ type ShopHandler struct {
 	store product.ProductStore
 }
 
+const limit = 9
+
 func NewShopHandler(nav []modules.NavItem, store product.ProductStore) *ShopHandler {
 	return &ShopHandler{nav: nav, store: store}
 }
 
 func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 	meta := modules.Meta{Title: "Shop", Description: "Shop"}
-	products, err := h.store.List()
+	products, total, err := h.store.List(1, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -31,24 +33,26 @@ func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories)).ServeHTTP(w, r)
+	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories, 1, total, limit)).ServeHTTP(w, r)
 }
 
 func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
 		Category string `json:"category"`
+		InStock  bool   `json:"inStock"`
+		Page     int    `json:"page"`
 	}
 	if err := datastar.ReadSignals(r, &sig); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	products, err := h.store.Filter(sig.Category)
+	products, total, err := h.store.Filter(sig.Category, sig.InStock, sig.Page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.ShopGrid(products))
+	sse.PatchElementTempl(views.ShopGrid(products, sig.Page, total, limit))
 }
 
 func (h *ShopHandler) Detail(w http.ResponseWriter, r *http.Request) {
