@@ -12,7 +12,8 @@ func Migrate(db *sql.DB) error {
 			category TEXT,
 			slug TEXT UNIQUE NOT NULL,
 			image TEXT,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+			stock INTEGER NOT NULL DEFAULT 0
 		);
 	`)
 	return err

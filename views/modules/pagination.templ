@@ -1,0 +1,40 @@
+package modules
+
+import (
+	"fmt"
+	"math"
+)
+
+type PaginationProps struct {
+	Page  int
+	Total int
+	Limit int
+	Route string
+}
+
+templ Pagination(props PaginationProps) {
+	{{ totalPages := int(math.Ceil(float64(props.Total) / float64(props.Limit))) }}
+	<div class="grid grid-cols-[1fr_auto_1fr] gap-4 w-full items-center mt-6" data-signals={ fmt.Sprintf("{\"page\": %d}", props.Page) }>
+		<div class="flex justify-end">
+			if props.Page > 1 {
+				@Button(ButtonProps{
+					Size:       ButtonSizeSm,
+					Attributes: templ.Attributes{"data-on:click": "$page = $page - 1; @get('" + props.Route + "')"},
+				}) {
+					Prev
+				}
+			}
+		</div>
+		<span class="text-center text-accent">{ fmt.Sprintf("%d / %d", props.Page, totalPages) }</span>
+		<div>
+			if props.Page < totalPages {
+				@Button(ButtonProps{
+					Size:       ButtonSizeSm,
+					Attributes: templ.Attributes{"data-on:click": "$page = $page + 1; @get('" + props.Route + "')"},
+				}) {
+					Next
+				}
+			}
+		</div>
+	</div>
+}

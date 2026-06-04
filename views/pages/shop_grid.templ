@@ -6,10 +6,18 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ ShopGrid(products []product.Product) {
-	<div id="shop-grid" class="grid grid-cols-3 grid-rows-[auto_auto_auto_auto_auto_auto] gap-x-4">
-		for _, p := range products {
-			@modules.CardProduct(&p)
-		}
+templ ShopGrid(products []product.Product, page, total, limit int) {
+	<div id="shop-grid" class="flex flex-col items-center">
+		<div class="grid grid-cols-3 grid-rows-[auto_auto_auto_auto_auto_auto] gap-x-4">
+			for _, p := range products {
+				@modules.CardProduct(&p)
+			}
+		</div>
+		@modules.Pagination(modules.PaginationProps{
+			Page:  page,
+			Total: total,
+			Limit: limit,
+			Route: "/shop/filter",
+		})
 	</div>
 }

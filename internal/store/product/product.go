@@ -11,11 +11,12 @@ type Product struct {
 	Category    string
 	Slug        string
 	CreatedAt   string
+	Stock       int
 }
 
 type ProductStore interface {
-	List() ([]Product, error)
+	List(page, limit int) ([]Product, int, error)
 	GetBySlug(slug string) (*Product, error)
-	Filter(category string) ([]Product, error)
+	Filter(category string, inStock bool, page, limit int) ([]Product, int, error)
 	UniqueCategories() ([]string, error)
 }

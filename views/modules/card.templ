@@ -81,21 +81,24 @@ templ CardProduct(p *product.Product) {
 					View details
 				}
 				@Button(ButtonProps{
-					Href:      "/shop/" + p.Slug,
 					Size:      ButtonSizeSm,
 					FullWidth: true,
 					Class:     "rounded-l-none",
+					Disabled:  p.Stock == 0,
 				}) {
 					Add to cart
 				}
 			</div>
-			@Button(ButtonProps{
-				Variant: ButtonVariantPill,
-				Size:    ButtonSizeXs,
-				Class:   "justify-self-center mx-5 mt-2",
-			}) {
-				{ p.Category }
-			}
+			<div class="flex items-center justify-between mx-5 mt-2">
+				<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
+				@Button(ButtonProps{
+					Variant: ButtonVariantPill,
+					Size:    ButtonSizeXs,
+					Class:   "pointer-events-none",
+				}) {
+					{ p.Category }
+				}
+			</div>
 		</div>
 	}
 }
