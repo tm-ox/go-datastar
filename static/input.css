@@ -89,7 +89,7 @@
     }
 
     tbody tr {
-        @apply hover:bg-accent/10 transition-all relative;
+        @apply text-muted hover:text-text hover:bg-accent/10 transition-all relative;
     }
 
     select {

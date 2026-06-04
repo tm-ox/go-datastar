@@ -33,7 +33,7 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 	clients := content.UniqueClients(h.entries)
 	years := content.UniqueYears(h.entries)
 	tools := content.UniqueTools(h.entries)
-	templ.Handler(views.WorkIndex(h.nav, "/work", meta, h.entries, types, clients, years, tools)).ServeHTTP(w, r)
+	templ.Handler(views.Work(h.nav, "/work", meta, h.entries, types, clients, years, tools)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {

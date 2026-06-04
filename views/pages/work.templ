@@ -4,19 +4,58 @@ import (
 	"github.com/tm-ox/go-datastar/internal/content"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
-	"strconv"
-	"strings"
 )
 
-templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry, meta modules.Meta) {
+templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen">
-			<h2>{ entry.Title }</h2>
-			<h5>Type: <span class="text-muted">{ entry.Type }</span></h5>
-			<h5>Client: <span class="text-muted">{ entry.Client }</span></h5>
-			<h5>Year: <span class="text-muted">{ strconv.Itoa(entry.Year) }</span></h5>
-			<h5>Tools: <span class="text-muted">{ strings.Join(entry.Tools, ", ") }</span></h5>
-			<h5>Description: <span class="text-muted">{ entry.Description }</span></h5>
+		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: ''}">
+			<h2>Work</h2>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				<div class="grid grid-cols-4 gap-4 w-fit">
+					<select data-bind="type" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Types</option>
+						for _, c := range types {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="client" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Clients</option>
+						for _, c := range clients {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="year" data-on:change="@get('/work/filter')">
+						<option value="" class="">All Years</option>
+						for _, y := range years {
+							<option value={ y }>{ y }</option>
+						}
+					</select>
+					<select data-bind="tool" data-on:change="@get('/work/filter')">
+						<option value="">All Tools</option>
+						for _, t := range tools {
+							<option value={ t }>{ t }</option>
+						}
+					</select>
+				</div>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; @get('/work/filter')" class="w-1/4">Project</th>
+						<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; @get('/work/filter')" class="w-[15%]">Type</th>
+						<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; @get('/work/filter')" class="w-1/5">Client</th>
+						<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; @get('/work/filter')" class="w-[10%]">Year</th>
+						<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; @get('/work/filter')" class="w-[30%]">Tools</th>
+					</tr>
+				</thead>
+				@WorkRows(entries)
+			</table>
 		</section>
 	}
 }
