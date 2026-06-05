@@ -15,16 +15,26 @@ type PageMeta struct {
 	Description string `yaml:"description"`
 }
 
+type Section struct {
+	ID      string `yaml:"id"`
+	Title   string `yaml:"title"`
+	Tagline string `yaml:"tagline"`
+	Cols    int    `yaml:"cols"`
+	Cards   []Card `yaml:"cards"`
+}
+
 type HomePage struct {
-	Meta    PageMeta `yaml:"meta"`
-	Title   string   `yaml:"title"`
-	Tagline string   `yaml:"tagline"`
-	Cards   []Card   `yaml:"cards"`
+	Meta     PageMeta  `yaml:"meta"`
+	Title    string    `yaml:"title"`
+	Tagline  string    `yaml:"tagline"`
+	Cards    []Card    `yaml:"cards"`
+	Sections []Section `yaml:"sections"`
 }
 
 type Button struct {
-	Text string `yaml:"text"`
-	Href string `yaml:"href"`
+	Text   string `yaml:"text"`
+	Href   string `yaml:"href"`
+	Target string `yaml:"target"`
 }
 
 type Card struct {

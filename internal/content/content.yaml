@@ -1,42 +1,82 @@
 home:
   meta:
     title: Home
-    description: Project description.
-  title: Project Name
-  tagline: Project tagline.
-  cards:
-    - title: About
-      icon: bug
-      description: Background, tools, and approach.
-      href: /about
-      button:
-        text: Learn More
-        href: /about
-      order: 1
-    - title: Work
-      icon: bug
-      description: Selected projects in brand, digital, and motion.
-      href: /work
-      button:
-        text: Browse Work
-        href: /work
-      order: 2
-    - title: Shop
-      icon: bug
-      description: Visit our shop.
-      href: /shop
-      button:
-        text: Shop
-        href: /shop
-      order: 3
-    # - title: Settings
-    #   icon: bug
-    #   description: Adjust your settings.
-    #   href: /settings
-    #   button:
-    #     text: Settings
-    #     href: /settings
-    #   order: 4
+    description: A reference implementation built with Go, templ, Datastar, and Tailwind v4.
+  title: go-datastar
+  tagline: Server-driven UI without the JavaScript framework.
+  sections:
+    - id: stack
+      title: The Stack
+      cards:
+        - title: Server-Driven UI
+          icon: bug
+          description: Datastar replaces client-side state with SSE streams from the Go server. No virtual DOM, no hydration - the server owns the UI.
+          order: 1
+          button:
+            text: Datastar docs
+            href: https://data-star.dev
+            target: _blank
+        - title: Type-Safe Templates
+          icon: bug
+          description: Templ compiles HTML components to Go functions. Template errors are caught at build time, not in the browser.
+          order: 2
+          button:
+            text: Templ docs
+            href: https://templ.guide
+            target: _blank
+        - title: No Framework
+          icon: bug
+          description: Routing, middleware, and handlers use net/http stdlib only. No Gin, no Echo - just Go.
+          order: 3
+          button:
+            text: Source
+            href: https://github.com/tm-ox/go-datastar
+            target: _blank
+        - title: CSS-First Styling
+          icon: bug
+          description: Tailwind v4 with no config file. Theme tokens defined in CSS, not JavaScript.
+          order: 4
+          button:
+            text: Tailwind v4 docs
+            href: https://tailwindcss.com/blog/tailwindcss-v4
+            target: _blank
+    - id: patterns
+      title: Patterns Implemented
+      cols: 4
+      cards:
+        - title: SSE Filtering
+          icon: bug
+          description: Live product and work filtering via Datastar SSE - no page reload, server patches only the changed fragment.
+          order: 1
+        - title: Pagination
+          icon: bug
+          description: Cursor-based pagination with disabled-state buttons, total count, and SSE-compatible partial rendering.
+          order: 2
+        - title: SQLite + Interfaces
+          icon: bug
+          description: ProductStore interface with SQLiteProductStore implementation - swappable backend, dynamic WHERE clause building.
+          order: 3
+        - title: Content from YAML
+          icon: bug
+          description: Site copy and work entries loaded from embedded YAML at startup - no CMS, no database round-trips for static content.
+          order: 4
+    - id: explore
+      title: Explore
+      cards:
+        - title: Work
+          icon: bug
+          description: Filterable work entries loaded from YAML. Demonstrates SSE partial rendering and tag-based filtering.
+          order: 1
+          button:
+            text: View work
+            href: /work
+        - title: Shop
+          icon: bug
+          description: Product catalogue backed by SQLite. Filter by category and stock, paginate results - all server-driven.
+          order: 2
+          button:
+            text: View shop
+            href: /shop
 
 about:
   meta:

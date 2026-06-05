@@ -33,7 +33,7 @@ templ Card(props CardProps) {
 	if props.Variant == CardVariantLink {
 		<a href={ templ.URL(props.Card.Href) } class="block border border-border p-6 bg-surface rounded-lg">
 			if props.Card.Icon != "" {
-				<div class="mb-4">
+				<div class="mb-5">
 					@iconForName(props.Card.Icon, props.IconProps)
 				</div>
 			}
@@ -42,18 +42,21 @@ templ Card(props CardProps) {
 			{ children... }
 		</a>
 	} else {
-		<div class="block border border-border p-6 bg-surface rounded-lg">
+		<div class="grid grid-rows-subgrid row-span-4 border border-border p-6 bg-surface rounded-lg mb-4">
 			if props.Card.Icon != "" {
-				<div class="mb-6">
+				<div class="mb-5">
 					@iconForName(props.Card.Icon, props.IconProps)
 				</div>
 			}
-			<h4>{ props.Card.Title }</h4>
-			<p class="mb-4">{ props.Card.Description }</p>
+			<h3>{ props.Card.Title }</h3>
+			<p>{ props.Card.Description }</p>
 			if props.Card.Button.Text != "" {
 				@Button(ButtonProps{
-					Href: props.Card.Button.Href,
-					Size: ButtonSizeSm,
+					Href:      props.Card.Button.Href,
+					Size:      ButtonSizeSm,
+					FullWidth: false,
+					Class:     "w-fit mt-5",
+					Target:    props.Card.Button.Target,
 				}) {
 					{ props.Card.Button.Text }
 				}
@@ -66,7 +69,7 @@ templ CardProduct(p *product.Product) {
 	if p != nil {
 		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 bg-surface rounded-lg overflow-hidden mb-4">
 			if p.Image.Valid {
-				<img src={ p.Image.String } alt={ p.Name } class="w-full aspect-video object-cover border-b border-border mb-3"/>
+				<img src={ p.Image.String } alt={ p.Name } class="w-full aspect-5/2 object-cover border-b border-border mb-3"/>
 			}
 			<p class="text-bold text-text mx-5">{ p.Name }</p>
 			<h5 class="mx-5">{ p.Description }</h5>
