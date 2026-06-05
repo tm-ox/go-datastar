@@ -80,7 +80,7 @@ func Pagination(props PaginationProps) templ.Component {
 			})
 			templ_7745c5c3_Err = Button(ButtonProps{
 				Size:       ButtonSizeSm,
-				Attributes: templ.Attributes{"data-on:click": "$page = $page - 1; @get('" + props.Route + "')"},
+				Attributes: templ.Attributes{"data-on:click": "$page = $page - 1; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -124,7 +124,7 @@ func Pagination(props PaginationProps) templ.Component {
 			})
 			templ_7745c5c3_Err = Button(ButtonProps{
 				Size:       ButtonSizeSm,
-				Attributes: templ.Attributes{"data-on:click": "$page = $page + 1; @get('" + props.Route + "')"},
+				Attributes: templ.Attributes{"data-on:click": "$page = $page + 1; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

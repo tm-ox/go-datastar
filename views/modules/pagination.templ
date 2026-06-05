@@ -19,7 +19,7 @@ templ Pagination(props PaginationProps) {
 			if props.Page > 1 {
 				@Button(ButtonProps{
 					Size:       ButtonSizeSm,
-					Attributes: templ.Attributes{"data-on:click": "$page = $page - 1; @get('" + props.Route + "')"},
+					Attributes: templ.Attributes{"data-on:click": "$page = $page - 1; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
 				}) {
 					Prev
 				}
@@ -30,7 +30,7 @@ templ Pagination(props PaginationProps) {
 			if props.Page < totalPages {
 				@Button(ButtonProps{
 					Size:       ButtonSizeSm,
-					Attributes: templ.Attributes{"data-on:click": "$page = $page + 1; @get('" + props.Route + "')"},
+					Attributes: templ.Attributes{"data-on:click": "$page = $page + 1; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
 				}) {
 					Next
 				}

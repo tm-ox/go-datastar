@@ -61,7 +61,7 @@ templ Button(props ...ButtonProps) {
 		{{ classes += " " + p.Class }}
 	}
 	if p.Href != "" && !p.Disabled {
-		<a href={ templ.SafeURL(p.Href) } class={ classes } { p.Attributes... }>
+		<a href={ templ.SafeURL(p.Href) } target={ p.Target } class={ classes } { p.Attributes... }>
 			{ children... }
 		</a>
 	} else {

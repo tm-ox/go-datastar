@@ -4,7 +4,7 @@ package modules
 templ Hero(title, tagline string) {
 	<section class="flex flex-col h-screen justify-center items-center text-center gap-6 max-w-none w-full">
 		<h1 class="max-w-2xl">{ title }</h1>
-		<h4>{ tagline }</h4>
+		<h4 class="text-muted">{ tagline }</h4>
 		{ children... }
 	</section>
 }

@@ -6,24 +6,44 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
+func sectionGridClass(cols int) string {
+	switch cols {
+	case 1:
+		return "grid grid-cols-1 gap-x-4 gap-y-1"
+	case 3:
+		return "grid grid-cols-3 gap-x-4 gap-y-1"
+	case 4:
+		return "grid grid-cols-4 gap-x-4 gap-y-1"
+	default:
+		return "grid grid-cols-2 gap-x-4 gap-y-1"
+	}
+}
+
 templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
 		@modules.Hero(home.Title, home.Tagline) {
 			@modules.Button(modules.ButtonProps{
 				Variant: modules.ButtonVariantCTA,
-				Href:    "/work",
+				Href:    "#stack",
 				Size:    modules.ButtonSizeLg,
 			}) {
-				Browse Work
+				Explore
 			}
 		}
-		<section class="grid grid-cols-2 gap-4 mt-8">
-			for _, c := range home.Cards {
-				@modules.Card(modules.CardProps{
-					Card:      c,
-					IconProps: modules.IconProps{Size: "48", Class: "text-accent"},
-				})
-			}
-		</section>
+		for _, s := range home.Sections {
+			<section id={ s.ID }>
+				if s.Title != "" {
+					<h2 class="mb-12">{ s.Title }</h2>
+				}
+				<div class={ sectionGridClass(s.Cols) }>
+					for _, c := range s.Cards {
+						@modules.Card(modules.CardProps{
+							Card:      c,
+							IconProps: modules.IconProps{Size: "48", Class: "text-accent"},
+						})
+					}
+				</div>
+			</section>
+		}
 	}
 }

@@ -8,6 +8,7 @@ A learning project exploring Go, [Datastar](https://data-star.dev), [templ](http
 - **templ** — type-safe HTML templates compiled to Go
 - **Datastar v1.0.1** — SSE-based reactivity (server-driven UI)
 - **Tailwind v4** — CSS-first, no config file
+- **SQLite** — `modernc.org/sqlite`, pure Go, no CGo
 - **YAML** — content stored as plain YAML files
 
 ## Prerequisites
@@ -46,38 +47,52 @@ Runs four processes concurrently: Go server (`:8081`), templ watcher, Tailwind w
 | Layer | Port | Purpose |
 |---|---|---|
 | Go server | 8081 | App |
-| templ proxy | 7331 | Full reload on `.templ` changes |
 | browser-sync | 3000 | CSS injection without full reload |
 
 Open `http://localhost:3000`.
 
+## Routes
+
+| Method | Path | Handler |
+|---|---|---|
+| GET | `/` | `site.Index` |
+| GET | `/about` | `site.About` |
+| GET | `/work` | `work.Index` |
+| GET | `/work/{slug}` | `work.Detail` |
+| GET | `/work/filter` | `work.Filter` (Datastar SSE) |
+| GET | `/shop` | `shop.Index` |
+| GET | `/shop/{slug}` | `shop.Detail` |
+| GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
+| GET | `/settings` | `settings.Index` |
+
 ## Structure
 
 ```
-cmd/main.go                  — server wiring, route registration, startup
+cmd/
+  main.go                  — server wiring, route registration, startup
+  seed/main.go             — development seed script (36 products)
 internal/
   content/
-    site.go                  — site types (HomePage, AboutPage) + Load()
-    work.go                  — WorkEntry, LoadWork(), filter/sort helpers
-    content.yaml             — home + about data
-    work/*.yaml              — one file per work entry
-  handler/
-    site.go                  — Index, About handlers
-    shop.go                  — ShopHandler — product listing
-    settings.go              — SettingsHandler (placeholder)
-    work.go                  — WorkIndex, WorkDetail, Filter handlers
+    site.go                — site types (HomePage, AboutPage, Section, Card) + Load()
+    work.go                — WorkEntry, LoadWork(), filter/sort helpers
+    content.yaml           — home + about data
+    work/*.yaml            — one file per work entry
   db/
-    db.go                    — SQLite connection (modernc.org/sqlite)
-    migrate.go               — schema migrations, run at startup
+    db.go                  — SQLite connection (modernc.org/sqlite)
+    migrate.go             — schema migrations, run at startup
   store/product/
-    product.go               — Product struct, ProductStore interface
-    sqlite.go                — SQLiteProductStore implementation
+    product.go             — Product struct, ProductStore interface
+    sqlite.go              — SQLiteProductStore implementation
+  handler/
+    site.go                — Index, About handlers
+    shop.go                — ShopHandler — product listing, filtering, detail
+    settings.go            — SettingsHandler (placeholder)
+    work.go                — WorkIndex, WorkDetail, Filter handlers
   middleware/
-    logging.go               — request logging middleware
+    logging.go             — request logging middleware
 views/
-  layouts/base.templ         — base HTML layout
-  modules/                   — shared components (navbar, hero, card, button, icon, footer)
-  pages/                     — page templates
-static/input.css             — Tailwind source (theme tokens, base styles)
-cmd/seed/main.go             — development seed script
+  layouts/base.templ       — base HTML layout
+  modules/                 — shared components (navbar, hero, card, button, icon, footer)
+  pages/                   — page templates
+static/input.css           — Tailwind source (theme tokens, base styles)
 ```

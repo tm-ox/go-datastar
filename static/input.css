@@ -16,7 +16,7 @@
 
 @layer base {
     html {
-        @apply scrollbar-gutter-stable;
+        @apply scrollbar-gutter-stable scroll-smooth;
     }
 
     body {
@@ -40,11 +40,11 @@
     }
 
     section {
-        @apply max-w-6xl mx-auto py-24;
+        @apply max-w-6xl min-h-screen mx-auto py-24;
     }
 
     h1 {
-        @apply text-accent text-8xl mb-12;
+        @apply text-accent text-8xl mb-5;
     }
 
     h2 {
@@ -60,7 +60,7 @@
     }
 
     h5 {
-        @apply text-sm text-muted;
+        @apply text-sm text-muted leading-relaxed;
     }
 
     p {
