@@ -128,6 +128,20 @@ func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolF
 	return out
 }
 
+func PaginateWork(entries []WorkEntry, page, limit int) ([]WorkEntry, int) {
+    total := len(entries)
+    offset := (page - 1) * limit
+    if offset >= total {
+        return []WorkEntry{}, total
+    }
+    end := offset + limit
+    if end > total {
+        end = total
+    }
+    return entries[offset:end], total
+}
+
+
 func SortWork(entries []WorkEntry, by string) []WorkEntry {
 	out := make([]WorkEntry, len(entries))
 	copy(out, entries)

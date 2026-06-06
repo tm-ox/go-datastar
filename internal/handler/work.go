@@ -10,6 +10,8 @@ import (
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
+const workLimit = 10
+
 type WorkHandler struct {
 	nav     []modules.NavItem
 	entries []content.WorkEntry
@@ -33,7 +35,10 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 	clients := content.UniqueClients(h.entries)
 	years := content.UniqueYears(h.entries)
 	tools := content.UniqueTools(h.entries)
-	templ.Handler(views.Work(h.nav, "/work", meta, h.entries, types, clients, years, tools)).ServeHTTP(w, r)
+	entries := content.FilterWork(h.entries, "", "", "", "")
+	paged, total := content.PaginateWork(entries, 1, workLimit)
+	templ.Handler(views.Work(h.nav, "/work", meta, paged, total, workLimit, types, clients, years, tools)).ServeHTTP(w, r)
+
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
@@ -57,13 +62,18 @@ func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		Year   string `json:"year"`
 		Tool   string `json:"tool"`
 		Sort   string `json:"sort"`
+		Page   int    `json:"page"`
 	}
 	if err := datastar.ReadSignals(r, &sig); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	if sig.Page < 1 {
+		sig.Page = 1
+	}
 	filtered := content.FilterWork(h.entries, sig.Type, sig.Client, sig.Year, sig.Tool)
 	filtered = content.SortWork(filtered, sig.Sort)
+	paged, total := content.PaginateWork(filtered, sig.Page, workLimit)
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.WorkRows(filtered))
+	sse.PatchElementTempl(views.WorkRows(paged, sig.Page, total, workLimit))
 }

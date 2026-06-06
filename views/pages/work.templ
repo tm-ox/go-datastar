@@ -6,14 +6,14 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, types []string, clients []string, years []string, tools []string) {
+templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: ''}">
+		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1}">
 			<h2>Work</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">
 					@modules.IconFilter()
-					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 						@modules.IconReset()
 					</button>
 				</div>
@@ -44,18 +44,7 @@ templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entri
 					</select>
 				</div>
 			</div>
-			<table>
-				<thead>
-					<tr>
-						<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; @get('/work/filter')" class="w-1/4">Project</th>
-						<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; @get('/work/filter')" class="w-[15%]">Type</th>
-						<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; @get('/work/filter')" class="w-1/5">Client</th>
-						<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; @get('/work/filter')" class="w-[10%]">Year</th>
-						<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; @get('/work/filter')" class="w-[30%]">Tools</th>
-					</tr>
-				</thead>
-				@WorkRows(entries)
-			</table>
+			@WorkRows(entries, 1, total, limit)
 		</section>
 	}
 }

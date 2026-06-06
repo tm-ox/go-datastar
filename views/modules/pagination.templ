@@ -25,7 +25,7 @@ templ Pagination(props PaginationProps) {
 				}
 			}
 		</div>
-		<span class="text-center text-accent">{ fmt.Sprintf("%d / %d", props.Page, totalPages) }</span>
+		<span class="text-center text-muted">{ fmt.Sprintf("%d / %d", props.Page, totalPages) }</span>
 		<div>
 			if props.Page < totalPages {
 				@Button(ButtonProps{

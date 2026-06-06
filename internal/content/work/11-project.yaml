@@ -1,0 +1,9 @@
+title: Project Eleven
+type: Website
+client: Client G
+year: 2022
+tools:
+  - Figma
+  - Tailwind
+  - Go
+description: Marketing site with CMS integration and SSE-driven live content.
