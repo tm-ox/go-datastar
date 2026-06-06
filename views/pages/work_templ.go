@@ -14,7 +14,7 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, types []string, clients []string, years []string, tools []string) templ.Component {
+func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, total int, limit int, types []string, clients []string, years []string, tools []string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -47,7 +47,7 @@ func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entrie
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{type: '', client: '', year: '', tool: '', sort: ''}\"><h2>Work</h2><div class=\"flex w-full items-center mb-3\"><div class=\"flex gap-4 mr-6\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{type: '', client: '', year: '', tool: '', sort: '', page: 1}\"><h2>Work</h2><div class=\"flex w-full items-center mb-3\"><div class=\"flex gap-4 mr-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -55,7 +55,7 @@ func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entrie
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button data-on:click=\"$year = ''; $tool = ''; $type = ''; $client = ''; @get('/work/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button data-on:click=\"$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; @get('/work/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -207,15 +207,15 @@ func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entrie
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</select></div></div><table><thead><tr><th data-on:click=\"$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; @get('/work/filter')\" class=\"w-1/4\">Project</th><th data-on:click=\"$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; @get('/work/filter')\" class=\"w-[15%]\">Type</th><th data-on:click=\"$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; @get('/work/filter')\" class=\"w-1/5\">Client</th><th data-on:click=\"$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; @get('/work/filter')\" class=\"w-[10%]\">Year</th><th data-on:click=\"$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; @get('/work/filter')\" class=\"w-[30%]\">Tools</th></tr></thead>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</select></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = WorkRows(entries).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = WorkRows(entries, 1, total, limit).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</table></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
