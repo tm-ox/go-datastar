@@ -1,0 +1,14 @@
+package modules
+
+type SearchProps struct {
+	Placeholder string
+	Route       string
+}
+
+templ Search(props SearchProps) {
+	<input
+		placeholder={ props.Placeholder }
+		data-bind="search"
+		data-on:input__debounce.300ms={ "@get('" + props.Route + "')" }
+	/>
+}

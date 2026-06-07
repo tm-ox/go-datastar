@@ -41,12 +41,13 @@ func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		Category string `json:"category"`
 		InStock  bool   `json:"inStock"`
 		Page     int    `json:"page"`
+		Search   string `json:"search"`
 	}
 	if err := datastar.ReadSignals(r, &sig); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	products, total, err := h.store.Filter(sig.Category, sig.InStock, sig.Page, limit)
+	products, total, err := h.store.Filter(sig.Category, sig.InStock, sig.Search, sig.Page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

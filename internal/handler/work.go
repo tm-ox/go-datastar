@@ -35,7 +35,7 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 	clients := content.UniqueClients(h.entries)
 	years := content.UniqueYears(h.entries)
 	tools := content.UniqueTools(h.entries)
-	entries := content.FilterWork(h.entries, "", "", "", "")
+	entries := content.FilterWork(h.entries, "", "", "", "", "")
 	paged, total := content.PaginateWork(entries, 1, workLimit)
 	templ.Handler(views.Work(h.nav, "/work", meta, paged, total, workLimit, types, clients, years, tools)).ServeHTTP(w, r)
 
@@ -63,6 +63,7 @@ func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		Tool   string `json:"tool"`
 		Sort   string `json:"sort"`
 		Page   int    `json:"page"`
+		Search string `json:"search"`
 	}
 	if err := datastar.ReadSignals(r, &sig); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -71,7 +72,7 @@ func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	filtered := content.FilterWork(h.entries, sig.Type, sig.Client, sig.Year, sig.Tool)
+	filtered := content.FilterWork(h.entries, sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search)
 	filtered = content.SortWork(filtered, sig.Sort)
 	paged, total := content.PaginateWork(filtered, sig.Page, workLimit)
 	sse := datastar.NewSSE(w, r)
