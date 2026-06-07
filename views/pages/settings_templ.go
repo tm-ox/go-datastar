@@ -93,7 +93,7 @@ func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPa
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section class=\"pt-3.5\"><h2>Settings: Shop</h2><p>Coming soon.</p></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section class=\"pt-0\"><h2>Settings: Shop</h2><p>Coming soon.</p></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

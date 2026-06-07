@@ -20,15 +20,11 @@
     }
 
     body {
-        @apply bg-canvas text-text tracking-wide px-4;
+        @apply bg-canvas text-text tracking-wide;
     }
 
     header {
         @apply fixed top-0 inset-x-0 z-50 bg-surface border-b border-border h-16;
-    }
-
-    main {
-        @apply mt-16;
     }
 
     footer {
@@ -44,7 +40,7 @@
     }
 
     section {
-        @apply max-w-6xl mx-auto min-h-screen py-12;
+        @apply max-w-6xl mx-auto min-h-screen py-28 px-8;
     }
 
     h1 {
@@ -108,7 +104,7 @@
 
 @layer components {
     .content-width {
-        @apply max-w-6xl mx-auto px-4;
+        @apply max-w-6xl mx-auto px-8;
     }
 
     .grid-1 {
