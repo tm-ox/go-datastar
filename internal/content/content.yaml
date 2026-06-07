@@ -42,7 +42,7 @@ home:
             target: _blank
     - id: patterns
       title: Patterns Implemented
-      cols: 4
+      cols: 2
       cards:
         - title: SSE Filtering
           icon: bug

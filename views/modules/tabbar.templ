@@ -1,0 +1,23 @@
+package modules
+
+templ TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive ButtonVariant, size ButtonSize) {
+	for _, item := range items {
+		if item.URL == currentPath {
+			@Button(ButtonProps{
+				Variant: active,
+				Href:    item.URL,
+				Size:    size,
+			}) {
+				{ item.Label }
+			}
+		} else {
+			@Button(ButtonProps{
+				Variant: inactive,
+				Href:    item.URL,
+				Size:    size,
+			}) {
+				{ item.Label }
+			}
+		}
+	}
+}

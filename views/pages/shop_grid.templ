@@ -7,8 +7,8 @@ import (
 )
 
 templ ShopGrid(products []product.Product, page, total, limit int) {
-	<div id="shop-grid" class="flex flex-col items-center">
-		<div class="grid grid-cols-3 grid-rows-[auto_auto_auto_auto_auto_auto] gap-x-4">
+	<div id="shop-grid" class="flex flex-col">
+		<div class="grid-3 grid-rows-[auto_auto_auto_auto_auto_auto]">
 			for _, p := range products {
 				@modules.CardProduct(&p)
 			}
