@@ -9,14 +9,20 @@ import (
 )
 
 type SettingsHandler struct {
-	nav []modules.NavItem
+	nav      []modules.NavItem
+	sections []modules.NavItem
 }
 
-func NewSettingsHandler(nav []modules.NavItem) *SettingsHandler {
-	return &SettingsHandler{nav: nav}
+func NewSettingsHandler(nav []modules.NavItem, sections []modules.NavItem) *SettingsHandler {
+	return &SettingsHandler{nav: nav, sections: sections}
 }
 
-func (h *SettingsHandler) Index(w http.ResponseWriter, r *http.Request) {
-	meta := modules.Meta{Title: "Settings", Description: "Settings"}
-	templ.Handler(views.Settings(h.nav, "/settings", meta)).ServeHTTP(w, r)
+func (h *SettingsHandler) Work(w http.ResponseWriter, r *http.Request) {
+	meta := modules.Meta{Title: "Settings — Work", Description: ""}
+	templ.Handler(views.SettingsWork(h.nav, h.sections, r.URL.Path, meta)).ServeHTTP(w, r)
+}
+
+func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
+	meta := modules.Meta{Title: "Settings — Shop", Description: ""}
+	templ.Handler(views.SettingsShop(h.nav, h.sections, r.URL.Path, meta)).ServeHTTP(w, r)
 }

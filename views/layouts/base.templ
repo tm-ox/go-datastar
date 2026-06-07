@@ -13,7 +13,9 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta)
 			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
 		</head>
 		<body>
-			@modules.Navbar(items, currentPath)
+			<header>
+				@modules.Navbar(items, currentPath)
+			</header>
 			<main>
 				{ children... }
 			</main>

@@ -17,13 +17,13 @@ import (
 func sectionGridClass(cols int) string {
 	switch cols {
 	case 1:
-		return "grid grid-cols-1 gap-x-4 gap-y-1"
+		return "grid-1"
 	case 3:
-		return "grid grid-cols-3 gap-x-4 gap-y-1"
+		return "grid-3"
 	case 4:
-		return "grid grid-cols-4 gap-x-4 gap-y-1"
+		return "grid-4"
 	default:
-		return "grid grid-cols-2 gap-x-4 gap-y-1"
+		return "grid-2"
 	}
 }
 
@@ -123,14 +123,14 @@ func Index(items []modules.NavItem, currentPath string, home content.HomePage, m
 					return templ_7745c5c3_Err
 				}
 				if s.Title != "" {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<h2 class=\"mb-12\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<h2>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var6 string
 					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(s.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/index.templ`, Line: 36, Col: 32}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/index.templ`, Line: 36, Col: 18}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 					if templ_7745c5c3_Err != nil {

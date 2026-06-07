@@ -1,0 +1,12 @@
+package layouts
+
+import "github.com/tm-ox/go-datastar/views/modules"
+
+templ SubLayout(items []modules.NavItem, currentPath string, meta modules.Meta, sections []modules.NavItem, currentSection string) {
+	@BaseLayout(items, currentPath, meta) {
+		<nav class="mt-16 content-width flex justify-end pr-12">
+			@modules.TabBar(sections, currentSection, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
+		</nav>
+		{ children... }
+	}
+}

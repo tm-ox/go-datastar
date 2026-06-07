@@ -5,11 +5,13 @@ type ButtonSize string
 type ButtonType string
 
 const (
-	ButtonVariantDefault   ButtonVariant = "default"
-	ButtonVariantCTA       ButtonVariant = "cta"
-	ButtonVariantTab       ButtonVariant = "tab"
-	ButtonVariantTabActive ButtonVariant = "tabActive"
-	ButtonVariantPill      ButtonVariant = "pill"
+	ButtonVariantDefault      ButtonVariant = "default"
+	ButtonVariantCTA          ButtonVariant = "cta"
+	ButtonVariantTab          ButtonVariant = "tab"
+	ButtonVariantTabActive    ButtonVariant = "tabActive"
+	ButtonVariantSubTab       ButtonVariant = "subTab"
+	ButtonVariantSubTabActive ButtonVariant = "subTabActive"
+	ButtonVariantPill         ButtonVariant = "pill"
 )
 
 const (
@@ -79,6 +81,10 @@ func (b ButtonProps) variantClasses() string {
 		return "bg-surface text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabActive:
 		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
+	case ButtonVariantSubTab:
+		return "bg-canvas text-muted rounded-t-none border-t-2 border-t-border hover:bg-surface/50"
+	case ButtonVariantSubTabActive:
+		return "bg-surface text-text rounded-t-none border-t-2 border-t-accent"
 	case ButtonVariantPill:
 		return "bg-canvas text-accent/50 !rounded-full !border-accent/50"
 	default:

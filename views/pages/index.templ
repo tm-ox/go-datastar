@@ -9,13 +9,13 @@ import (
 func sectionGridClass(cols int) string {
 	switch cols {
 	case 1:
-		return "grid grid-cols-1 gap-x-4 gap-y-1"
+		return "grid-1"
 	case 3:
-		return "grid grid-cols-3 gap-x-4 gap-y-1"
+		return "grid-3"
 	case 4:
-		return "grid grid-cols-4 gap-x-4 gap-y-1"
+		return "grid-4"
 	default:
-		return "grid grid-cols-2 gap-x-4 gap-y-1"
+		return "grid-2"
 	}
 }
 
@@ -33,7 +33,7 @@ templ Index(items []modules.NavItem, currentPath string, home content.HomePage, 
 		for _, s := range home.Sections {
 			<section id={ s.ID }>
 				if s.Title != "" {
-					<h2 class="mb-12">{ s.Title }</h2>
+					<h2>{ s.Title }</h2>
 				}
 				<div class={ sectionGridClass(s.Cols) }>
 					for _, c := range s.Cards {

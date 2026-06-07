@@ -48,7 +48,7 @@ templ Card(props CardProps) {
 					@iconForName(props.Card.Icon, props.IconProps)
 				</div>
 			}
-			<h3>{ props.Card.Title }</h3>
+			<h4 class="text-accent">{ props.Card.Title }</h4>
 			<p>{ props.Card.Description }</p>
 			if props.Card.Button.Text != "" {
 				@Button(ButtonProps{

@@ -20,11 +20,15 @@
     }
 
     body {
-        @apply bg-canvas text-text tracking-wide;
+        @apply bg-canvas text-text tracking-wide px-4;
     }
 
     header {
-        @apply fixed top-0 inset-x-0 z-50 pt-3 bg-surface border-b border-border;
+        @apply fixed top-0 inset-x-0 z-50 bg-surface border-b border-border h-16;
+    }
+
+    main {
+        @apply mt-16;
     }
 
     footer {
@@ -40,7 +44,7 @@
     }
 
     section {
-        @apply max-w-6xl min-h-screen mx-auto py-24;
+        @apply max-w-6xl mx-auto min-h-screen py-12;
     }
 
     h1 {
@@ -48,11 +52,11 @@
     }
 
     h2 {
-        @apply text-accent text-6xl mb-8;
+        @apply text-accent text-5xl mb-8;
     }
 
     h3 {
-        @apply text-accent text-3xl my-2;
+        @apply text-accent text-2xl my-2;
     }
 
     h4 {
@@ -99,6 +103,28 @@
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 0.9rem center;
+    }
+}
+
+@layer components {
+    .content-width {
+        @apply max-w-6xl mx-auto px-4;
+    }
+
+    .grid-1 {
+        @apply grid grid-cols-1 gap-x-4 gap-y-1;
+    }
+
+    .grid-2 {
+        @apply grid grid-cols-2 gap-x-4 gap-y-1;
+    }
+
+    .grid-3 {
+        @apply grid grid-cols-3 gap-x-4 gap-y-1;
+    }
+
+    .grid-4 {
+        @apply grid grid-cols-4 gap-x-4 gap-y-1;
     }
 }
 
