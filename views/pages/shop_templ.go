@@ -47,7 +47,7 @@ func Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produc
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex w-full items-center mb-3\"><div class=\"flex gap-4 mr-6\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex gap-2 w-full items-center mb-3\"><div class=\"flex gap-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -55,7 +55,7 @@ func Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produc
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button data-on:click=\"$category = '', $inStock = false; $page = 1; @get('/shop/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button data-on:click=\"$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -99,7 +99,15 @@ func Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produc
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</select> <label class=\"flex items-center ml-auto gap-2 text-sm cursor-pointer\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</select>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/shop/filter"}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<label class=\"flex items-center gap-2 ml-auto text-sm cursor-pointer\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -107,7 +115,7 @@ func Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produc
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

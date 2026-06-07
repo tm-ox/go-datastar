@@ -8,14 +8,17 @@ import (
 
 templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1}">
+		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
 			<h2>Work</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">
 					@modules.IconFilter()
-					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; $search = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 						@modules.IconReset()
 					</button>
+				</div>
+				<div class="mr-auto">
+					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/work/filter"})
 				</div>
 				<div class="grid grid-cols-4 gap-4 w-fit">
 					<select data-bind="type" data-on:change="@get('/work/filter')">

@@ -52,8 +52,8 @@ func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 	return &p, nil
 }
 
-func (s *SQLiteProductStore) Filter(category string, inStock bool, page, limit int) ([]Product, int, error) {
-	if category == "" && !inStock {
+func (s *SQLiteProductStore) Filter(category string, inStock bool, search string, page, limit int) ([]Product, int, error) {
+	if category == "" && !inStock && search == "" {
 		return s.List(page, limit)
 	}
 
@@ -65,6 +65,10 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, page, limit i
 	}
 	if inStock {
 		where = append(where, "stock > 0")
+	}
+	if search != "" {
+		where = append(where, "(name LIKE ? OR description LIKE ?)")
+		args = append(args, "%"+search+"%", "%"+search+"%")
 	}
 
 	clause := " WHERE " + strings.Join(where, " AND ")

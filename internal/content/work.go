@@ -99,7 +99,7 @@ func UniqueTools(entries []WorkEntry) []string {
 	return out
 }
 
-func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolFilter string) []WorkEntry {
+func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolFilter string, search string) []WorkEntry {
 	var out []WorkEntry
 	for _, e := range entries {
 		if typeFilter != "" && e.Type != typeFilter {
@@ -123,24 +123,35 @@ func FilterWork(entries []WorkEntry, typeFilter, clientFilter, yearFilter, toolF
 				continue
 			}
 		}
+		if search != "" {
+			q := strings.ToLower(search)
+			match := strings.Contains(strings.ToLower(e.Title), q) ||
+				strings.Contains(strings.ToLower(e.Type), q) ||
+				strings.Contains(strings.ToLower(e.Client), q) ||
+				strings.Contains(strings.ToLower(e.Description), q) ||
+				strings.Contains(strconv.Itoa(e.Year), q) ||
+				strings.Contains(strings.ToLower(strings.Join(e.Tools, " ")), q)
+			if !match {
+				continue
+			}
+		}
 		out = append(out, e)
 	}
 	return out
 }
 
 func PaginateWork(entries []WorkEntry, page, limit int) ([]WorkEntry, int) {
-    total := len(entries)
-    offset := (page - 1) * limit
-    if offset >= total {
-        return []WorkEntry{}, total
-    }
-    end := offset + limit
-    if end > total {
-        end = total
-    }
-    return entries[offset:end], total
+	total := len(entries)
+	offset := (page - 1) * limit
+	if offset >= total {
+		return []WorkEntry{}, total
+	}
+	end := offset + limit
+	if end > total {
+		end = total
+	}
+	return entries[offset:end], total
 }
-
 
 func SortWork(entries []WorkEntry, by string) []WorkEntry {
 	out := make([]WorkEntry, len(entries))
