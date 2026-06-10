@@ -63,7 +63,11 @@ Open `http://localhost:3000`.
 | GET | `/shop` | `shop.Index` |
 | GET | `/shop/{slug}` | `shop.Detail` |
 | GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
-| GET | `/settings` | `settings.Index` |
+| GET | `/settings` | redirect → `/settings/work` |
+| GET | `/settings/work` | `settings.Work` |
+| GET | `/settings/shop` | `settings.Shop` |
+| GET | `/settings/shop/filter` | `settings.ShopFilter` (Datastar SSE) |
+| POST | `/settings/shop/stock` | `settings.ShopStock` (Datastar SSE) |
 
 ## Structure
 
@@ -74,7 +78,7 @@ cmd/
 internal/
   content/
     site.go                — site types (HomePage, AboutPage, Section, Card) + Load()
-    work.go                — WorkEntry, LoadWork(), filter/sort helpers
+    work.go                — WorkEntry, LoadWork(), FilterWork(), SortWork(), PaginateWork()
     content.yaml           — home + about data
     work/*.yaml            — one file per work entry
   db/
@@ -82,17 +86,19 @@ internal/
     migrate.go             — schema migrations, run at startup
   store/product/
     product.go             — Product struct, ProductStore interface
-    sqlite.go              — SQLiteProductStore implementation
+    sqlite.go              — SQLiteProductStore: list, filter, detail, UpdateStock
   handler/
     site.go                — Index, About handlers
     shop.go                — ShopHandler — product listing, filtering, detail
-    settings.go            — SettingsHandler (placeholder)
-    work.go                — WorkIndex, WorkDetail, Filter handlers
+    settings.go            — SettingsHandler — settings pages, shop inventory management
+    work.go                — WorkHandler — work listing, filtering, detail
   middleware/
     logging.go             — request logging middleware
 views/
-  layouts/base.templ       — base HTML layout
-  modules/                 — shared components (navbar, hero, card, button, icon, footer)
-  pages/                   — page templates
-static/input.css           — Tailwind source (theme tokens, base styles)
+  layouts/
+    base.templ             — base HTML layout
+    sub.templ              — SubLayout — settings subnav via TabBar
+  modules/                 — Navbar, TabBar, Hero, Card, CardProduct, Button, Icon, Footer, Pagination, Search
+  pages/                   — page templates + SSE partials
+static/input.css           — Tailwind source (theme tokens, base styles, component classes)
 ```
