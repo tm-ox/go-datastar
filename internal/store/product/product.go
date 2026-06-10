@@ -19,4 +19,5 @@ type ProductStore interface {
 	GetBySlug(slug string) (*Product, error)
 	Filter(category string, inStock bool, search string, page, limit int) ([]Product, int, error)
 	UniqueCategories() ([]string, error)
+	UpdateStock(id int, stock int) error
 }

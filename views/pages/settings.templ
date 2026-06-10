@@ -1,6 +1,7 @@
 package views
 
 import (
+	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
@@ -14,11 +15,26 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 	}
 }
 
-templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta) {
+templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string) {
 	@layouts.SubLayout(items, "/settings/shop", meta, sections, currentPath) {
-		<section class="pt-3.5">
+		<section class="pt-3.5" data-signals="{category: '', search: ''}">
 			<h2>Settings: Shop</h2>
-			<p>Coming soon.</p>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$category = ''; $search = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				<select data-bind="category" data-on:change="@get('/settings/shop/filter')" class="mr-4">
+					<option value="">All Categories</option>
+					for _, c := range categories {
+						<option value={ c }>{ c }</option>
+					}
+				</select>
+				@modules.Search(modules.SearchProps{Placeholder: "Search products...", Route: "/settings/shop/filter"})
+			</div>
+			@SettingsShopRows(products)
 		</section>
 	}
 }

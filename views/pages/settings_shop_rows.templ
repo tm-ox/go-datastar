@@ -1,0 +1,23 @@
+package views
+
+import "github.com/tm-ox/go-datastar/internal/store/product"
+
+templ SettingsShopRows(products []product.Product) {
+	<div id="settings-shop-rows">
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Category</th>
+					<th>Stock</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, p := range products {
+					@SettingsShopRow(p)
+				}
+			</tbody>
+		</table>
+	</div>
+}
