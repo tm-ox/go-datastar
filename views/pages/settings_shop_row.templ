@@ -1,0 +1,45 @@
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/views/modules"
+	"strconv"
+)
+
+templ SettingsShopRow(p product.Product) {
+	<tr
+		id={ "product-" + strconv.Itoa(p.ID) }
+		data-signals={ "{productId:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
+	>
+		<td>{ p.Name }</td>
+		<td>{ p.Category }</td>
+		<td>{ strconv.Itoa(p.Stock) }</td>
+		<td class="flex gap-2 items-center">
+			@modules.Button(modules.ButtonProps{
+				Size: modules.ButtonSizeXs,
+				Attributes: templ.Attributes{
+					"data-on:click": "$delta = -1; $currentStock = " + strconv.Itoa(p.Stock) + "; $productId = " + strconv.Itoa(p.ID) + "; @post('/settings/shop/stock')",
+				},
+			}) {
+				-
+			}
+			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-16 bg-canvas border border-border rounded px-2 py-1 text-sm text-center"/>
+			@modules.Button(modules.ButtonProps{
+				Size: modules.ButtonSizeXs,
+				Attributes: templ.Attributes{
+					"data-on:click": "$delta = 1; $currentStock = " + strconv.Itoa(p.Stock) + "; $productId = " + strconv.Itoa(p.ID) + "; @post('/settings/shop/stock')",
+				},
+			}) {
+				+
+			}
+			@modules.Button(modules.ButtonProps{
+				Size: modules.ButtonSizeXs,
+				Attributes: templ.Attributes{
+					"data-on:click": "$delta = 0; $productId = " + strconv.Itoa(p.ID) + "; $stockValue = $stockValue_" + strconv.Itoa(p.ID) + "; @post('/settings/shop/stock')",
+				},
+			}) {
+				Set
+			}
+		</td>
+	</tr>
+}

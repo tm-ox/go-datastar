@@ -118,3 +118,8 @@ func (s *SQLiteProductStore) UniqueCategories() ([]string, error) {
 	}
 	return categories, rows.Err()
 }
+
+func (s *SQLiteProductStore) UpdateStock(id int, stock int) error {
+	_, err := s.db.Exec("UPDATE products SET stock = ? WHERE id = ?", stock, id)
+	return err
+}
