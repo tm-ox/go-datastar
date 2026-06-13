@@ -27,7 +27,7 @@ func (h *SettingsHandler) Work(w http.ResponseWriter, r *http.Request) {
 
 func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
 	meta := modules.Meta{Title: "Settings — Shop", Description: ""}
-	products, _, err := h.store.Filter("", false, "", 1, 999)
+	products, _, err := h.store.Filter("", false, false, "", "", 1, 999)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -62,7 +62,7 @@ func (h *SettingsHandler) ShopStock(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	products, _, err := h.store.Filter("", false, "", 1, 999)
+	products, _, err := h.store.Filter("", false, false, "", "", 1, 999)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -80,9 +80,11 @@ func (h *SettingsHandler) ShopStock(w http.ResponseWriter, r *http.Request) {
 
 func (h *SettingsHandler) ShopFilter(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
-		Category string `json:"category"`
-		Search   string `json:"search"`
-		Page     int    `json:"page"`
+		Category   string `json:"category"`
+		Search     string `json:"search"`
+		Page       int    `json:"page"`
+		OutOfStock bool   `json:"outOfStock"`
+		Sort       string `json:"sort"`
 	}
 	if err := datastar.ReadSignals(r, &sig); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -91,7 +93,7 @@ func (h *SettingsHandler) ShopFilter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	products, _, err := h.store.Filter(sig.Category, false, sig.Search, sig.Page, 999)
+	products, _, err := h.store.Filter(sig.Category, false, sig.OutOfStock, sig.Sort, sig.Search, sig.Page, 999)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -9,11 +9,11 @@ import (
 templ SettingsShopRow(p product.Product) {
 	<tr
 		id={ "product-" + strconv.Itoa(p.ID) }
-		data-signals={ "{productId:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
+		data-signals={ "{productId:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
 	>
 		<td>{ p.Name }</td>
 		<td>{ p.Category }</td>
-		<td>{ strconv.Itoa(p.Stock) }</td>
+		<td class="text-center">{ strconv.Itoa(p.Stock) }</td>
 		<td class="flex gap-2 items-center">
 			@modules.Button(modules.ButtonProps{
 				Size: modules.ButtonSizeXs,
@@ -23,7 +23,7 @@ templ SettingsShopRow(p product.Product) {
 			}) {
 				-
 			}
-			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-16 bg-canvas border border-border rounded px-2 py-1 text-sm text-center"/>
+			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-12 bg-canvas border border-border rounded px-2 py-1 text-xs text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
 			@modules.Button(modules.ButtonProps{
 				Size: modules.ButtonSizeXs,
 				Attributes: templ.Attributes{

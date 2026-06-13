@@ -94,7 +94,7 @@ func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPa
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section class=\"pt-3.5\" data-signals=\"{category: '', search: ''}\"><h2>Settings: Shop</h2><div class=\"flex w-full items-center mb-3\"><div class=\"flex gap-4 mr-6\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<section class=\"pt-3.5\" data-signals=\"{category: '', search: '', outOfStock: false, sort: ''}\"><h2>Settings: Shop</h2><div class=\"flex w-full items-center mb-3\"><div class=\"flex gap-4 mr-6\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -102,7 +102,7 @@ func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPa
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button data-on:click=\"$category = ''; $search = ''; @get('/settings/shop/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button data-on:click=\"$category = ''; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')\" class=\"text-muted hover:text-text hover:cursor-pointer\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -150,11 +150,11 @@ func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPa
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = modules.Search(modules.SearchProps{Placeholder: "Search products...", Route: "/settings/shop/filter"}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<label class=\"flex items-center gap-2 ml-auto text-sm cursor-pointer\"><input type=\"checkbox\" data-bind=\"outOfStock\" data-on:change=\"@get('/settings/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">Out of Stock</span></label></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -7,10 +7,10 @@ templ SettingsShopRows(products []product.Product) {
 		<table>
 			<thead>
 				<tr>
-					<th>Name</th>
-					<th>Category</th>
-					<th>Stock</th>
-					<th>Actions</th>
+					<th data-on:click="$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; @get('/settings/shop/filter')">Name</th>
+					<th data-on:click="$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; @get('/settings/shop/filter')" class="w-1/5">Category</th>
+					<th data-on:click="$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; @get('/settings/shop/filter')" class="cursor-pointer select-none w-[10%]">Stock</th>
+					<th class="w-px whitespace-nowrap hover:text-muted cursor-default">Actions</th>
 				</tr>
 			</thead>
 			<tbody>
