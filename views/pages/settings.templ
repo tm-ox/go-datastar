@@ -17,12 +17,12 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 
 templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string) {
 	@layouts.SubLayout(items, "/settings/shop", meta, sections, currentPath) {
-		<section class="pt-3.5" data-signals="{category: '', search: ''}">
+		<section class="pt-3.5" data-signals="{category: '', search: '', outOfStock: false, sort: ''}">
 			<h2>Settings: Shop</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">
 					@modules.IconFilter()
-					<button data-on:click="$category = ''; $search = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<button data-on:click="$category = ''; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 						@modules.IconReset()
 					</button>
 				</div>
@@ -32,7 +32,11 @@ templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentP
 						<option value={ c }>{ c }</option>
 					}
 				</select>
-				@modules.Search(modules.SearchProps{Placeholder: "Search products...", Route: "/settings/shop/filter"})
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
+				<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer">
+					<input type="checkbox" data-bind="outOfStock" data-on:change="@get('/settings/shop/filter')" class="peer hidden"/>
+					<span class="text-muted peer-checked:text-accent">Out of Stock</span>
+				</label>
 			</div>
 			@SettingsShopRows(products)
 		</section>

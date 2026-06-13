@@ -52,13 +52,19 @@ func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 	return &p, nil
 }
 
-func (s *SQLiteProductStore) Filter(category string, inStock bool, search string, page, limit int) ([]Product, int, error) {
-	if category == "" && !inStock && search == "" {
-		return s.List(page, limit)
-	}
+var sortClauses = map[string]string{
+	"name-asc":     "name ASC",
+	"name-desc":    "name DESC",
+	"category-asc": "category ASC",
+	"category-desc": "category DESC",
+	"stock-asc":    "stock ASC",
+	"stock-desc":   "stock DESC",
+}
 
+func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bool, sort string, search string, page, limit int) ([]Product, int, error) {
 	where := []string{}
 	args := []any{}
+
 	if category != "" {
 		where = append(where, "category = ?")
 		args = append(args, category)
@@ -66,23 +72,36 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, search string
 	if inStock {
 		where = append(where, "stock > 0")
 	}
+	if outOfStock {
+		where = append(where, "stock = 0")
+	}
 	if search != "" {
 		where = append(where, "(name LIKE ? OR description LIKE ?)")
 		args = append(args, "%"+search+"%", "%"+search+"%")
 	}
 
-	clause := " WHERE " + strings.Join(where, " AND ")
-	countQuery := "SELECT COUNT(*) FROM products" + clause
-	selectQuery := "SELECT id, image, name, description, price, category, slug, created_at, stock FROM products" + clause
+	baseQuery := "SELECT id, image, name, description, price, category, slug, created_at, stock FROM products"
+	countQuery := "SELECT COUNT(*) FROM products"
+
+	if len(where) > 0 {
+		clause := " WHERE " + strings.Join(where, " AND ")
+		baseQuery += clause
+		countQuery += clause
+	}
+
+	orderBy := " ORDER BY name ASC"
+	if s, ok := sortClauses[sort]; ok {
+		orderBy = " ORDER BY " + s
+	}
+	baseQuery += orderBy
 
 	var total int
-	err := s.db.QueryRow(countQuery, args...).Scan(&total)
-	if err != nil {
+	if err := s.db.QueryRow(countQuery, args...).Scan(&total); err != nil {
 		return nil, 0, err
 	}
 
 	offset := (page - 1) * limit
-	rows, err := s.db.Query(selectQuery+" LIMIT ? OFFSET ?", append(args, limit, offset)...)
+	rows, err := s.db.Query(baseQuery+" LIMIT ? OFFSET ?", append(args, limit, offset)...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -91,8 +110,7 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, search string
 	var products []Product
 	for rows.Next() {
 		var p Product
-		err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
-		if err != nil {
+		if err := rows.Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock); err != nil {
 			return nil, 0, err
 		}
 		products = append(products, p)
@@ -110,8 +128,7 @@ func (s *SQLiteProductStore) UniqueCategories() ([]string, error) {
 	var categories []string
 	for rows.Next() {
 		var category string
-		err := rows.Scan(&category)
-		if err != nil {
+		if err := rows.Scan(&category); err != nil {
 			return nil, err
 		}
 		categories = append(categories, category)

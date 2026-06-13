@@ -31,7 +31,7 @@ func SettingsShopRows(products []product.Product) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"settings-shop-rows\"><table><thead><tr><th>Name</th><th>Category</th><th>Stock</th><th>Actions</th></tr></thead> <tbody>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"settings-shop-rows\"><table><thead><tr><th data-on:click=\"$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; @get('/settings/shop/filter')\">Name</th><th data-on:click=\"$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; @get('/settings/shop/filter')\" class=\"w-1/5\">Category</th><th data-on:click=\"$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; @get('/settings/shop/filter')\" class=\"cursor-pointer select-none w-[10%]\">Stock</th><th class=\"w-px whitespace-nowrap hover:text-muted cursor-default\">Actions</th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -47,7 +47,7 @@ func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	products, total, err := h.store.Filter(sig.Category, sig.InStock, sig.Search, sig.Page, limit)
+	products, total, err := h.store.Filter(sig.Category, sig.InStock, false, "", sig.Search, sig.Page, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
