@@ -4,6 +4,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
+	"strconv"
 )
 
 templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta) {
@@ -15,18 +16,18 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 	}
 }
 
-templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string) {
+templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int) {
 	@layouts.SubLayout(items, "/settings/shop", meta, sections, currentPath) {
-		<section class="pt-3.5" data-signals="{category: '', search: '', outOfStock: false, sort: ''}">
+		<section class="pt-3.5" data-signals="{category: '', page: 1, search: '', outOfStock: false, sort: ''}">
 			<h2>Settings: Shop</h2>
 			<div class="flex w-full items-center mb-3">
 				<div class="flex gap-4 mr-6">
 					@modules.IconFilter()
-					<button data-on:click="$category = ''; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 						@modules.IconReset()
 					</button>
 				</div>
-				<select data-bind="category" data-on:change="@get('/settings/shop/filter')" class="mr-4">
+				<select data-bind="category" data-on:change="$page = 1; @get('/settings/shop/filter')" class="mr-4">
 					<option value="">All Categories</option>
 					for _, c := range categories {
 						<option value={ c }>{ c }</option>
@@ -34,11 +35,76 @@ templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentP
 				</select>
 				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
 				<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer">
-					<input type="checkbox" data-bind="outOfStock" data-on:change="@get('/settings/shop/filter')" class="peer hidden"/>
+					<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
 					<span class="text-muted peer-checked:text-accent">Out of Stock</span>
 				</label>
 			</div>
-			@SettingsShopRows(products)
+			@SettingsShopRows(products, 1, total, limit)
 		</section>
 	}
+}
+
+templ SettingsShopRows(products []product.Product, page, total, limit int) {
+	<div id="settings-shop-rows">
+		<table>
+			<thead>
+				<tr>
+					<th data-on:click="$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; $page = 1; @get('/settings/shop/filter')">Name</th>
+					<th data-on:click="$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; $page = 1; @get('/settings/shop/filter')" class="w-1/5">Category</th>
+					<th data-on:click="$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; $page = 1; @get('/settings/shop/filter')" class="cursor-pointer select-none w-[10%]">Stock</th>
+					<th class="w-px whitespace-nowrap hover:text-muted cursor-default">Inventory</th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, p := range products {
+					@SettingsShopRow(p)
+				}
+			</tbody>
+		</table>
+		@modules.Pagination(modules.PaginationProps{
+			Page:  page,
+			Total: total,
+			Limit: limit,
+			Route: "/settings/shop/filter",
+		})
+	</div>
+}
+
+templ SettingsShopRow(p product.Product) {
+	<tr
+		id={ "product-" + strconv.Itoa(p.ID) }
+		data-signals={ "{productId:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
+	>
+		<td>{ p.Name }</td>
+		<td>{ p.Category }</td>
+		<td class="text-center">{ strconv.Itoa(p.Stock) }</td>
+		<td class="flex gap-2 items-center">
+			@modules.Button(modules.ButtonProps{
+				Size: modules.ButtonSizeXs,
+				Attributes: templ.Attributes{
+					"data-on:click": "$stockValue_" + strconv.Itoa(p.ID) + " = $stockValue_" + strconv.Itoa(p.ID) + " > 0 ? $stockValue_" + strconv.Itoa(p.ID) + " - 1 : 0",
+				},
+			}) {
+				-
+			}
+			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-12 bg-canvas border border-border rounded px-2 py-1 text-xs text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
+			@modules.Button(modules.ButtonProps{
+				Size: modules.ButtonSizeXs,
+				Attributes: templ.Attributes{
+					"data-on:click": "$stockValue_" + strconv.Itoa(p.ID) + " = $stockValue_" + strconv.Itoa(p.ID) + " + 1",
+				},
+			}) {
+				+
+			}
+			@modules.Button(modules.ButtonProps{
+				Size:  modules.ButtonSizeXs,
+				Class: "text-muted",
+				Attributes: templ.Attributes{
+					"data-on:click": "$delta = 0; $productId = " + strconv.Itoa(p.ID) + "; $stockValue = $stockValue_" + strconv.Itoa(p.ID) + "; @post('/settings/shop/stock')",
+				},
+			}) {
+				Set
+			}
+		</td>
+	</tr>
 }
