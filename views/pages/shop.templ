@@ -1,6 +1,7 @@
 package views
 
 import (
+	"fmt"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -31,5 +32,60 @@ templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, produ
 			</div>
 			@ShopGrid(products, page, total, limit)
 		</section>
+	}
+}
+
+templ ShopGrid(products []product.Product, page, total, limit int) {
+	<div id="shop-grid" class="flex flex-col">
+		<div class="grid-3 grid-rows-[auto_auto_auto_auto_auto_auto]">
+			for _, p := range products {
+				@modules.CardProduct(&p)
+			}
+		</div>
+		@modules.Pagination(modules.PaginationProps{
+			Page:  page,
+			Total: total,
+			Limit: limit,
+			Route: "/shop/filter",
+		})
+	</div>
+}
+
+templ ShopDetail(items []modules.NavItem, currentPath string, meta modules.Meta, p *product.Product) {
+	@layouts.BaseLayout(items, currentPath, meta) {
+		if p != nil {
+			<section class="min-h-screen">
+				<div class="grid grid-cols-[2fr_1fr] gap-8">
+					if p.Image.Valid {
+						<img src={ p.Image.String } alt={ p.Name } class="w-full object-cover border border-border rounded-lg"/>
+					}
+					<div class="flex flex-col h-full">
+						<div class="flex items-center justify-between mb-2">
+							@modules.Button(modules.ButtonProps{
+								Variant: modules.ButtonVariantPill,
+								Size:    modules.ButtonSizeXs,
+								Class:   "pointer-events-none",
+							}) {
+								{ p.Category }
+							}
+							<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
+						</div>
+						<h3>{ p.Name }</h3>
+						<div class="flex flex-col gap-4 h-full">
+							<p>{ p.Description }</p>
+							<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+							@modules.Button(modules.ButtonProps{
+								Size:      modules.ButtonSizeSm,
+								FullWidth: false,
+								Class:     "w-fit",
+								Disabled:  p.Stock == 0,
+							}) {
+								Add to cart
+							}
+						</div>
+					</div>
+				</div>
+			</section>
+		}
 	}
 }
