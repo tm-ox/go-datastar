@@ -2,8 +2,54 @@ package product
 
 import (
 	"database/sql"
+	"regexp"
 	"strings"
 )
+
+var nonAlphanumeric = regexp.MustCompile(`[^a-z0-9]+`)
+
+func slugify(s string) string {
+	s = strings.ToLower(s)
+	s = nonAlphanumeric.ReplaceAllString(s, "-")
+	return strings.Trim(s, "-")
+}
+
+func (s *SQLiteProductStore) Create(p Product) (int, error) {
+	p.Slug = slugify(p.Name)
+	res, err := s.db.Exec(
+		"INSERT INTO products (image, name, description, price, category, slug, stock) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		p.Image, p.Name, p.Description, p.Price, p.Category, p.Slug, p.Stock,
+	)
+	if err != nil {
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	return int(id), err
+}
+
+func (s *SQLiteProductStore) Update(p Product) error {
+	_, err := s.db.Exec(
+		"UPDATE products SET image = ?, name = ?, description = ?, price = ?, category = ?, stock = ? WHERE id = ?",
+		p.Image, p.Name, p.Description, p.Price, p.Category, p.Stock, p.ID,
+	)
+	return err
+}
+
+func (s *SQLiteProductStore) Delete(id int) error {
+	_, err := s.db.Exec("DELETE FROM products WHERE id = ?", id)
+	return err
+}
+
+func (s *SQLiteProductStore) GetByID(id int) (*Product, error) {
+	var p Product
+	err := s.db.QueryRow(
+		"SELECT id, image, name, description, price, category, slug, created_at, stock FROM products WHERE id = ?", id,
+	).Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	return &p, err
+}
 
 type SQLiteProductStore struct {
 	db *sql.DB
@@ -53,12 +99,12 @@ func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
 }
 
 var sortClauses = map[string]string{
-	"name-asc":     "name ASC",
-	"name-desc":    "name DESC",
-	"category-asc": "category ASC",
+	"name-asc":      "name ASC",
+	"name-desc":     "name DESC",
+	"category-asc":  "category ASC",
 	"category-desc": "category DESC",
-	"stock-asc":    "stock ASC",
-	"stock-desc":   "stock DESC",
+	"stock-asc":     "stock ASC",
+	"stock-desc":    "stock DESC",
 }
 
 func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bool, sort string, search string, page, limit int) ([]Product, int, error) {

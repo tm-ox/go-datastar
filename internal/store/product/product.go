@@ -20,4 +20,8 @@ type ProductStore interface {
 	Filter(category string, inStock bool, outOfStock bool, sort string, search string, page, limit int) ([]Product, int, error)
 	UniqueCategories() ([]string, error)
 	UpdateStock(id int, stock int) error
+	Create(p Product) (int, error)
+	Update(p Product) error
+	Delete(id int) error
+	GetByID(id int) (*Product, error)
 }
