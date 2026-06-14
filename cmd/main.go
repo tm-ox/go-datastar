@@ -80,6 +80,10 @@ func main() {
 	mux.HandleFunc("/settings/shop", settings_h.Shop)
 	mux.HandleFunc("/settings/shop/filter", settings_h.ShopFilter)
 	mux.HandleFunc("/settings/shop/stock", settings_h.ShopStock)
+	mux.HandleFunc("/settings/shop/products/form", settings_h.ShopProductForm)
+	mux.HandleFunc("POST /settings/shop/products/create", settings_h.ShopProductCreate)
+	mux.HandleFunc("POST /settings/shop/products/update", settings_h.ShopProductUpdate)
+	mux.HandleFunc("POST /settings/shop/products/delete", settings_h.ShopProductDelete)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

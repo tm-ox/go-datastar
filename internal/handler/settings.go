@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"database/sql"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
@@ -100,4 +102,137 @@ func (h *SettingsHandler) ShopFilter(w http.ResponseWriter, r *http.Request) {
 	}
 	sse := datastar.NewSSE(w, r)
 	sse.PatchElementTempl(views.SettingsShopRows(products, sig.Page, total, defaultLimit))
+}
+
+func (h *SettingsHandler) ShopProductForm(w http.ResponseWriter, r *http.Request) {
+	var p product.Product
+	if idStr := r.URL.Query().Get("id"); idStr != "" {
+		id, err := strconv.Atoi(idStr)
+		if err == nil {
+			found, err := h.store.GetByID(id)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if found != nil {
+				p = *found
+			}
+		}
+	}
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElementTempl(views.SettingsShopProductForm(p))
+}
+
+func (h *SettingsHandler) ShopProductCreate(w http.ResponseWriter, r *http.Request) {
+	var sig struct {
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Price       float64 `json:"price"`
+		Category    string  `json:"category"`
+		Image       string  `json:"image"`
+		Stock       int     `json:"stock"`
+	}
+	if err := datastar.ReadSignals(r, &sig); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	p := product.Product{
+		Name:        sig.Name,
+		Description: sig.Description,
+		Price:       int(sig.Price * 100),
+		Category:    sig.Category,
+		Stock:       sig.Stock,
+	}
+	if sig.Image != "" {
+		p.Image = sql.NullString{String: sig.Image, Valid: true}
+	}
+	id, err := h.store.Create(p)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	created, err := h.store.GetByID(id)
+	if err != nil || created == nil {
+		http.Error(w, "product not found after create", http.StatusInternalServerError)
+		return
+	}
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElementTempl(views.SettingsShopRow(*created), datastar.WithSelectorID("shop-tbody"), datastar.WithMode(datastar.ElementPatchModePrepend))
+
+	categories, err := h.store.UniqueCategories()
+	if err == nil {
+		sse.PatchElementTempl(views.SettingsShopCategories(categories))
+	}
+	sse.MarshalAndPatchSignals(map[string]any{"modalOpen": false, "category": ""})
+	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	if err == nil {
+		sse.PatchElementTempl(views.SettingsShopRows(products, 1, total, defaultLimit))
+	}
+	sse.MarshalAndPatchSignals(map[string]any{"modalOpen": false, "category": "", "search": ""})
+}
+
+func (h *SettingsHandler) ShopProductUpdate(w http.ResponseWriter, r *http.Request) {
+	var sig struct {
+		ID          int     `json:"id"`
+		Name        string  `json:"name"`
+		Description string  `json:"description"`
+		Price       float64 `json:"price"`
+		Category    string  `json:"category"`
+		Image       string  `json:"image"`
+		Stock       int     `json:"stock"`
+	}
+	if err := datastar.ReadSignals(r, &sig); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	p := product.Product{
+		ID:          sig.ID,
+		Name:        sig.Name,
+		Description: sig.Description,
+		Price:       int(sig.Price * 100),
+		Category:    sig.Category,
+		Stock:       sig.Stock,
+	}
+	if sig.Image != "" {
+		p.Image = sql.NullString{String: sig.Image, Valid: true}
+	}
+	if err := h.store.Update(p); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	updated, err := h.store.GetByID(sig.ID)
+	if err != nil || updated == nil {
+		http.Error(w, "product not found after update", http.StatusInternalServerError)
+		return
+	}
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElementTempl(views.SettingsShopRow(*updated))
+	sse.MarshalAndPatchSignals(map[string]any{"modalOpen": false})
+}
+
+func (h *SettingsHandler) ShopProductDelete(w http.ResponseWriter, r *http.Request) {
+	var sig struct {
+		ID int `json:"id"`
+	}
+	if err := datastar.ReadSignals(r, &sig); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if err := h.store.Delete(sig.ID); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElements("", datastar.WithSelectorID("product-"+strconv.Itoa(sig.ID)), datastar.WithModeRemove())
+
+	categories, err := h.store.UniqueCategories()
+	if err == nil {
+		sse.PatchElementTempl(views.SettingsShopCategories(categories))
+	}
+	sse.MarshalAndPatchSignals(map[string]any{"category": ""})
+	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	if err == nil {
+		sse.PatchElementTempl(views.SettingsShopRows(products, 1, total, defaultLimit))
+	}
+	sse.MarshalAndPatchSignals(map[string]any{"category": "", "search": ""})
 }
