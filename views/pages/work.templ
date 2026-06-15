@@ -1,14 +1,14 @@
 package views
 
 import (
-	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 	"strings"
 )
 
-templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, total int, limit int, types []string, clients []string, years []string, tools []string) {
+templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
 		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
 			<h2>Work</h2>
@@ -54,7 +54,7 @@ templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entri
 	}
 }
 
-templ WorkRows(entries []content.WorkEntry, page, total, limit int) {
+templ WorkRows(entries []work.Work, page, total, limit int) {
 	<div id="work-rows">
 		<table>
 			<thead>
@@ -63,17 +63,17 @@ templ WorkRows(entries []content.WorkEntry, page, total, limit int) {
 					<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/work/filter')" class="w-[15%]">Type</th>
 					<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/work/filter')" class="w-1/5">Client</th>
 					<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/work/filter')" class="w-[10%]">Year</th>
-					<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/work/filter')" class="w-[30%]">T ools</th>
+					<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/work/filter')" class="w-[30%]">Tools</th>
 				</tr>
 			</thead>
 			<tbody>
 				for _, entry := range entries {
 					<tr>
 						<td><a href={ templ.URL("/work/" + entry.Slug) } class="after:absolute after:inset-0">{ entry.Title }</a></td>
-						<td>{ entry.Type }</td>
+						<td>{ entry.WorkType }</td>
 						<td>{ entry.Client }</td>
 						<td>{ strconv.Itoa(entry.Year) }</td>
-						<td>{ strings.Join(entry.Tools, ", ") }</td>
+						<td>{ strings.ReplaceAll(entry.Tools, ",", ", ") }</td>
 					</tr>
 				}
 			</tbody>
@@ -87,15 +87,23 @@ templ WorkRows(entries []content.WorkEntry, page, total, limit int) {
 	</div>
 }
 
-templ WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry, meta modules.Meta) {
+templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
 		<section class="min-h-screen">
 			<h2>{ entry.Title }</h2>
-			<h5 class="text-accent font-bold">Type: <span class="text-muted font-normal">{ entry.Type }</span></h5>
+			<h5 class="text-accent font-bold">Type: <span class="text-muted font-normal">{ entry.WorkType }</span></h5>
 			<h5 class="text-accent font-bold">Client: <span class="text-muted font-normal">{ entry.Client }</span></h5>
 			<h5 class="text-accent font-bold">Year: <span class="text-muted font-normal">{ strconv.Itoa(entry.Year) }</span></h5>
-			<h5 class="text-accent font-bold">Tools: <span class="text-muted font-normal">{ strings.Join(entry.Tools, ", ") }</span></h5>
+			<h5 class="text-accent font-bold">Tools: <span class="text-muted font-normal">{ strings.ReplaceAll(entry.Tools, ",", ", ") }</span></h5>
 			<h5 class="text-accent font-bold">Description: <span class="text-muted font-normal">{ entry.Description }</span></h5>
+			<h5 class="text-accent font-bold">Link: <a href={ templ.URL(entry.Link) } target="_blank" class="text-muted font-normal">{ entry.Link }</a></h5>
+			if len(entry.Images) > 0 {
+				<div class="grid grid-cols-4 gap-4 mt-8">
+					for _, img := range entry.Images {
+						<img src={ img.URL } alt={ img.Alt } class="w-full aspect-square object-cover border-b border-border rounded"/>
+					}
+				</div>
+			}
 		</section>
 	}
 }

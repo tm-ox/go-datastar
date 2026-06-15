@@ -1,0 +1,11 @@
+title: Fred St.
+type: Web Design
+client: Fred St.
+year: 2022
+tools:
+  - Alpine.js
+  - Netlify CMS
+  - Nuxt Content
+  - Tailwind CSS
+  - Vue/Nuxt3
+description: Website for Australian landscape architecture firm.

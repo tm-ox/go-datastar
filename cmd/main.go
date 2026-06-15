@@ -15,6 +15,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -22,16 +23,6 @@ func main() {
 	site, err := content.Load()
 	if err != nil {
 		log.Fatalf("failed to load content: %v", err)
-	}
-
-	workEntries, err := content.LoadWork()
-	if err != nil {
-		log.Fatalf("failed to load work: %v", err)
-	}
-
-	workMap := make(map[string]content.WorkEntry, len(workEntries))
-	for _, e := range workEntries {
-		workMap[e.Slug] = e
 	}
 
 	nav := []modules.NavItem{
@@ -57,9 +48,10 @@ func main() {
 	}
 
 	productStore := product.NewSQLiteProductStore(database)
+	workStore := work.NewSQLiteWorkStore(database)
 
 	site_h := handler.NewSiteHandler(nav, site)
-	work_h := handler.NewWorkHandler(nav, workEntries, workMap)
+	work_h := handler.NewWorkHandler(nav, workStore)
 	shop_h := handler.NewShopHandler(nav, productStore)
 	settings_h := handler.NewSettingsHandler(nav, settingsSections, productStore)
 
