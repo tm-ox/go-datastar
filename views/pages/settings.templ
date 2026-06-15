@@ -3,18 +3,228 @@ package views
 import (
 	"fmt"
 	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
+	"strings"
 )
 
-templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta) {
+templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total, limit int,
+	types, clients, years, tools []string) {
 	@layouts.SubLayout(items, "/settings/work", meta, sections, currentPath) {
-		<section class="pt-3.5">
+		<section
+			class="pt-3.5"
+			data-signals="{page: 1, search: '', sort: '', type: '', client: '', year: '', tool: '', modalOpen: false}"
+			data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
+		>
 			<h2>Settings: Work</h2>
-			<p>Coming soon.</p>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
+				<div class="grid grid-cols-4 gap-4 w-fit">
+					<select data-bind="type" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Types</option>
+						for _, c := range types {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="client" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Clients</option>
+						for _, c := range clients {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="year" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Years</option>
+						for _, y := range years {
+							<option value={ y }>{ y }</option>
+						}
+					</select>
+					<select data-bind="tool" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="">All Tools</option>
+						for _, t := range tools {
+							<option value={ t }>{ t }</option>
+						}
+					</select>
+				</div>
+				@modules.Button(modules.ButtonProps{
+					Size:  modules.ButtonSizeXs,
+					Class: "ml-auto",
+					Attributes: templ.Attributes{
+						"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
+					},
+				}) {
+					Add Entry
+				}
+			</div>
+			@SettingsWorkRows(entries, 1, total, limit)
+			<div
+				data-show="$modalOpen"
+				data-on:click="$modalOpen = false"
+				class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			>
+				<div
+					data-on:click="evt.stopPropagation()"
+					class="bg-canvas border border-border rounded-lg p-6 w-full max-w-2xl"
+				>
+					<div id="work-form"></div>
+				</div>
+			</div>
 		</section>
 	}
+}
+
+templ SettingsWorkRows(entries []work.Work, page, total, limit int) {
+	<div id="settings-work-rows">
+		<table>
+			<thead>
+				<tr>
+					<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/4">Project</th>
+					<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/settings/work/filter')" class="w-[15%]">Type</th>
+					<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/5">Client</th>
+					<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/settings/work/filter')" class="w-[10%]">Year</th>
+					<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/settings/work/filter')" class="w-[25%]">Tools</th>
+					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Edit</th>
+				</tr>
+			</thead>
+			<tbody id="work-tbody">
+				for _, entry := range entries {
+					@SettingsWorkRow(entry)
+				}
+			</tbody>
+		</table>
+		@modules.Pagination(modules.PaginationProps{
+			Page:  page,
+			Total: total,
+			Limit: limit,
+			Route: "/settings/work/filter",
+		})
+	</div>
+}
+
+templ SettingsWorkRow(entry work.Work) {
+	<tr id={ "work-" + strconv.Itoa(entry.ID) }>
+		<td><a href={ templ.URL("/work/" + entry.Slug) }>{ entry.Title }</a></td>
+		<td>{ entry.WorkType }</td>
+		<td>{ entry.Client }</td>
+		<td>{ strconv.Itoa(entry.Year) }</td>
+		<td>{ strings.ReplaceAll(entry.Tools, ",", ", ") }</td>
+		<td>
+			@modules.Button(modules.ButtonProps{
+				Size:  modules.ButtonSizeXs,
+				Class: "text-muted",
+				Attributes: templ.Attributes{
+					"data-on:click": "$modalOpen = true; @get('/settings/work/form?id=" + strconv.Itoa(entry.ID) + "')",
+				},
+			}) {
+				Edit
+			}
+		</td>
+	</tr>
+}
+
+templ SettingsWorkForm(w work.Work) {
+	<div id="work-form">
+		<div
+			data-signals={ "{formId:" + strconv.Itoa(w.ID) + ",formTitle:'" + w.Title + "',formType:'" + w.WorkType + "',formClient:'" + w.Client + "',formYear:" + strconv.Itoa(w.Year) + ",formTools:'" + w.Tools + "',formDescription:'" + w.Description + "',formWebsite:'" + w.Website + "',formLink:'" + w.Link + "',formCoverURL:'" + w.CoverURL + "'}" }
+		>
+			<h3 class="mb-4">
+				if w.ID == 0 {
+					Add Entry
+				} else {
+					Edit Entry
+				}
+			</h3>
+			<div class="flex flex-col gap-1 mb-3">
+				<h5 class="text-accent">Title:</h5>
+				<input type="text" placeholder="Project title" data-bind="formTitle"/>
+			</div>
+			<div class="grid-2 mb-3">
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Type:</h5>
+					<input type="text" placeholder="e.g. Brand Identity" data-bind="formType"/>
+				</div>
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Client:</h5>
+					<input type="text" placeholder="Client name" data-bind="formClient"/>
+				</div>
+			</div>
+			<div class="grid-2 mb-3">
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Year:</h5>
+					<input type="number" placeholder="2024" data-bind="formYear" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
+				</div>
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Tools:</h5>
+					<input type="text" placeholder="Comma-separated" data-bind="formTools"/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-1 mb-3">
+				<h5 class="text-accent">Description:</h5>
+				<textarea placeholder="Project description" data-bind="formDescription"></textarea>
+			</div>
+			<div class="grid-2 mb-3">
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Website:</h5>
+					<input type="text" placeholder="https://..." data-bind="formWebsite"/>
+				</div>
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Link:</h5>
+					<input type="text" placeholder="https://..." data-bind="formLink"/>
+				</div>
+			</div>
+			<div class="flex flex-col gap-1 mb-3">
+				<h5 class="text-accent">Cover URL:</h5>
+				<input type="text" placeholder="https://..." data-bind="formCoverURL"/>
+			</div>
+			<div class="flex gap-2 mt-4">
+				if w.ID != 0 {
+					@modules.Button(modules.ButtonProps{
+						Size: modules.ButtonSizeXs,
+						Attributes: templ.Attributes{
+							"data-on:click": "$id = " + strconv.Itoa(w.ID) + "; @post('/settings/work/delete')",
+						},
+					}) {
+						Delete
+					}
+				}
+				@modules.Button(modules.ButtonProps{
+					Size:  modules.ButtonSizeSm,
+					Class: "ml-auto",
+					Attributes: templ.Attributes{
+						"data-on:click": "$modalOpen = false",
+					},
+				}) {
+					Cancel
+				}
+				if w.ID == 0 {
+					@modules.Button(modules.ButtonProps{
+						Size: modules.ButtonSizeSm,
+						Attributes: templ.Attributes{
+							"data-on:click": "$title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/create')",
+						},
+					}) {
+						Create
+					}
+				} else {
+					@modules.Button(modules.ButtonProps{
+						Size: modules.ButtonSizeSm,
+						Attributes: templ.Attributes{
+							"data-on:click": "$id = $formId; $title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/update')",
+						},
+					}) {
+						Save
+					}
+				}
+			</div>
+		</div>
+	</div>
 }
 
 templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int) {
@@ -96,7 +306,7 @@ templ SettingsShopRow(p product.Product) {
 		id={ "product-" + strconv.Itoa(p.ID) }
 		data-signals={ "{id:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
 	>
-		<td>{ p.Name }</td>
+		<td><a href={ templ.URL("/shop/" + p.Slug) }>{ p.Name }</a></td>
 		<td>{ p.Category }</td>
 		<td class="text-center">{ strconv.Itoa(p.Stock) }</td>
 		<td class="flex gap-2 items-center">
