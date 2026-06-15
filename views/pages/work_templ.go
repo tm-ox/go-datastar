@@ -9,14 +9,14 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 	"strings"
 )
 
-func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []content.WorkEntry, total int, limit int, types []string, clients []string, years []string, tools []string) templ.Component {
+func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -239,7 +239,7 @@ func Work(items []modules.NavItem, currentPath string, meta modules.Meta, entrie
 	})
 }
 
-func WorkRows(entries []content.WorkEntry, page, total, limit int) templ.Component {
+func WorkRows(entries []work.Work, page, total, limit int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -260,7 +260,7 @@ func WorkRows(entries []content.WorkEntry, page, total, limit int) templ.Compone
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div id=\"work-rows\"><table><thead><tr><th data-on:click=\"$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/work/filter')\" class=\"w-1/4\">Project</th><th data-on:click=\"$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/work/filter')\" class=\"w-[15%]\">Type</th><th data-on:click=\"$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/work/filter')\" class=\"w-1/5\">Client</th><th data-on:click=\"$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/work/filter')\" class=\"w-[10%]\">Year</th><th data-on:click=\"$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/work/filter')\" class=\"w-[30%]\">T ools</th></tr></thead> <tbody>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div id=\"work-rows\"><table><thead><tr><th data-on:click=\"$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/work/filter')\" class=\"w-1/4\">Project</th><th data-on:click=\"$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/work/filter')\" class=\"w-[15%]\">Type</th><th data-on:click=\"$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/work/filter')\" class=\"w-1/5\">Client</th><th data-on:click=\"$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/work/filter')\" class=\"w-[10%]\">Year</th><th data-on:click=\"$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/work/filter')\" class=\"w-[30%]\">Tools</th></tr></thead> <tbody>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -296,9 +296,9 @@ func WorkRows(entries []content.WorkEntry, page, total, limit int) templ.Compone
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
-			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Type)
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(entry.WorkType)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 73, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 73, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -335,9 +335,9 @@ func WorkRows(entries []content.WorkEntry, page, total, limit int) templ.Compone
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var17 string
-			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Join(entry.Tools, ", "))
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(strings.ReplaceAll(entry.Tools, ",", ", "))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 76, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 76, Col: 54}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -369,7 +369,7 @@ func WorkRows(entries []content.WorkEntry, page, total, limit int) templ.Compone
 	})
 }
 
-func WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkEntry, meta modules.Meta) templ.Component {
+func WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -420,9 +420,9 @@ func WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkE
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var21 string
-			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Type)
+			templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(entry.WorkType)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 94, Col: 92}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 94, Col: 96}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 			if templ_7745c5c3_Err != nil {
@@ -459,9 +459,9 @@ func WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkE
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var24 string
-			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Join(entry.Tools, ", "))
+			templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(strings.ReplaceAll(entry.Tools, ",", ", "))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 97, Col: 114}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 97, Col: 125}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 			if templ_7745c5c3_Err != nil {
@@ -480,7 +480,79 @@ func WorkDetail(items []modules.NavItem, currentPath string, entry content.WorkE
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</span></h5></section>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "</span></h5><h5 class=\"text-accent font-bold\">Link: <a href=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var26 templ.SafeURL
+			templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL(entry.Link))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 99, Col: 74}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "\" target=\"_blank\" class=\"text-muted font-normal\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var27 string
+			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Link)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 99, Col: 136}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "</a></h5>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if len(entry.Images) > 0 {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<div class=\"grid grid-cols-4 gap-4 mt-8\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				for _, img := range entry.Images {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "<img src=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var28 string
+					templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.ResolveAttributeValue(img.URL)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 103, Col: 24}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var28)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "\" alt=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var29 string
+					templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.ResolveAttributeValue(img.Alt)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/work.templ`, Line: 103, Col: 40}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var29)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "\" class=\"w-full aspect-square object-cover border-b border-border rounded\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 46, "</section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -5,51 +5,47 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
 type WorkHandler struct {
-	nav     []modules.NavItem
-	entries []content.WorkEntry
-	bySlug  map[string]content.WorkEntry
+	nav   []modules.NavItem
+	store work.WorkStore
 }
 
-func NewWorkHandler(nav []modules.NavItem, entries []content.WorkEntry, bySlug map[string]content.WorkEntry) *WorkHandler {
-	return &WorkHandler{
-		nav:     nav,
-		entries: entries,
-		bySlug:  bySlug,
-	}
+func NewWorkHandler(nav []modules.NavItem, store work.WorkStore) *WorkHandler {
+	return &WorkHandler{nav: nav, store: store}
 }
 
 func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
-	meta := modules.Meta{
-		Title:       "Work",
-		Description: "",
+	entries, total, err := h.store.List(1, defaultLimit)
+	if err != nil {
+		http.Error(w, "failed to load work", http.StatusInternalServerError)
+		return
 	}
-	types := content.UniqueTypes(h.entries)
-	clients := content.UniqueClients(h.entries)
-	years := content.UniqueYears(h.entries)
-	tools := content.UniqueTools(h.entries)
-	entries := content.FilterWork(h.entries, "", "", "", "", "")
-	paged, total := content.PaginateWork(entries, 1, defaultLimit)
-	templ.Handler(views.Work(h.nav, "/work", meta, paged, total, defaultLimit, types, clients, years, tools)).ServeHTTP(w, r)
+	types, _ := h.store.UniqueTypes()
+	clients, _ := h.store.UniqueClients()
+	years, _ := h.store.UniqueYears()
+	tools, _ := h.store.UniqueTools()
 
+	meta := modules.Meta{Title: "Work"}
+	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultLimit, types, clients, years, tools)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
-	entry, ok := h.bySlug[slug]
-	if !ok {
+	entry, err := h.store.GetBySlug(slug)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+	if entry == nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	meta := modules.Meta{
-		Title:       entry.Title,
-		Description: entry.Description,
-	}
+	meta := modules.Meta{Title: entry.Title, Description: entry.Description}
 	templ.Handler(views.WorkDetail(h.nav, r.URL.Path, entry, meta)).ServeHTTP(w, r)
 }
 
@@ -70,9 +66,11 @@ func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	filtered := content.FilterWork(h.entries, sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search)
-	filtered = content.SortWork(filtered, sig.Sort)
-	paged, total := content.PaginateWork(filtered, sig.Page, defaultLimit)
+	entries, total, err := h.store.Filter(sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search, sig.Sort, sig.Page, defaultLimit)
+	if err != nil {
+		http.Error(w, "filter error", http.StatusInternalServerError)
+		return
+	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.WorkRows(paged, sig.Page, total, defaultLimit))
+	sse.PatchElementTempl(views.WorkRows(entries, sig.Page, total, defaultLimit))
 }

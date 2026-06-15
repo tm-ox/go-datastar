@@ -72,7 +72,8 @@ templ SettingsShopRows(products []product.Product, page, total, limit int) {
 					<th data-on:click="$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; $page = 1; @get('/settings/shop/filter')">Name</th>
 					<th data-on:click="$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; $page = 1; @get('/settings/shop/filter')" class="w-1/5">Category</th>
 					<th data-on:click="$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; $page = 1; @get('/settings/shop/filter')" class="cursor-pointer select-none w-[10%]">Stock</th>
-					<th class="w-px whitespace-nowrap hover:text-muted cursor-default">Inventory</th>
+					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Inventory</th>
+					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]" style="backgrouund-image: none">Edit</th>
 				</tr>
 			</thead>
 			<tbody id="shop-body">
@@ -127,6 +128,8 @@ templ SettingsShopRow(p product.Product) {
 			}) {
 				Set
 			}
+		</td>
+		<td>
 			@modules.Button(modules.ButtonProps{
 				Size:  modules.ButtonSizeXs,
 				Class: "text-muted",
