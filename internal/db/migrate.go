@@ -18,6 +18,7 @@ func Migrate(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS work (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			slug TEXT UNIQUE NOT NULL,
+			sort_order INTEGER NOT NULL DEFAULT 0,
 			title TEXT NOT NULL,
 			type TEXT NOT NULL,
 			client TEXT NOT NULL,

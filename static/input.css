@@ -67,6 +67,10 @@
         @apply text-lg text-muted mb-1;
     }
 
+    a {
+        @apply hover:text-accent;
+    }
+
     hr {
         @apply border-accent my-4 pb-2;
     }

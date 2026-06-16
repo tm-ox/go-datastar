@@ -87,6 +87,7 @@ func (h *SettingsHandler) WorkForm(w http.ResponseWriter, r *http.Request) {
 
 func (h *SettingsHandler) WorkCreate(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
+		SortOrder   int    `json:"sortOrder"`
 		Title       string `json:"title"`
 		WorkType    string `json:"type"`
 		Client      string `json:"client"`
@@ -102,6 +103,7 @@ func (h *SettingsHandler) WorkCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	entry := work.Work{
+		SortOrder:   sig.SortOrder,
 		Title:       sig.Title,
 		WorkType:    sig.WorkType,
 		Client:      sig.Client,
@@ -134,6 +136,7 @@ func (h *SettingsHandler) WorkCreate(w http.ResponseWriter, r *http.Request) {
 func (h *SettingsHandler) WorkUpdate(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
 		ID          int    `json:"id"`
+		SortOrder   int    `json:"sortOrder"`
 		Title       string `json:"title"`
 		WorkType    string `json:"type"`
 		Client      string `json:"client"`
@@ -150,6 +153,7 @@ func (h *SettingsHandler) WorkUpdate(w http.ResponseWriter, r *http.Request) {
 	}
 	entry := work.Work{
 		ID:          sig.ID,
+		SortOrder:   sig.SortOrder,
 		Title:       sig.Title,
 		WorkType:    sig.WorkType,
 		Client:      sig.Client,

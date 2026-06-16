@@ -132,7 +132,7 @@ templ SettingsWorkRow(entry work.Work) {
 templ SettingsWorkForm(w work.Work) {
 	<div id="work-form">
 		<div
-			data-signals={ "{formId:" + strconv.Itoa(w.ID) + ",formTitle:'" + w.Title + "',formType:'" + w.WorkType + "',formClient:'" + w.Client + "',formYear:" + strconv.Itoa(w.Year) + ",formTools:'" + w.Tools + "',formDescription:'" + w.Description + "',formWebsite:'" + w.Website + "',formLink:'" + w.Link + "',formCoverURL:'" + w.CoverURL + "'}" }
+			data-signals={ "{formId:" + strconv.Itoa(w.ID) + ",formSortOrder:" + strconv.Itoa(w.SortOrder) + ",formTitle:'" + w.Title + "',formType:'" + w.WorkType + "',formClient:'" + w.Client + "',formYear:" + strconv.Itoa(w.Year) + ",formTools:'" + w.Tools + "',formDescription:'" + w.Description + "',formWebsite:'" + w.Website + "',formLink:'" + w.Link + "',formCoverURL:'" + w.CoverURL + "'}" }
 		>
 			<h3 class="mb-4">
 				if w.ID == 0 {
@@ -141,9 +141,15 @@ templ SettingsWorkForm(w work.Work) {
 					Edit Entry
 				}
 			</h3>
-			<div class="flex flex-col gap-1 mb-3">
-				<h5 class="text-accent">Title:</h5>
-				<input type="text" placeholder="Project title" data-bind="formTitle"/>
+			<div class="grid-2 mb-3">
+				<div class="flex flex-col gap-1 mb-3">
+					<h5 class="text-accent">Title:</h5>
+					<input type="text" placeholder="Project title" data-bind="formTitle"/>
+				</div>
+				<div class="flex flex-col gap-1">
+					<h5 class="text-accent">Order:</h5>
+					<input type="number" placeholder="2024" data-bind="formSortOrder" class="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"/>
+				</div>
 			</div>
 			<div class="grid-2 mb-3">
 				<div class="flex flex-col gap-1">
@@ -207,7 +213,7 @@ templ SettingsWorkForm(w work.Work) {
 					@modules.Button(modules.ButtonProps{
 						Size: modules.ButtonSizeSm,
 						Attributes: templ.Attributes{
-							"data-on:click": "$title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/create')",
+							"data-on:click": "$sortOrder = $formSortOrder; $title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/create')",
 						},
 					}) {
 						Create
@@ -216,7 +222,7 @@ templ SettingsWorkForm(w work.Work) {
 					@modules.Button(modules.ButtonProps{
 						Size: modules.ButtonSizeSm,
 						Attributes: templ.Attributes{
-							"data-on:click": "$id = $formId; $title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/update')",
+							"data-on:click": "$id = $formId; $sortOrder = $formSortOrder; $title = $formTitle; $type = $formType; $client = $formClient; $year = $formYear; $tools = $formTools; $description = $formDescription; $website = $formWebsite; $link = $formLink; $coverURL = $formCoverURL; @post('/settings/work/update')",
 						},
 					}) {
 						Save

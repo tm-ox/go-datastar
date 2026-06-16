@@ -10,6 +10,8 @@ import (
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
+const defaultWorkLimit = 10
+
 type WorkHandler struct {
 	nav   []modules.NavItem
 	store work.WorkStore
@@ -20,7 +22,7 @@ func NewWorkHandler(nav []modules.NavItem, store work.WorkStore) *WorkHandler {
 }
 
 func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
-	entries, total, err := h.store.List(1, defaultLimit)
+	entries, total, err := h.store.List(1, defaultWorkLimit)
 	if err != nil {
 		http.Error(w, "failed to load work", http.StatusInternalServerError)
 		return
@@ -31,7 +33,7 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 	tools, _ := h.store.UniqueTools()
 
 	meta := modules.Meta{Title: "Work"}
-	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultLimit, types, clients, years, tools)).ServeHTTP(w, r)
+	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultWorkLimit, types, clients, years, tools)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
@@ -66,11 +68,11 @@ func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	entries, total, err := h.store.Filter(sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search, sig.Sort, sig.Page, defaultLimit)
+	entries, total, err := h.store.Filter(sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search, sig.Sort, sig.Page, defaultWorkLimit)
 	if err != nil {
 		http.Error(w, "filter error", http.StatusInternalServerError)
 		return
 	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.WorkRows(entries, sig.Page, total, defaultLimit))
+	sse.PatchElementTempl(views.WorkRows(entries, sig.Page, total, defaultWorkLimit))
 }

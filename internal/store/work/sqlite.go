@@ -22,10 +22,10 @@ func NewSQLiteWorkStore(db *sql.DB) *SQLiteWorkStore {
 	return &SQLiteWorkStore{db: db}
 }
 
-const cols = `id, slug, title, type, client, year, tools, description, website, link, cover_url`
+const cols = `id, slug, sort_order, title, type, client, year, tools, description, website, link, cover_url`
 
 func scanWork(s interface{ Scan(...any) error }, w *Work) error {
-	return s.Scan(&w.ID, &w.Slug, &w.Title, &w.WorkType, &w.Client, &w.Year, &w.Tools, &w.Description, &w.Website, &w.Link, &w.CoverURL)
+	return s.Scan(&w.ID, &w.Slug, &w.SortOrder, &w.Title, &w.WorkType, &w.Client, &w.Year, &w.Tools, &w.Description, &w.Website, &w.Link, &w.CoverURL)
 }
 
 var sortCols = map[string]string{
@@ -48,7 +48,7 @@ func (s *SQLiteWorkStore) List(page, limit int) ([]Work, int, error) {
 	}
 
 	offset := (page - 1) * limit
-	rows, err := s.db.Query("SELECT "+cols+" FROM work ORDER BY year DESC LIMIT ? OFFSET ?", limit, offset)
+	rows, err := s.db.Query("SELECT "+cols+" FROM work ORDER BY sort_order ASC LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -138,7 +138,7 @@ func (s *SQLiteWorkStore) Filter(workType, client, year, tools, search, sort str
 		base += " WHERE " + strings.Join(where, " AND ")
 	}
 
-	orderBy := " ORDER BY year DESC"
+	orderBy := " ORDER BY sort_order ASC"
 	if cl, ok := sortCols[sort]; ok {
 		orderBy = " ORDER BY " + cl
 	}
@@ -236,8 +236,8 @@ func uniqueCol(db *sql.DB, col string) ([]string, error) {
 func (s *SQLiteWorkStore) Create(w Work) (int, error) {
 	w.Slug = slugify(w.Title)
 	res, err := s.db.Exec(
-		"INSERT INTO work (slug, title, type, client, year, tools, description, website, link, cover_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-		w.Slug, w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL,
+		"INSERT INTO work (slug, sort_order, title, type, client, year, tools, description, website, link, cover_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		w.Slug, w.SortOrder, w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL,
 	)
 	if err != nil {
 		return 0, err
@@ -248,8 +248,8 @@ func (s *SQLiteWorkStore) Create(w Work) (int, error) {
 
 func (s *SQLiteWorkStore) Update(w Work) error {
 	_, err := s.db.Exec(
-		"UPDATE work SET title = ?, type = ?, client = ?, year = ?, tools = ?, description = ?, website = ?, link = ?, cover_url = ? WHERE id = ?",
-		w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL, w.ID,
+		"UPDATE work SET sort_order = ?, title = ?, type = ?, client = ?, year = ?, tools = ?, description = ?, website = ?, link = ?, cover_url = ? WHERE id = ?",
+		w.SortOrder, w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL, w.ID,
 	)
 	return err
 }

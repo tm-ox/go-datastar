@@ -9,7 +9,6 @@ A learning project exploring Go, [Datastar](https://data-star.dev), [templ](http
 - **Datastar v1.0.1** — SSE-based reactivity (server-driven UI)
 - **Tailwind v4** — CSS-first, no config file
 - **SQLite** — `modernc.org/sqlite`, pure Go, no CGo
-- **YAML** — content stored as plain YAML files
 
 ## Prerequisites
 
@@ -28,13 +27,16 @@ bun run build:css
 
 ## Seed
 
-Populate the database with sample products:
+Populate the database. Run each command once after first startup — safe to re-run, uses `INSERT OR IGNORE`.
 
 ```bash
-go run cmd/seed/main.go
+go run ./cmd/seed/products/
+go run ./cmd/seed/work/
+go run ./cmd/seed/work_images/
+go run ./cmd/seed/content/
 ```
 
-Run once after first startup. Safe to re-run — uses `INSERT OR IGNORE`.
+> Must be run in order — `work_images` depends on work IDs existing.
 
 ## Dev
 
@@ -51,6 +53,8 @@ Runs four processes concurrently: Go server (`:8081`), templ watcher, Tailwind w
 
 Open `http://localhost:3000`.
 
+If air serves a stale binary after changes: `rm tmp/server && make dev`.
+
 ## Routes
 
 | Method | Path | Handler |
@@ -65,40 +69,67 @@ Open `http://localhost:3000`.
 | GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
 | GET | `/settings` | redirect → `/settings/work` |
 | GET | `/settings/work` | `settings.Work` |
+| GET | `/settings/work/filter` | `settings.WorkFilter` (Datastar SSE) |
+| GET | `/settings/work/form` | `settings.WorkForm` (Datastar SSE) |
+| POST | `/settings/work/create` | `settings.WorkCreate` (Datastar SSE) |
+| POST | `/settings/work/update` | `settings.WorkUpdate` (Datastar SSE) |
+| POST | `/settings/work/delete` | `settings.WorkDelete` (Datastar SSE) |
 | GET | `/settings/shop` | `settings.Shop` |
 | GET | `/settings/shop/filter` | `settings.ShopFilter` (Datastar SSE) |
 | POST | `/settings/shop/stock` | `settings.ShopStock` (Datastar SSE) |
+| GET | `/settings/shop/products/form` | `settings.ShopProductForm` (Datastar SSE) |
+| POST | `/settings/shop/products/create` | `settings.ShopProductCreate` (Datastar SSE) |
+| POST | `/settings/shop/products/update` | `settings.ShopProductUpdate` (Datastar SSE) |
+| POST | `/settings/shop/products/delete` | `settings.ShopProductDelete` (Datastar SSE) |
 
 ## Structure
 
 ```
 cmd/
-  main.go                  — server wiring, route registration, startup
-  seed/main.go             — development seed script (36 products)
+  main.go                    — server wiring, route registration, startup
+  seed/
+    products/main.go         — 36 products (INSERT OR IGNORE)
+    work/main.go             — 10 work entries (INSERT OR IGNORE)
+    work_images/main.go      — 86 images across 10 entries
+    content/main.go          — site_pages, site_sections, site_cards
 internal/
   content/
-    site.go                — site types (HomePage, AboutPage, Section, Card) + Load()
-    work.go                — WorkEntry, LoadWork(), FilterWork(), SortWork(), PaginateWork()
-    content.yaml           — home + about data
-    work/*.yaml            — one file per work entry
+    site.go                  — site types (HomePage, AboutPage, Section, Card) + Load()
+    content.yaml             — home + about copy
   db/
-    db.go                  — SQLite connection (modernc.org/sqlite)
-    migrate.go             — schema migrations, run at startup
-  store/product/
-    product.go             — Product struct, ProductStore interface
-    sqlite.go              — SQLiteProductStore: list, filter, detail, UpdateStock
+    db.go                    — SQLite connection (modernc.org/sqlite)
+    migrate.go               — schema migrations, run at startup
+  store/
+    product/
+      product.go             — Product struct, ProductStore interface
+      sqlite.go              — SQLiteProductStore: List, Filter, GetBySlug, GetByID, UpdateStock, Create, Update, Delete
+    work/
+      work.go                — Work struct (with Images []WorkImage), WorkStore interface
+      sqlite.go              — SQLiteWorkStore: List, Filter, GetBySlug, GetByID, Create, Update, Delete, UniqueTypes/Clients/Years/Tools
   handler/
-    site.go                — Index, About handlers
-    shop.go                — ShopHandler — product listing, filtering, detail
-    settings.go            — SettingsHandler — settings pages, shop inventory management
-    work.go                — WorkHandler — work listing, filtering, detail
+    constants.go             — defaultLimit = 20
+    site.go                  — SiteHandler: Index, About
+    shop.go                  — ShopHandler: Index, Filter, Detail
+    settings.go              — SettingsHandler: Work, WorkFilter, WorkForm, WorkCreate, WorkUpdate, WorkDelete, Shop, ShopFilter, ShopStock, ShopProductForm, ShopProductCreate, ShopProductUpdate, ShopProductDelete
+    work.go                  — WorkHandler: Index, Filter, Detail
   middleware/
-    logging.go             — request logging middleware
+    logging.go               — request logging middleware
 views/
   layouts/
-    base.templ             — base HTML layout
-    sub.templ              — SubLayout — settings subnav via TabBar
-  modules/                 — Navbar, TabBar, Hero, Card, CardProduct, Button, Icon, Footer, Pagination, Search
-  pages/                   — page templates + SSE partials
-static/input.css           — Tailwind source (theme tokens, base styles, component classes)
+    base.templ               — base HTML layout
+    sub.templ                — SubLayout — settings subnav via TabBar
+  modules/                   — Navbar, TabBar, Hero, Card, CardProduct, Button, Icon, Footer, Pagination, Search
+  pages/                     — page templates and SSE partials
+static/input.css             — Tailwind source (theme tokens, base styles, component classes)
 ```
+
+## SQLite Tables
+
+| Table | Purpose |
+|---|---|
+| `products` | Shop products |
+| `work` | Work portfolio entries |
+| `work_images` | Work entry images (FK → work.id) |
+| `site_pages` | Page-level copy (title, tagline, body) |
+| `site_sections` | Page sections |
+| `site_cards` | Section cards |
