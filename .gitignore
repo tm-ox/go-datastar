@@ -4,6 +4,7 @@ node_modules/
 # go build output
 bin/
 tmp/
+work
 
 # sqlite database
 *.db

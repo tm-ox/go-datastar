@@ -56,28 +56,14 @@ templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entri
 
 templ WorkRows(entries []work.Work, page, total, limit int) {
 	<div id="work-rows">
-		<table>
-			<thead>
-				<tr>
-					<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/work/filter')" class="w-1/4">Project</th>
-					<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/work/filter')" class="w-[15%]">Type</th>
-					<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/work/filter')" class="w-1/5">Client</th>
-					<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/work/filter')" class="w-[10%]">Year</th>
-					<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/work/filter')" class="w-[30%]">Tools</th>
-				</tr>
-			</thead>
-			<tbody>
-				for _, entry := range entries {
-					<tr>
-						<td><a href={ templ.URL("/work/" + entry.Slug) } class="after:absolute after:inset-0">{ entry.Title }</a></td>
-						<td>{ entry.WorkType }</td>
-						<td>{ entry.Client }</td>
-						<td>{ strconv.Itoa(entry.Year) }</td>
-						<td>{ strings.ReplaceAll(entry.Tools, ",", ", ") }</td>
-					</tr>
-				}
-			</tbody>
-		</table>
+		<div class="grid grid-cols-5 gap-4">
+			for _, img := range entries {
+				<a href={ templ.URL("/work/" + img.Slug) } class="flex flex-col gap-2 border border-border rounded bg-canvas pb-2 hover:border-accent">
+					<img src={ img.CoverURL } alt={ img.Title } class="w-full aspect-square object-cover border-b border-border bg-canvas"/>
+					<h5 class="text-center">{ img.Title }</h5>
+				</a>
+			}
+		</div>
 		@modules.Pagination(modules.PaginationProps{
 			Page:  page,
 			Total: total,
@@ -96,11 +82,13 @@ templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, 
 			<h5 class="text-accent font-bold">Year: <span class="text-muted font-normal">{ strconv.Itoa(entry.Year) }</span></h5>
 			<h5 class="text-accent font-bold">Tools: <span class="text-muted font-normal">{ strings.ReplaceAll(entry.Tools, ",", ", ") }</span></h5>
 			<h5 class="text-accent font-bold">Description: <span class="text-muted font-normal">{ entry.Description }</span></h5>
-			<h5 class="text-accent font-bold">Link: <a href={ templ.URL(entry.Link) } target="_blank" class="text-muted font-normal">{ entry.Link }</a></h5>
+			if entry.Link != "" {
+				<h5 class="text-accent font-bold">Link: <a href={ templ.URL(entry.Link) } target="_blank" class="text-muted font-normal hover:text-accent">{ entry.Link }</a></h5>
+			}
 			if len(entry.Images) > 0 {
 				<div class="grid grid-cols-4 gap-4 mt-8">
 					for _, img := range entry.Images {
-						<img src={ img.URL } alt={ img.Alt } class="w-full aspect-square object-cover border-b border-border rounded"/>
+						<img src={ img.URL } alt={ img.Alt } class="w-full aspect-square object-cover border border-border rounded"/>
 					}
 				</div>
 			}

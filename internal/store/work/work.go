@@ -11,6 +11,7 @@ type WorkImage struct {
 type Work struct {
 	ID          int
 	Slug        string
+	SortOrder   int
 	Title       string
 	WorkType    string
 	Client      string
