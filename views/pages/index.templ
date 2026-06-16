@@ -21,29 +21,33 @@ func sectionGridClass(cols int) string {
 
 templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		@modules.Hero(home.Title, home.Tagline) {
-			@modules.Button(modules.ButtonProps{
-				Variant: modules.ButtonVariantCTA,
-				Href:    "#stack",
-				Size:    modules.ButtonSizeLg,
-			}) {
-				Explore
+		@IndexContent(home)
+	}
+}
+
+templ IndexContent(home content.HomePage) {
+	@modules.Hero(home.Title, home.Tagline) {
+		@modules.Button(modules.ButtonProps{
+			Variant: modules.ButtonVariantCTA,
+			Href:    "#stack",
+			Size:    modules.ButtonSizeLg,
+		}) {
+			Explore
+		}
+	}
+	for _, s := range home.Sections {
+		<section id={ s.ID }>
+			if s.Title != "" {
+				<h2>{ s.Title }</h2>
 			}
-		}
-		for _, s := range home.Sections {
-			<section id={ s.ID }>
-				if s.Title != "" {
-					<h2>{ s.Title }</h2>
+			<div class={ sectionGridClass(s.Cols) }>
+				for _, c := range s.Cards {
+					@modules.Card(modules.CardProps{
+						Card:      c,
+						IconProps: modules.IconProps{Size: "48", Class: "text-accent"},
+					})
 				}
-				<div class={ sectionGridClass(s.Cols) }>
-					for _, c := range s.Cards {
-						@modules.Card(modules.CardProps{
-							Card:      c,
-							IconProps: modules.IconProps{Size: "48", Class: "text-accent"},
-						})
-					}
-				</div>
-			</section>
-		}
+			</div>
+		</section>
 	}
 }

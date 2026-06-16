@@ -14,6 +14,25 @@
     --color-accent: #ff5964; /* indigo-400 — bg-accent  */
 }
 
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+}
+
+.settings-entry {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    @starting-style {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
 @layer base {
     html {
         @apply scrollbar-gutter-stable scroll-smooth;

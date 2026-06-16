@@ -10,56 +10,60 @@ import (
 
 templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
-			<h2>Work</h2>
-			<div class="flex w-full items-center mb-3">
-				<div class="flex gap-4 mr-6">
-					@modules.IconFilter()
-					<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; $search = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-						@modules.IconReset()
-					</button>
-				</div>
-				<div class="mr-auto">
-					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/work/filter"})
-				</div>
-				<div class="grid grid-cols-4 gap-4 w-fit">
-					<select data-bind="type" data-on:change="$page = 1; @get('/work/filter')">
-						<option value="" class="">All Types</option>
-						for _, c := range types {
-							<option value={ c }>{ c }</option>
-						}
-					</select>
-					<select data-bind="client" data-on:change="$page = 1; @get('/work/filter')">
-						<option value="" class="">All Clients</option>
-						for _, c := range clients {
-							<option value={ c }>{ c }</option>
-						}
-					</select>
-					<select data-bind="year" data-on:change="$page = 1; @get('/work/filter')">
-						<option value="" class="">All Years</option>
-						for _, y := range years {
-							<option value={ y }>{ y }</option>
-						}
-					</select>
-					<select data-bind="tool" data-on:change="$page = 1; @get('/work/filter')">
-						<option value="">All Tools</option>
-						for _, t := range tools {
-							<option value={ t }>{ t }</option>
-						}
-					</select>
-				</div>
-			</div>
-			@WorkRows(entries, 1, total, limit)
-		</section>
+		@WorkContent(entries, total, limit, types, clients, years, tools)
 	}
+}
+
+templ WorkContent(entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
+	<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
+		<h2>Work</h2>
+		<div class="flex w-full items-center mb-3">
+			<div class="flex gap-4 mr-6">
+				@modules.IconFilter()
+				<button data-on:click="$year = ''; $tool = ''; $type = ''; $client = ''; $page = 1; $search = ''; @get('/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					@modules.IconReset()
+				</button>
+			</div>
+			<div class="mr-auto">
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/work/filter"})
+			</div>
+			<div class="grid grid-cols-4 gap-4 w-fit">
+				<select data-bind="type" data-on:change="$page = 1; @get('/work/filter')">
+					<option value="" class="">All Types</option>
+					for _, c := range types {
+						<option value={ c }>{ c }</option>
+					}
+				</select>
+				<select data-bind="client" data-on:change="$page = 1; @get('/work/filter')">
+					<option value="" class="">All Clients</option>
+					for _, c := range clients {
+						<option value={ c }>{ c }</option>
+					}
+				</select>
+				<select data-bind="year" data-on:change="$page = 1; @get('/work/filter')">
+					<option value="" class="">All Years</option>
+					for _, y := range years {
+						<option value={ y }>{ y }</option>
+					}
+				</select>
+				<select data-bind="tool" data-on:change="$page = 1; @get('/work/filter')">
+					<option value="">All Tools</option>
+					for _, t := range tools {
+						<option value={ t }>{ t }</option>
+					}
+				</select>
+			</div>
+		</div>
+		@WorkRows(entries, 1, total, limit)
+	</section>
 }
 
 templ WorkRows(entries []work.Work, page, total, limit int) {
 	<div id="work-rows">
 		<div class="grid grid-cols-5 gap-4">
 			for _, img := range entries {
-				<a href={ templ.URL("/work/" + img.Slug) } class="flex flex-col gap-2 border border-border rounded bg-canvas pb-2 hover:border-accent">
-					<img src={ img.CoverURL } alt={ img.Title } class="w-full aspect-square object-cover border-b border-border bg-canvas"/>
+				<a href={ templ.URL("/work/" + img.Slug) } data-on:click__prevent={ "document.startViewTransition ? document.startViewTransition(() => @get('/work/" + img.Slug + "')) : @get('/work/" + img.Slug + "')" } class="flex flex-col gap-2 border border-border rounded bg-canvas pb-2 hover:border-accent">
+					<img src={ img.CoverURL } style={ "view-transition-name: work-cover-" + img.Slug } class="w-full aspect-square object-cover border-b border-border bg-canvas"/>
 					<h5 class="text-center">{ img.Title }</h5>
 				</a>
 			}
@@ -75,23 +79,34 @@ templ WorkRows(entries []work.Work, page, total, limit int) {
 
 templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen">
-			<h2>{ entry.Title }</h2>
-			<h5 class="text-accent font-bold">Type: <span class="text-muted font-normal">{ entry.WorkType }</span></h5>
-			<h5 class="text-accent font-bold">Client: <span class="text-muted font-normal">{ entry.Client }</span></h5>
-			<h5 class="text-accent font-bold">Year: <span class="text-muted font-normal">{ strconv.Itoa(entry.Year) }</span></h5>
-			<h5 class="text-accent font-bold">Tools: <span class="text-muted font-normal">{ strings.ReplaceAll(entry.Tools, ",", ", ") }</span></h5>
-			<h5 class="text-accent font-bold">Description: <span class="text-muted font-normal">{ entry.Description }</span></h5>
-			if entry.Link != "" {
-				<h5 class="text-accent font-bold">Link: <a href={ templ.URL(entry.Link) } target="_blank" class="text-muted font-normal hover:text-accent">{ entry.Link }</a></h5>
-			}
-			if len(entry.Images) > 0 {
-				<div class="grid grid-cols-4 gap-4 mt-8">
-					for _, img := range entry.Images {
-						<img src={ img.URL } alt={ img.Alt } class="w-full aspect-square object-cover border border-border rounded"/>
-					}
-				</div>
-			}
-		</section>
+		@WorkDetailContent(entry)
 	}
+}
+
+templ WorkDetailContent(entry *work.Work) {
+	<section class="min-h-screen">
+		<h2>{ entry.Title }</h2>
+		<h5 class="text-accent font-bold">Type: <span class="text-muted font-normal">{ entry.WorkType }</span></h5>
+		<h5 class="text-accent font-bold">Client: <span class="text-muted font-normal">{ entry.Client }</span></h5>
+		<h5 class="text-accent font-bold">Year: <span class="text-muted font-normal">{ strconv.Itoa(entry.Year) }</span></h5>
+		<h5 class="text-accent font-bold">Tools: <span class="text-muted font-normal">{ strings.ReplaceAll(entry.Tools, ",", ", ") }</span></h5>
+		<h5 class="text-accent font-bold">Description: <span class="text-muted font-normal">{ entry.Description }</span></h5>
+		if entry.Link != "" {
+			<h5 class="text-accent font-bold">Link: <a href={ templ.URL(entry.Link) } target="_blank" class="text-muted font-normal hover:text-accent">{ entry.Link }</a></h5>
+		}
+		if len(entry.Images) > 0 {
+			<div class="grid grid-cols-4 gap-4 mt-8">
+				for _, img := range entry.Images {
+					<img
+						src={ img.URL }
+						alt={ img.Alt }
+						class="w-full aspect-square object-cover border border-border rounded"
+						if img.URL == entry.CoverURL {
+							style={ "view-transition-name: work-cover-" + entry.Slug }
+						}
+					/>
+				}
+			</div>
+		}
+	</section>
 }

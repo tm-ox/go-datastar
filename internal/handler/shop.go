@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
@@ -20,7 +21,6 @@ func NewShopHandler(nav []modules.NavItem, store product.ProductStore) *ShopHand
 }
 
 func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
-	meta := modules.Meta{Title: "Shop", Description: "Shop"}
 	products, total, err := h.store.List(1, defaultLimit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -31,6 +31,15 @@ func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, "/shop"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.ShopContent(products, categories, 1, total, defaultLimit), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: "/shop"})
+		sse.ExecuteScript("window.scrollTo(0,0)")
+		return
+	}
+	meta := modules.Meta{Title: "Shop", Description: "Shop"}
 	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories, 1, total, defaultLimit)).ServeHTTP(w, r)
 }
 
@@ -63,6 +72,14 @@ func (h *ShopHandler) Detail(w http.ResponseWriter, r *http.Request) {
 	}
 	if p == nil {
 		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, r.URL.Path), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.ShopDetailContent(p), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: r.URL.Path})
+		sse.ExecuteScript("window.scrollTo(0,0)")
 		return
 	}
 	meta := modules.Meta{Title: p.Name, Description: p.Description}

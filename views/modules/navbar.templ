@@ -16,11 +16,11 @@ templ Navbar(items []NavItem, currentPath string) {
 		<nav>
 			@TabBar(items, currentPath, ButtonVariantTabActive, ButtonVariantTab, ButtonSizeTab)
 			if strings.HasPrefix(currentPath, "/settings") {
-				<a href="/settings" class="ml-2 mb-1 text-accent transition-colors">
+				<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-accent transition-colors">
 					@IconSettings(IconProps{Size: "20"})
 				</a>
 			} else {
-				<a href="/settings" class="ml-2 mb-1 text-border hover:text-accent transition-colors">
+				<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-border hover:text-accent transition-colors">
 					@IconSettings(IconProps{Size: "20"})
 				</a>
 			}

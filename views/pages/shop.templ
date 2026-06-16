@@ -9,30 +9,36 @@ import (
 
 templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, page int, total int, limit int) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen" data-signals="{category: '', search: '', inStock: false, page: 1}">
-			<h2>Shop</h2>
-			<div class="flex gap-2 w-full items-center mb-3">
-				<div class="flex gap-4">
-					@modules.IconFilter()
-					<button data-on:click="$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-						@modules.IconReset()
-					</button>
-				</div>
-				<select data-bind="category" data-on:change="@get('/shop/filter')">
-					<option value="">All Categories</option>
-					for _, c := range categories {
-						<option value={ c }>{ c }</option>
-					}
-				</select>
-				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/shop/filter"})
-				<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer">
-					<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
-					<span class="text-muted peer-checked:text-accent">In Stock</span>
-				</label>
-			</div>
-			@ShopGrid(products, page, total, limit)
-		</section>
+		@ShopContent(products, categories, page, total, limit)
 	}
+}
+
+templ ShopContent(products []product.Product, categories []string, page int, total int, limit int) {
+	<section class="min-h-screen" data-signals="{category: '', search: '', inStock: false, page: 1}">
+		<h2>Shop</h2>
+		<div class="flex gap-2 w-full items-center mb-3">
+			<div class="flex gap-4 mr-4">
+				@modules.IconFilter()
+				<button data-on:click="$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+					@modules.IconReset()
+				</button>
+			</div>
+			<div class="mr-auto">
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/shop/filter"})
+			</div>
+			<select data-bind="category" data-on:change="@get('/shop/filter')">
+				<option value="">All Categories</option>
+				for _, c := range categories {
+					<option value={ c }>{ c }</option>
+				}
+			</select>
+			<label class="flex items-center gap-2 text-sm cursor-pointer">
+				<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
+				<span class="text-muted peer-checked:text-accent">In Stock</span>
+			</label>
+		</div>
+		@ShopGrid(products, page, total, limit)
+	</section>
 }
 
 templ ShopGrid(products []product.Product, page, total, limit int) {
@@ -53,39 +59,43 @@ templ ShopGrid(products []product.Product, page, total, limit int) {
 
 templ ShopDetail(items []modules.NavItem, currentPath string, meta modules.Meta, p *product.Product) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		if p != nil {
-			<section class="min-h-screen">
-				<div class="grid grid-cols-[2fr_1fr] gap-8">
-					if p.Image.Valid {
-						<img src={ p.Image.String } alt={ p.Name } class="w-full object-cover border border-border rounded-lg"/>
-					}
-					<div class="flex flex-col h-full">
-						<div class="flex items-center justify-between mb-2">
-							@modules.Button(modules.ButtonProps{
-								Variant: modules.ButtonVariantPill,
-								Size:    modules.ButtonSizeXs,
-								Class:   "pointer-events-none",
-							}) {
-								{ p.Category }
-							}
-							<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
-						</div>
-						<h3>{ p.Name }</h3>
-						<div class="flex flex-col gap-4 h-full">
-							<p>{ p.Description }</p>
-							<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
-							@modules.Button(modules.ButtonProps{
-								Size:      modules.ButtonSizeSm,
-								FullWidth: false,
-								Class:     "w-fit",
-								Disabled:  p.Stock == 0,
-							}) {
-								Add to cart
-							}
-						</div>
+		@ShopDetailContent(p)
+	}
+}
+
+templ ShopDetailContent(p *product.Product) {
+	if p != nil {
+		<section class="min-h-screen">
+			<div class="grid grid-cols-[2fr_1fr] gap-8">
+				if p.Image.Valid {
+					<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full object-cover border border-border rounded-lg"/>
+				}
+				<div class="flex flex-col h-full">
+					<div class="flex items-center justify-between mb-2">
+						@modules.Button(modules.ButtonProps{
+							Variant: modules.ButtonVariantPill,
+							Size:    modules.ButtonSizeXs,
+							Class:   "pointer-events-none",
+						}) {
+							{ p.Category }
+						}
+						<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
+					</div>
+					<h3>{ p.Name }</h3>
+					<div class="flex flex-col gap-4 h-full">
+						<p>{ p.Description }</p>
+						<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+						@modules.Button(modules.ButtonProps{
+							Size:      modules.ButtonSizeSm,
+							FullWidth: false,
+							Class:     "w-fit",
+							Disabled:  p.Stock == 0,
+						}) {
+							Add to cart
+						}
 					</div>
 				</div>
-			</section>
-		}
+			</div>
+		</section>
 	}
 }
