@@ -116,10 +116,10 @@ internal/
     logging.go               — request logging middleware
 views/
   layouts/
-    base.templ               — base HTML layout
-    sub.templ                — SubLayout — settings subnav via TabBar
+    base.templ               — base HTML layout (id="main" swap target, id="site-header" for nav patch)
+    sub.templ                — SubLayout (unused — settings moved to BaseLayout + inline subnav)
   modules/                   — Navbar, TabBar, Hero, Card, CardProduct, Button, Icon, Footer, Pagination, Search
-  pages/                     — page templates and SSE partials
+  pages/                     — page templates; each page has a full wrapper + *Content partial for SPA swap
 static/input.css             — Tailwind source (theme tokens, base styles, component classes)
 ```
 

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
@@ -32,6 +33,14 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 	years, _ := h.store.UniqueYears()
 	tools, _ := h.store.UniqueTools()
 
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, "/work"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.WorkContent(entries, total, defaultWorkLimit, types, clients, years, tools), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: "/work"})
+		sse.ExecuteScript("window.scrollTo(0,0)")
+		return
+	}
 	meta := modules.Meta{Title: "Work"}
 	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultWorkLimit, types, clients, years, tools)).ServeHTTP(w, r)
 }
@@ -45,6 +54,14 @@ func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
 	}
 	if entry == nil {
 		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, r.URL.Path), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.WorkDetailContent(entry), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: r.URL.Path})
+		sse.ExecuteScript("window.scrollTo(0,0)")
 		return
 	}
 	meta := modules.Meta{Title: entry.Title, Description: entry.Description}

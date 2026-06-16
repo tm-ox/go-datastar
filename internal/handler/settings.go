@@ -3,6 +3,7 @@ package handler
 import (
 	"database/sql"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -34,9 +35,16 @@ func (h *SettingsHandler) Work(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, "/settings/work"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.SettingsWorkContent(h.sections, r.URL.Path, entries, total, defaultLimit, types, clients, years, tools), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: "/settings/work"})
+		sse.ExecuteScript("window.scrollTo(0,0)")
+		return
+	}
 	meta := modules.Meta{Title: "Settings — Work", Description: ""}
 	templ.Handler(views.SettingsWork(h.nav, h.sections, r.URL.Path, meta, entries, total, defaultLimit, types, clients, years, tools)).ServeHTTP(w, r)
-
 }
 
 func (h *SettingsHandler) WorkFilter(w http.ResponseWriter, r *http.Request) {
@@ -200,7 +208,6 @@ func (h *SettingsHandler) WorkDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
-	meta := modules.Meta{Title: "Settings — Shop", Description: ""}
 	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -211,6 +218,15 @@ func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if r.URL.Query().Has("datastar") {
+		sse := datastar.NewSSE(w, r)
+		sse.PatchElementTempl(modules.Navbar(h.nav, "/settings/shop"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(views.SettingsShopContent(h.sections, r.URL.Path, products, categories, total, defaultLimit), datastar.WithSelectorID("main"), datastar.WithModeInner())
+		sse.ReplaceURL(url.URL{Path: "/settings/shop"})
+		sse.ExecuteScript("window.scrollTo(0,0)")
+		return
+	}
+	meta := modules.Meta{Title: "Settings — Shop", Description: ""}
 	templ.Handler(views.SettingsShop(h.nav, h.sections, r.URL.Path, meta, products, categories, total, defaultLimit)).ServeHTTP(w, r)
 }
 

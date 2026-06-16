@@ -46,7 +46,7 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					var templ_7745c5c3_Var3 string
 					templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/tabbar.templ`, Line: 11, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/tabbar.templ`, Line: 12, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 					if templ_7745c5c3_Err != nil {
@@ -55,9 +55,10 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					return nil
 				})
 				templ_7745c5c3_Err = Button(ButtonProps{
-					Variant: active,
-					Href:    item.URL,
-					Size:    size,
+					Variant:    active,
+					Href:       item.URL,
+					Size:       size,
+					Attributes: templ.Attributes{"data-on:click__prevent": "document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 				}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -78,7 +79,7 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/tabbar.templ`, Line: 19, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/tabbar.templ`, Line: 21, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -87,9 +88,10 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					return nil
 				})
 				templ_7745c5c3_Err = Button(ButtonProps{
-					Variant: inactive,
-					Href:    item.URL,
-					Size:    size,
+					Variant:    inactive,
+					Href:       item.URL,
+					Size:       size,
+					Attributes: templ.Attributes{"data-on:click__prevent": "document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 				}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
