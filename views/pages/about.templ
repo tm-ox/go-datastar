@@ -8,9 +8,13 @@ import (
 
 templ About(items []modules.NavItem, currentPath string, page content.AboutPage, meta modules.Meta) {
 	@layouts.BaseLayout(items, currentPath, meta) {
-		<section class="min-h-screen">
-			<h2>{ page.Title }</h2>
-			<p>{ page.Body }</p>
-		</section>
+		@AboutContent(page)
 	}
+}
+
+templ AboutContent(page content.AboutPage) {
+	<section class="min-h-screen">
+		<h2>{ page.Title }</h2>
+		<p>{ page.Body }</p>
+	</section>
 }

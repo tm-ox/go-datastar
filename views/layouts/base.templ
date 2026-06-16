@@ -13,10 +13,10 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta)
 			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
 		</head>
 		<body>
-			<header>
+			<header id="site-header" style="view-transition-name: site-header">
 				@modules.Navbar(items, currentPath)
 			</header>
-			<main>
+			<main id="main" style="view-transition-name: main-content">
 				{ children... }
 			</main>
 			@modules.Footer()
