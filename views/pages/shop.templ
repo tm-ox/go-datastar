@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"github.com/tm-ox/go-datastar/internal/store/cart"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -99,4 +100,52 @@ templ ShopDetailContent(p *product.Product) {
 			</div>
 		</section>
 	}
+}
+
+templ CartDrawer(items []cart.CartItemDetail, total int) {
+	<div class="flex flex-col h-full p-6">
+		<div class="flex items-center justify-between mb-6">
+			<h4>Cart</h4>
+			<button data-on:click="$drawerOpen = false" class="text-muted hover:text-text transition-colors">
+				@modules.IconClose(modules.IconProps{Size: "20", Class: "hover:text-accent cursor-pointer"})
+			</button>
+		</div>
+		@CartDrawerItems(items, total)
+	</div>
+}
+
+templ CartDrawerItems(items []cart.CartItemDetail, total int) {
+	<div id="cart-drawer-items" class="flex flex-col gap-4 flex-1 overflow-y-auto">
+		if len(items) == 0 {
+			<p class="text-muted">Your cart is empty.</p>
+		} else {
+			for _, item := range items {
+				<div class="flex items-center justify-between gap-4">
+					<div class="flex flex-col flex-1">
+						<p class="text-text">{ item.Name }</p>
+						<h5 class="text-muted">{ fmt.Sprintf("%d × $%.2f", item.Quantity, float64(item.Price)/100) }</h5>
+					</div>
+					<h5 class="text-accent">{ fmt.Sprintf("$%.2f", float64(item.Price * item.Quantity)/100) }</h5>
+					<button
+						data-on:click={ fmt.Sprintf("$productId = %d; @post('/cart/remove')", item.ProductID) }
+						class="text-muted hover:text-text transition-colors"
+					>
+						@modules.IconClose(modules.IconProps{Size: "16", Class: "hover:text-accent cursor-pointer"})
+					</button>
+				</div>
+			}
+			<div class="border-t border-border pt-4 mt-auto">
+				<div class="flex justify-between mb-4">
+					<p>Subtotal</p>
+					<h5 class="text-accent">{ fmt.Sprintf("$%.2f", float64(total)/100) }</h5>
+				</div>
+				@modules.Button(modules.ButtonProps{
+					Href:      "/cart",
+					FullWidth: true,
+				}) {
+					View Cart
+				}
+			</div>
+		}
+	</div>
 }

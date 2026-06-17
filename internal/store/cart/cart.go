@@ -7,6 +7,14 @@ type CartItem struct {
 	Quantity  int
 }
 
+type CartItemDetail struct {
+	ID        int
+	ProductID int
+	Name      string
+	Price     int
+	Quantity  int
+}
+
 type CartStore interface {
 	GetOrCreate(cartID string) error
 	AddItem(cartID string, productID int, maxStock int) error
@@ -15,4 +23,5 @@ type CartStore interface {
 	UpdateQuantity(cartID string, productID int, qty int) error
 	RemoveItem(cartID string, productID int) error
 	Clear(cartID string) error
+	GetItemDetails(cartID string) ([]CartItemDetail, error)
 }

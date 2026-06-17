@@ -59,6 +59,22 @@ templ IconSettings(props ...IconProps) {
 	</svg>
 }
 
+templ IconClose(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } viewBox="0 0 24 24" class={ p.Class }>
+		<path
+			fill="currentColor"
+			d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"
+		></path>
+	</svg>
+}
+
 templ IconCart(props ...IconProps) {
 	{{ var p IconProps }}
 	if len(props) > 0 {
@@ -74,12 +90,15 @@ templ IconCart(props ...IconProps) {
 }
 
 templ CartBadge() {
-	<a href="/cart" class="relative ml-2 text-border hover:text-accent transition-colors">
-		@IconCart(IconProps{Class: "mb-2"})
+	<div
+		class="relative ml-2 group cursor-pointer"
+		data-on:click="$drawerOpen = true; @get('/cart/drawer')"
+	>
+		@IconCart(IconProps{Class: "mb-2 text-border hover:text-accent"})
 		<span
 			data-show="$cartTotal > 0"
 			data-text="$cartTotal"
-			class="absolute -top-2 -right-4 text-xs font-bold bg-accent/80 text-surface rounded-full w-5 h-5 flex items-center justify-center leading-none pointer-events-none"
+			class="absolute -top-2 -right-2 text-xs bg-accent/80 text-surface font-bold rounded-full w-4 h-4 flex items-center justify-center leading-none pointer-events-none"
 		></span>
-	</a>
+	</div>
 }
