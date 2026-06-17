@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@WorkContent(entries, total, limit, types, clients, years, tools)
 	}
 }
@@ -77,8 +77,8 @@ templ WorkRows(entries []work.Work, page, total, limit int) {
 	</div>
 }
 
-templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@WorkDetailContent(entry)
 	}
 }

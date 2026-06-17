@@ -14,6 +14,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/db"
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
+	"github.com/tm-ox/go-datastar/internal/store/cart"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -49,6 +50,8 @@ func main() {
 
 	productStore := product.NewSQLiteProductStore(database)
 	workStore := work.NewSQLiteWorkStore(database)
+	cartStore := cart.NewSQLiteCartStore(database)
+	cart_h := handler.NewCartHandler(cartStore, productStore)
 
 	site_h := handler.NewSiteHandler(nav, site)
 	work_h := handler.NewWorkHandler(nav, workStore)
@@ -65,6 +68,8 @@ func main() {
 	mux.HandleFunc("/shop", shop_h.Index)
 	mux.HandleFunc("/shop/{slug}", shop_h.Detail)
 	mux.HandleFunc("/shop/filter", shop_h.Filter)
+	mux.HandleFunc("POST /cart/add", cart_h.Add)
+	mux.HandleFunc("/cart/total", cart_h.Total)
 	mux.HandleFunc("/settings", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings/work", http.StatusFound)
 	})
@@ -85,7 +90,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	srv := &http.Server{Addr: ":8081", Handler: middleware.Logging(mux)}
+	srv := &http.Server{Addr: ":8081", Handler: middleware.CartTotal(cartStore, middleware.Logging(mux))}
 	fmt.Println("Listening on :8081")
 	go srv.ListenAndServe()
 	<-ctx.Done()

@@ -7,6 +7,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
 	"github.com/tm-ox/go-datastar/internal/content"
+	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
@@ -26,7 +27,8 @@ func NewSiteHandler(nav []modules.NavItem, site content.SiteContent) *SiteHandle
 func (h *SiteHandler) Index(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		w.WriteHeader(http.StatusNotFound)
-		templ.Handler(views.NotFound(h.nav, r.URL.Path, modules.Meta{Title: "404", Description: "Page not found"})).ServeHTTP(w, r)
+		cartTotal := middleware.GetCartTotal(r)
+		templ.Handler(views.NotFound(h.nav, r.URL.Path, modules.Meta{Title: "404", Description: "Page not found"}, cartTotal)).ServeHTTP(w, r)
 		return
 	}
 	meta := modules.Meta{
@@ -41,7 +43,8 @@ func (h *SiteHandler) Index(w http.ResponseWriter, r *http.Request) {
 		sse.ExecuteScript("window.scrollTo(0,0)")
 		return
 	}
-	templ.Handler(views.Index(h.nav, "/", h.site.Home, meta)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.Index(h.nav, "/", h.site.Home, meta, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *SiteHandler) About(w http.ResponseWriter, r *http.Request) {
@@ -57,5 +60,6 @@ func (h *SiteHandler) About(w http.ResponseWriter, r *http.Request) {
 		sse.ExecuteScript("window.scrollTo(0,0)")
 		return
 	}
-	templ.Handler(views.About(h.nav, "/about", h.site.About, meta)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.About(h.nav, "/about", h.site.About, meta, cartTotal)).ServeHTTP(w, r)
 }

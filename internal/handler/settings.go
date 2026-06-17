@@ -8,6 +8,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
+	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -44,7 +45,8 @@ func (h *SettingsHandler) Work(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: "Settings — Work", Description: ""}
-	templ.Handler(views.SettingsWork(h.nav, h.sections, r.URL.Path, meta, entries, total, defaultLimit, types, clients, years, tools)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.SettingsWork(h.nav, h.sections, r.URL.Path, meta, entries, total, defaultLimit, types, clients, years, tools, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *SettingsHandler) WorkFilter(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +229,8 @@ func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: "Settings — Shop", Description: ""}
-	templ.Handler(views.SettingsShop(h.nav, h.sections, r.URL.Path, meta, products, categories, total, defaultLimit)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.SettingsShop(h.nav, h.sections, r.URL.Path, meta, products, categories, total, defaultLimit, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *SettingsHandler) ShopStock(w http.ResponseWriter, r *http.Request) {

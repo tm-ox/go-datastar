@@ -76,19 +76,20 @@ templ CardProduct(p *product.Product) {
 			<h5 class="text-bold text-accent mx-5 my-3">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
 			<div class="flex mx-5 my-2">
 				@Button(ButtonProps{
-					Href:      "/shop/" + p.Slug,
-					Size:      ButtonSizeSm,
-					FullWidth: true,
-					Class:     "rounded-r-none",
+					Href:       "/shop/" + p.Slug,
+					Size:       ButtonSizeSm,
+					FullWidth:  true,
+					Class:      "rounded-r-none",
 					Attributes: templ.Attributes{"data-on:click__prevent": "document.startViewTransition ? document.startViewTransition(() => @get('/shop/" + p.Slug + "')) : @get('/shop/" + p.Slug + "')"},
 				}) {
 					View details
 				}
 				@Button(ButtonProps{
-					Size:      ButtonSizeSm,
-					FullWidth: true,
-					Class:     "rounded-l-none",
-					Disabled:  p.Stock == 0,
+					Size:       ButtonSizeSm,
+					FullWidth:  true,
+					Class:      "rounded-l-none",
+					Disabled:   p.Stock == 0,
+					Attributes: templ.Attributes{"data-on:click": fmt.Sprintf("$productId = %d; @post('/cart/add')", p.ID)},
 				}) {
 					Add to cart
 				}

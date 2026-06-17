@@ -1,9 +1,12 @@
 
 package layouts
 
-import "github.com/tm-ox/go-datastar/views/modules"
+import (
+	"fmt"
+	"github.com/tm-ox/go-datastar/views/modules"
+)
 
-templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta) {
+templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, cartTotal int) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -12,7 +15,7 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta)
 			<link rel="stylesheet" href="/static/app.css"/>
 			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
 		</head>
-		<body>
+		<body data-signals={ fmt.Sprintf("{cartTotal: %d}", cartTotal) }>
 			<header id="site-header" style="view-transition-name: site-header">
 				@modules.Navbar(items, currentPath)
 			</header>

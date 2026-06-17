@@ -6,6 +6,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
+	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
@@ -40,7 +41,8 @@ func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: "Shop", Description: "Shop"}
-	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories, 1, total, defaultLimit)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories, 1, total, defaultLimit, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
@@ -83,5 +85,6 @@ func (h *ShopHandler) Detail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: p.Name, Description: p.Description}
-	templ.Handler(views.ShopDetail(h.nav, r.URL.Path, meta, p)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.ShopDetail(h.nav, r.URL.Path, meta, p, cartTotal)).ServeHTTP(w, r)
 }

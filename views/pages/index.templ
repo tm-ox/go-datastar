@@ -19,8 +19,8 @@ func sectionGridClass(cols int) string {
 	}
 }
 
-templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@IndexContent(home)
 	}
 }

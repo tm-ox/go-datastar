@@ -11,8 +11,8 @@ import (
 )
 
 templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total, limit int,
-	types, clients, years, tools []string) {
-	@layouts.BaseLayout(items, "/settings/work", meta) {
+	types, clients, years, tools []string, cartTotal int) {
+	@layouts.BaseLayout(items, "/settings/work", meta, cartTotal) {
 		@SettingsWorkContent(sections, currentPath, entries, total, limit, types, clients, years, tools)
 	}
 }
@@ -20,73 +20,73 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []work.Work, total, limit int,
 	types, clients, years, tools []string) {
 	<div class="settings-entry">
-	<nav class="mt-16 content-width flex justify-end pr-16">
-		@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
-	</nav>
-	<section
-		class="pt-3.5"
-		data-signals="{page: 1, search: '', sort: '', type: '', client: '', year: '', tool: '', modalOpen: false}"
-		data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
-	>
-		<h2>Settings: Work</h2>
-		<div class="flex w-full items-center mb-3">
-			<div class="flex gap-4 mr-6">
-				@modules.IconFilter()
-				<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-					@modules.IconReset()
-				</button>
-			</div>
-			@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
-			<div class="grid grid-cols-4 gap-4 w-fit">
-				<select data-bind="type" data-on:change="$page = 1; @get('/settings/work/filter')">
-					<option value="" class="">All Types</option>
-					for _, c := range types {
-						<option value={ c }>{ c }</option>
-					}
-				</select>
-				<select data-bind="client" data-on:change="$page = 1; @get('/settings/work/filter')">
-					<option value="" class="">All Clients</option>
-					for _, c := range clients {
-						<option value={ c }>{ c }</option>
-					}
-				</select>
-				<select data-bind="year" data-on:change="$page = 1; @get('/settings/work/filter')">
-					<option value="" class="">All Years</option>
-					for _, y := range years {
-						<option value={ y }>{ y }</option>
-					}
-				</select>
-				<select data-bind="tool" data-on:change="$page = 1; @get('/settings/work/filter')">
-					<option value="">All Tools</option>
-					for _, t := range tools {
-						<option value={ t }>{ t }</option>
-					}
-				</select>
-			</div>
-			@modules.Button(modules.ButtonProps{
-				Size:  modules.ButtonSizeXs,
-				Class: "ml-auto",
-				Attributes: templ.Attributes{
-					"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
-				},
-			}) {
-				Add Entry
-			}
-		</div>
-		@SettingsWorkRows(entries, 1, total, limit)
-		<div
-			data-show="$modalOpen"
-			data-on:click="$modalOpen = false"
-			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+		<nav class="mt-16 content-width flex justify-end pr-25">
+			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
+		</nav>
+		<section
+			class="pt-3.5"
+			data-signals="{page: 1, search: '', sort: '', type: '', client: '', year: '', tool: '', modalOpen: false}"
+			data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
 		>
-			<div
-				data-on:click="evt.stopPropagation()"
-				class="bg-canvas border border-border rounded-lg p-6 w-full max-w-2xl"
-			>
-				<div id="work-form"></div>
+			<h2>Settings: Work</h2>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
+				<div class="grid grid-cols-4 gap-4 w-fit">
+					<select data-bind="type" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Types</option>
+						for _, c := range types {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="client" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Clients</option>
+						for _, c := range clients {
+							<option value={ c }>{ c }</option>
+						}
+					</select>
+					<select data-bind="year" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="" class="">All Years</option>
+						for _, y := range years {
+							<option value={ y }>{ y }</option>
+						}
+					</select>
+					<select data-bind="tool" data-on:change="$page = 1; @get('/settings/work/filter')">
+						<option value="">All Tools</option>
+						for _, t := range tools {
+							<option value={ t }>{ t }</option>
+						}
+					</select>
+				</div>
+				@modules.Button(modules.ButtonProps{
+					Size:  modules.ButtonSizeXs,
+					Class: "ml-auto",
+					Attributes: templ.Attributes{
+						"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
+					},
+				}) {
+					Add Entry
+				}
 			</div>
-		</div>
-	</section>
+			@SettingsWorkRows(entries, 1, total, limit)
+			<div
+				data-show="$modalOpen"
+				data-on:click="$modalOpen = false"
+				class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			>
+				<div
+					data-on:click="evt.stopPropagation()"
+					class="bg-canvas border border-border rounded-lg p-6 w-full max-w-2xl"
+				>
+					<div id="work-form"></div>
+				</div>
+			</div>
+		</section>
 	</div>
 }
 
@@ -243,59 +243,59 @@ templ SettingsWorkForm(w work.Work) {
 	</div>
 }
 
-templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int) {
-	@layouts.BaseLayout(items, "/settings/shop", meta) {
+templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int, cartTotal int) {
+	@layouts.BaseLayout(items, "/settings/shop", meta, cartTotal) {
 		@SettingsShopContent(sections, currentPath, products, categories, total, limit)
 	}
 }
 
 templ SettingsShopContent(sections []modules.NavItem, currentPath string, products []product.Product, categories []string, total, limit int) {
 	<div class="settings-entry">
-	<nav class="mt-16 content-width flex justify-end pr-16">
-		@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
-	</nav>
-	<section
-		class="pt-3.5"
-		data-signals="{category: '', page: 1, search: '', outOfStock: false, sort: '', modalOpen: false}"
-		data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
-	>
-		<h2>Settings: Shop</h2>
-		<div class="flex w-full items-center mb-3">
-			<div class="flex gap-4 mr-6">
-				@modules.IconFilter()
-				<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-					@modules.IconReset()
-				</button>
-			</div>
-			@SettingsShopCategories(categories)
-			@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
-			<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer mr-4">
-				<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
-				<span class="text-muted peer-checked:text-accent">Out of Stock</span>
-			</label>
-			@modules.Button(modules.ButtonProps{
-				Size: modules.ButtonSizeXs,
-				Attributes: templ.Attributes{
-					"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
-				},
-			}) {
-				Add Product
-			}
-		</div>
-		@SettingsShopRows(products, 1, total, limit)
-		<div
-			data-show="$modalOpen"
-			data-on:click="$modalOpen = false"
-			class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+		<nav class="mt-16 content-width flex justify-end pr-25">
+			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
+		</nav>
+		<section
+			class="pt-3.5"
+			data-signals="{category: '', page: 1, search: '', outOfStock: false, sort: '', modalOpen: false}"
+			data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
 		>
-			<div
-				data-on:click="evt.stopPropagation()"
-				class="bg-canvas border border-border rounded-lg p-6 w-full max-w-2xl"
-			>
-				<div id="product-form"></div>
+			<h2>Settings: Shop</h2>
+			<div class="flex w-full items-center mb-3">
+				<div class="flex gap-4 mr-6">
+					@modules.IconFilter()
+					<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
+				@SettingsShopCategories(categories)
+				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
+				<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer mr-4">
+					<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
+					<span class="text-muted peer-checked:text-accent">Out of Stock</span>
+				</label>
+				@modules.Button(modules.ButtonProps{
+					Size: modules.ButtonSizeXs,
+					Attributes: templ.Attributes{
+						"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
+					},
+				}) {
+					Add Product
+				}
 			</div>
-		</div>
-	</section>
+			@SettingsShopRows(products, 1, total, limit)
+			<div
+				data-show="$modalOpen"
+				data-on:click="$modalOpen = false"
+				class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+			>
+				<div
+					data-on:click="evt.stopPropagation()"
+					class="bg-canvas border border-border rounded-lg p-6 w-full max-w-2xl"
+				>
+					<div id="product-form"></div>
+				</div>
+			</div>
+		</section>
 	</div>
 }
 

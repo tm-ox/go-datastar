@@ -6,6 +6,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
+	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
@@ -42,7 +43,8 @@ func (h *WorkHandler) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: "Work"}
-	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultWorkLimit, types, clients, years, tools)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.Work(h.nav, "/work", meta, entries, total, defaultWorkLimit, types, clients, years, tools, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
@@ -65,7 +67,8 @@ func (h *WorkHandler) Detail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	meta := modules.Meta{Title: entry.Title, Description: entry.Description}
-	templ.Handler(views.WorkDetail(h.nav, r.URL.Path, entry, meta)).ServeHTTP(w, r)
+	cartTotal := middleware.GetCartTotal(r)
+	templ.Handler(views.WorkDetail(h.nav, r.URL.Path, entry, meta, cartTotal)).ServeHTTP(w, r)
 }
 
 func (h *WorkHandler) Filter(w http.ResponseWriter, r *http.Request) {

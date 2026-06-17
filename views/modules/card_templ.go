@@ -382,10 +382,11 @@ func CardProduct(p *product.Product) templ.Component {
 				return nil
 			})
 			templ_7745c5c3_Err = Button(ButtonProps{
-				Size:      ButtonSizeSm,
-				FullWidth: true,
-				Class:     "rounded-l-none",
-				Disabled:  p.Stock == 0,
+				Size:       ButtonSizeSm,
+				FullWidth:  true,
+				Class:      "rounded-l-none",
+				Disabled:   p.Stock == 0,
+				Attributes: templ.Attributes{"data-on:click": fmt.Sprintf("$productId = %d; @post('/cart/add')", p.ID)},
 			}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var17), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -397,7 +398,7 @@ func CardProduct(p *product.Product) templ.Component {
 			var templ_7745c5c3_Var18 string
 			templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", p.Stock))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/card.templ`, Line: 97, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/card.templ`, Line: 98, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 			if templ_7745c5c3_Err != nil {
@@ -422,7 +423,7 @@ func CardProduct(p *product.Product) templ.Component {
 				var templ_7745c5c3_Var20 string
 				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(p.Category)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/card.templ`, Line: 103, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/card.templ`, Line: 104, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 				if templ_7745c5c3_Err != nil {
