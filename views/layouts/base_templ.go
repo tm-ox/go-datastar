@@ -48,15 +48,15 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d}", cartTotal))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d, drawerOpen: false}", cartTotal))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 18, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 18, Col: 83}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"><header id=\"site-header\" style=\"view-transition-name: site-header\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" data-on:keydown__window=\"evt.key === 'Escape' && ($drawerOpen = false)\"><header id=\"site-header\" style=\"view-transition-name: site-header\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -80,7 +80,7 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 bg-black/50\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-0 h-full w-80 z-50 bg-surface border-l border-border transition-transform duration-300 translate-x-full\"></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

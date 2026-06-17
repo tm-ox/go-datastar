@@ -70,6 +70,8 @@ func main() {
 	mux.HandleFunc("/shop/filter", shop_h.Filter)
 	mux.HandleFunc("POST /cart/add", cart_h.Add)
 	mux.HandleFunc("/cart/total", cart_h.Total)
+	mux.HandleFunc("/cart/drawer", cart_h.Drawer)
+	mux.HandleFunc("POST /cart/remove", cart_h.Remove)
 	mux.HandleFunc("/settings", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings/work", http.StatusFound)
 	})

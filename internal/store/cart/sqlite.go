@@ -50,6 +50,28 @@ func (s *SQLiteCartStore) GetItems(cartID string) ([]CartItem, error) {
 	return items, rows.Err()
 }
 
+func (s *SQLiteCartStore) GetItemDetails(cartID string) ([]CartItemDetail, error) {
+	rows, err := s.db.Query(`
+                SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
+                FROM cart_items ci
+                JOIN products p ON p.id = ci.product_id
+                WHERE ci.cart_id = ?`, cartID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []CartItemDetail
+	for rows.Next() {
+		var item CartItemDetail
+		if err := rows.Scan(&item.ID, &item.ProductID, &item.Name, &item.Price, &item.Quantity); err != nil {
+			return nil, err
+		}
+		items = append(items, item)
+	}
+	return items, rows.Err()
+}
+
 func (s *SQLiteCartStore) TotalQuantity(cartID string) (int, error) {
 	var total int
 	err := s.db.QueryRow(
