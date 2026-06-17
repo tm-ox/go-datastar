@@ -15,6 +15,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store/cart"
+	"github.com/tm-ox/go-datastar/internal/store/order"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/internal/store/work"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -51,7 +52,8 @@ func main() {
 	productStore := product.NewSQLiteProductStore(database)
 	workStore := work.NewSQLiteWorkStore(database)
 	cartStore := cart.NewSQLiteCartStore(database)
-	cart_h := handler.NewCartHandler(cartStore, productStore)
+	orderStore := order.NewSQLiteOrderStore(database)
+	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
 
 	site_h := handler.NewSiteHandler(nav, site)
 	work_h := handler.NewWorkHandler(nav, workStore)
@@ -71,7 +73,12 @@ func main() {
 	mux.HandleFunc("POST /cart/add", cart_h.Add)
 	mux.HandleFunc("/cart/total", cart_h.Total)
 	mux.HandleFunc("/cart/drawer", cart_h.Drawer)
+	mux.HandleFunc("POST /cart/drawer/qty", cart_h.DrawerUpdateQty)
 	mux.HandleFunc("POST /cart/remove", cart_h.Remove)
+	mux.HandleFunc("GET /cart", cart_h.Checkout)
+	mux.HandleFunc("POST /cart/qty", cart_h.UpdateQty)
+	mux.HandleFunc("POST /cart/checkout", cart_h.PlaceOrder)
+	mux.HandleFunc("GET /cart/success", cart_h.Success)
 	mux.HandleFunc("/settings", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings/work", http.StatusFound)
 	})
