@@ -80,7 +80,7 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 bg-black/50\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-0 h-full w-80 z-50 bg-surface border-l border-border transition-transform duration-300 translate-x-full\"></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 bg-black/50\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 bg-surface rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

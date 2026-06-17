@@ -103,10 +103,10 @@ templ ShopDetailContent(p *product.Product) {
 }
 
 templ CartDrawer(items []cart.CartItemDetail, total int) {
-	<div class="flex flex-col h-full p-6">
-		<div class="flex items-center justify-between mb-6">
-			<h4>Cart</h4>
-			<button data-on:click="$drawerOpen = false" class="text-muted hover:text-text transition-colors">
+	<div class="flex flex-col h-full p-6 pb-24 pr-0">
+		<div class="flex items-center justify-between pr-6 mb-6">
+			<h4 class="text-muted">Cart</h4>
+			<button data-on:click="$drawerOpen = false" class="text-muted hover:text-text transition-colors self-start">
 				@modules.IconClose(modules.IconProps{Size: "20", Class: "hover:text-accent cursor-pointer"})
 			</button>
 		</div>
@@ -115,23 +115,41 @@ templ CartDrawer(items []cart.CartItemDetail, total int) {
 }
 
 templ CartDrawerItems(items []cart.CartItemDetail, total int) {
-	<div id="cart-drawer-items" class="flex flex-col gap-4 flex-1 overflow-y-auto">
+	<div id="cart-drawer-items" class="flex flex-col gap-4 flex-1 overflow-y-auto pr-6">
 		if len(items) == 0 {
 			<p class="text-muted">Your cart is empty.</p>
 		} else {
 			for _, item := range items {
-				<div class="flex items-center justify-between gap-4">
+				<div
+					class="flex items-center justify-between gap-4"
+					data-signals={ fmt.Sprintf("{dqty_%d: %d}", item.ProductID, item.Quantity) }
+				>
 					<div class="flex flex-col flex-1">
 						<p class="text-text">{ item.Name }</p>
-						<h5 class="text-muted">{ fmt.Sprintf("%d × $%.2f", item.Quantity, float64(item.Price)/100) }</h5>
+						<h5 class="text-muted">{ fmt.Sprintf("$%.2f", float64(item.Price)/100) }</h5>
 					</div>
-					<h5 class="text-accent">{ fmt.Sprintf("$%.2f", float64(item.Price * item.Quantity)/100) }</h5>
-					<button
-						data-on:click={ fmt.Sprintf("$productId = %d; @post('/cart/remove')", item.ProductID) }
-						class="text-muted hover:text-text transition-colors"
-					>
-						@modules.IconClose(modules.IconProps{Size: "16", Class: "hover:text-accent cursor-pointer"})
-					</button>
+					<div class="flex flex-col gap-2 items-end">
+						<div class="flex items-center gap-1">
+							<button
+								data-on:click={ fmt.Sprintf("$dqty_%d--; $productId = %d; $qty = $dqty_%d; @post('/cart/drawer/qty')", item.ProductID, item.ProductID, item.ProductID) }
+								class="w-6 h-6 flex items-center justify-center border border-border rounded text-muted hover:text-text"
+							>−</button>
+							<span data-text={ fmt.Sprintf("$dqty_%d", item.ProductID) } class="w-5 text-center text-xs">{ fmt.Sprintf("%d", item.Quantity) }</span>
+							<button
+								data-on:click={ fmt.Sprintf("$dqty_%d++; $productId = %d; $qty = $dqty_%d; @post('/cart/drawer/qty')", item.ProductID, item.ProductID, item.ProductID) }
+								class="w-6 h-6 flex items-center justify-center border border-border rounded text-muted hover:text-text"
+							>+</button>
+						</div>
+						<div class="flex gap-2">
+							<h5 class="text-accent">{ fmt.Sprintf("$%.2f", float64(item.Price*item.Quantity)/100) }</h5>
+							<button
+								data-on:click={ fmt.Sprintf("$productId = %d; @post('/cart/remove')", item.ProductID) }
+								class="text-muted hover:text-text transition-colors"
+							>
+								@modules.IconClose(modules.IconProps{Size: "16", Class: "hover:text-accent cursor-pointer"})
+							</button>
+						</div>
+					</div>
 				</div>
 			}
 			<div class="border-t border-border pt-4 mt-auto">
@@ -143,9 +161,82 @@ templ CartDrawerItems(items []cart.CartItemDetail, total int) {
 					Href:      "/cart",
 					FullWidth: true,
 				}) {
-					View Cart
+					Checkout
 				}
 			</div>
 		}
 	</div>
+}
+
+templ Checkout(items []modules.NavItem, currentPath string, meta modules.Meta, lineItems []cart.CartItemDetail, total int, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
+		@CheckoutContent(lineItems, total)
+	}
+}
+
+templ CheckoutContent(lineItems []cart.CartItemDetail, total int) {
+	<section id="checkout-content" class="min-h-screen">
+		<h2>Cart</h2>
+		if len(lineItems) == 0 {
+			<p class="text-muted">Your cart is empty.</p>
+		} else {
+			<div class="flex gap-8 items-start">
+				<div class="flex-1 flex flex-col gap-4" id="checkout-items">
+					for _, item := range lineItems {
+						@CheckoutRow(item)
+					}
+				</div>
+				<div class="w-64 flex flex-col gap-4 border border-border rounded-lg p-4">
+					<div class="flex justify-between text-sm">
+						<span class="text-muted">Subtotal</span>
+						<span>{ fmt.Sprintf("$%.2f", float64(total)/100) }</span>
+					</div>
+					<form id="checkout-form" method="POST" action="/cart/checkout">
+						@modules.Button(modules.ButtonProps{
+							Type:       modules.ButtonTypeSubmit,
+							FullWidth:  true,
+							Attributes: templ.Attributes{"form": "checkout-form"},
+						}) {
+							Pay Now
+						}
+					</form>
+				</div>
+			</div>
+		}
+	</section>
+}
+
+templ CheckoutRow(item cart.CartItemDetail) {
+	<div
+		id={ fmt.Sprintf("checkout-row-%d", item.ProductID) }
+		data-signals={ fmt.Sprintf("{qty_%d: %d}", item.ProductID, item.Quantity) }
+		class="flex items-center gap-4 border-b border-border pb-4"
+	>
+		<div class="flex-1">
+			<p class="font-medium">{ item.Name }</p>
+			<p class="text-muted text-sm">{ fmt.Sprintf("$%.2f", float64(item.Price)/100) } each</p>
+		</div>
+		<div class="flex items-center gap-2">
+			<button
+				data-on:click={ fmt.Sprintf("$qty_%d--; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt"
+			>−</button>
+			<span data-text={ fmt.Sprintf("$qty_%d", item.ProductID) } class="w-6 text-center text-sm">{ fmt.Sprintf("%d", item.Quantity) }</span>
+			<button
+				data-on:click={ fmt.Sprintf("$qty_%d++; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt"
+			>+</button>
+		</div>
+		<p class="w-16 text-right text-sm">{ fmt.Sprintf("$%.2f", float64(item.Price*item.Quantity)/100) }</p>
+	</div>
+}
+
+templ CartSuccess(items []modules.NavItem, currentPath string, meta modules.Meta, orderID string, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
+		<section class="min-h-screen flex flex-col items-center justify-center gap-4">
+			<h2>Order placed</h2>
+			<p class="text-muted">Order #{ orderID } confirmed. Thank you.</p>
+			<a href="/shop" class="btn-primary">Continue shopping</a>
+		</section>
+	}
 }
