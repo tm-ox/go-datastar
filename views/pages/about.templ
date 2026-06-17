@@ -6,8 +6,8 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ About(items []modules.NavItem, currentPath string, page content.AboutPage, meta modules.Meta) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ About(items []modules.NavItem, currentPath string, page content.AboutPage, meta modules.Meta, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@AboutContent(page)
 	}
 }

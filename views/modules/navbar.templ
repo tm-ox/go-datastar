@@ -24,6 +24,31 @@ templ Navbar(items []NavItem, currentPath string) {
 					@IconSettings(IconProps{Size: "20"})
 				</a>
 			}
+			@CartBadge()
 		</nav>
 	</div>
+}
+
+templ TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive ButtonVariant, size ButtonSize) {
+	for _, item := range items {
+		if item.URL == currentPath {
+			@Button(ButtonProps{
+				Variant:    active,
+				Href:       item.URL,
+				Size:       size,
+				Attributes: templ.Attributes{"data-on:click__prevent": "document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
+			}) {
+				{ item.Label }
+			}
+		} else {
+			@Button(ButtonProps{
+				Variant:    inactive,
+				Href:       item.URL,
+				Size:       size,
+				Attributes: templ.Attributes{"data-on:click__prevent": "document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
+			}) {
+				{ item.Label }
+			}
+		}
+	}
 }

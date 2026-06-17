@@ -15,6 +15,20 @@ func Migrate(db *sql.DB) error {
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			stock INTEGER NOT NULL DEFAULT 0
 		);
+		CREATE TABLE IF NOT EXISTS carts (
+      		id INTEGER PRIMARY KEY AUTOINCREMENT,
+      		cart_id TEXT UNIQUE NOT NULL,
+      		user_id INTEGER,   -- nullable, future auth
+      		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE TABLE IF NOT EXISTS cart_items (
+        	id INTEGER PRIMARY KEY AUTOINCREMENT,
+        	cart_id TEXT NOT NULL REFERENCES carts(cart_id),
+        	product_id INTEGER NOT NULL REFERENCES products(id),
+        	quantity INTEGER NOT NULL DEFAULT 1,
+        	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        	UNIQUE(cart_id, product_id)
+        );
 		CREATE TABLE IF NOT EXISTS work (
 			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			slug TEXT UNIQUE NOT NULL,

@@ -5,8 +5,8 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ NotFound(items []modules.NavItem, currentPath string, meta modules.Meta) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ NotFound(items []modules.NavItem, currentPath string, meta modules.Meta, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		<section class="min-h-screen flex flex-col justify-center">
 			<h1 class="mb-6">{ meta.Title }</h1>
 			<h2 class="text-muted">{ meta.Description }</h2>

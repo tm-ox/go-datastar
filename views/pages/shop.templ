@@ -7,8 +7,8 @@ import (
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
-templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, page int, total int, limit int) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ Shop(items []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, page int, total int, limit int, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@ShopContent(products, categories, page, total, limit)
 	}
 }
@@ -57,8 +57,8 @@ templ ShopGrid(products []product.Product, page, total, limit int) {
 	</div>
 }
 
-templ ShopDetail(items []modules.NavItem, currentPath string, meta modules.Meta, p *product.Product) {
-	@layouts.BaseLayout(items, currentPath, meta) {
+templ ShopDetail(items []modules.NavItem, currentPath string, meta modules.Meta, p *product.Product, cartTotal int) {
+	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		@ShopDetailContent(p)
 	}
 }
@@ -66,7 +66,7 @@ templ ShopDetail(items []modules.NavItem, currentPath string, meta modules.Meta,
 templ ShopDetailContent(p *product.Product) {
 	if p != nil {
 		<section class="min-h-screen">
-			<div class="grid grid-cols-[2fr_1fr] gap-8">
+			<div class="grid grid-cols-[2fr_1fr] gap-8" data-signals={ fmt.Sprintf("{productId: %d}", p.ID) }>
 				if p.Image.Valid {
 					<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full object-cover border border-border rounded-lg"/>
 				}
@@ -86,10 +86,11 @@ templ ShopDetailContent(p *product.Product) {
 						<p>{ p.Description }</p>
 						<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
 						@modules.Button(modules.ButtonProps{
-							Size:      modules.ButtonSizeSm,
-							FullWidth: false,
-							Class:     "w-fit",
-							Disabled:  p.Stock == 0,
+							Size:       modules.ButtonSizeSm,
+							FullWidth:  false,
+							Class:      "w-fit",
+							Disabled:   p.Stock == 0,
+							Attributes: templ.Attributes{"data-on:click": "@post('/cart/add')"},
 						}) {
 							Add to cart
 						}

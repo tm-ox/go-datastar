@@ -26,7 +26,9 @@
 .settings-entry {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    transition:
+        opacity 0.2s ease-out,
+        transform 0.2s ease-out;
     @starting-style {
         opacity: 0;
         transform: translateY(-20px);
@@ -54,9 +56,9 @@
         @apply flex gap-1 items-center;
     }
 
-    nav a {
+    /*nav a {
         @apply text-muted hover:text-text transition-colors;
-    }
+    }*/
 
     section {
         @apply max-w-6xl mx-auto min-h-screen py-28 px-8;
