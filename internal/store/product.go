@@ -1,10 +1,22 @@
-package product
+package store
 
 import (
 	"database/sql"
 	"regexp"
 	"strings"
 )
+
+type Product struct {
+	ID          int
+	Image       sql.NullString
+	Name        string
+	Description string
+	Price       int
+	Category    string
+	Slug        string
+	CreatedAt   string
+	Stock       int
+}
 
 var nonAlphanumeric = regexp.MustCompile(`[^a-z0-9]+`)
 
@@ -14,7 +26,15 @@ func slugify(s string) string {
 	return strings.Trim(s, "-")
 }
 
-func (s *SQLiteProductStore) Create(p Product) (int, error) {
+type ProductStore struct {
+	db *sql.DB
+}
+
+func NewProductStore(db *sql.DB) *ProductStore {
+	return &ProductStore{db: db}
+}
+
+func (s *ProductStore) Create(p Product) (int, error) {
 	p.Slug = slugify(p.Name)
 	res, err := s.db.Exec(
 		"INSERT INTO products (image, name, description, price, category, slug, stock) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -27,7 +47,7 @@ func (s *SQLiteProductStore) Create(p Product) (int, error) {
 	return int(id), err
 }
 
-func (s *SQLiteProductStore) Update(p Product) error {
+func (s *ProductStore) Update(p Product) error {
 	_, err := s.db.Exec(
 		"UPDATE products SET image = ?, name = ?, description = ?, price = ?, category = ?, stock = ? WHERE id = ?",
 		p.Image, p.Name, p.Description, p.Price, p.Category, p.Stock, p.ID,
@@ -35,12 +55,12 @@ func (s *SQLiteProductStore) Update(p Product) error {
 	return err
 }
 
-func (s *SQLiteProductStore) Delete(id int) error {
+func (s *ProductStore) Delete(id int) error {
 	_, err := s.db.Exec("DELETE FROM products WHERE id = ?", id)
 	return err
 }
 
-func (s *SQLiteProductStore) GetByID(id int) (*Product, error) {
+func (s *ProductStore) GetByID(id int) (*Product, error) {
 	var p Product
 	err := s.db.QueryRow(
 		"SELECT id, image, name, description, price, category, slug, created_at, stock FROM products WHERE id = ?", id,
@@ -51,15 +71,7 @@ func (s *SQLiteProductStore) GetByID(id int) (*Product, error) {
 	return &p, err
 }
 
-type SQLiteProductStore struct {
-	db *sql.DB
-}
-
-func NewSQLiteProductStore(db *sql.DB) *SQLiteProductStore {
-	return &SQLiteProductStore{db: db}
-}
-
-func (s *SQLiteProductStore) List(page, limit int) ([]Product, int, error) {
+func (s *ProductStore) List(page, limit int) ([]Product, int, error) {
 	var total int
 	err := s.db.QueryRow("SELECT COUNT(*) FROM products").Scan(&total)
 	if err != nil {
@@ -85,7 +97,7 @@ func (s *SQLiteProductStore) List(page, limit int) ([]Product, int, error) {
 	return products, total, rows.Err()
 }
 
-func (s *SQLiteProductStore) GetBySlug(slug string) (*Product, error) {
+func (s *ProductStore) GetBySlug(slug string) (*Product, error) {
 	var p Product
 	err := s.db.QueryRow("SELECT id, image, name, description, price, category, slug, created_at, stock FROM products WHERE slug = ?", slug).
 		Scan(&p.ID, &p.Image, &p.Name, &p.Description, &p.Price, &p.Category, &p.Slug, &p.CreatedAt, &p.Stock)
@@ -107,23 +119,36 @@ var sortClauses = map[string]string{
 	"stock-desc":    "stock DESC",
 }
 
-func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bool, sort string, search string, page, limit int) ([]Product, int, error) {
+// ProductQuery describes a filtered, paginated product listing. Zero-valued
+// fields are unset: an empty Category matches all categories, a false InStock
+// applies no stock filter, and so on.
+type ProductQuery struct {
+	Category   string
+	InStock    bool
+	OutOfStock bool
+	Sort       string
+	Search     string
+	Page       int
+	Limit      int
+}
+
+func (s *ProductStore) Filter(q ProductQuery) ([]Product, int, error) {
 	where := []string{}
 	args := []any{}
 
-	if category != "" {
+	if q.Category != "" {
 		where = append(where, "category = ?")
-		args = append(args, category)
+		args = append(args, q.Category)
 	}
-	if inStock {
+	if q.InStock {
 		where = append(where, "stock > 0")
 	}
-	if outOfStock {
+	if q.OutOfStock {
 		where = append(where, "stock = 0")
 	}
-	if search != "" {
+	if q.Search != "" {
 		where = append(where, "(name LIKE ? OR description LIKE ?)")
-		args = append(args, "%"+search+"%", "%"+search+"%")
+		args = append(args, "%"+q.Search+"%", "%"+q.Search+"%")
 	}
 
 	baseQuery := "SELECT id, image, name, description, price, category, slug, created_at, stock FROM products"
@@ -136,7 +161,7 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bo
 	}
 
 	orderBy := " ORDER BY name ASC"
-	if s, ok := sortClauses[sort]; ok {
+	if s, ok := sortClauses[q.Sort]; ok {
 		orderBy = " ORDER BY " + s
 	}
 	baseQuery += orderBy
@@ -146,8 +171,8 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bo
 		return nil, 0, err
 	}
 
-	offset := (page - 1) * limit
-	rows, err := s.db.Query(baseQuery+" LIMIT ? OFFSET ?", append(args, limit, offset)...)
+	offset := (q.Page - 1) * q.Limit
+	rows, err := s.db.Query(baseQuery+" LIMIT ? OFFSET ?", append(args, q.Limit, offset)...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -164,7 +189,7 @@ func (s *SQLiteProductStore) Filter(category string, inStock bool, outOfStock bo
 	return products, total, rows.Err()
 }
 
-func (s *SQLiteProductStore) UniqueCategories() ([]string, error) {
+func (s *ProductStore) UniqueCategories() ([]string, error) {
 	rows, err := s.db.Query("SELECT DISTINCT category FROM products ORDER BY category")
 	if err != nil {
 		return nil, err
@@ -182,7 +207,7 @@ func (s *SQLiteProductStore) UniqueCategories() ([]string, error) {
 	return categories, rows.Err()
 }
 
-func (s *SQLiteProductStore) UpdateStock(id int, stock int) error {
+func (s *ProductStore) UpdateStock(id int, stock int) error {
 	_, err := s.db.Exec("UPDATE products SET stock = ? WHERE id = ?", stock, id)
 	return err
 }

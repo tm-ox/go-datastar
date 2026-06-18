@@ -9,8 +9,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
 	"github.com/tm-ox/go-datastar/internal/middleware"
-	"github.com/tm-ox/go-datastar/internal/store/product"
-	"github.com/tm-ox/go-datastar/internal/store/work"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
@@ -18,11 +17,11 @@ import (
 type SettingsHandler struct {
 	nav       []modules.NavItem
 	sections  []modules.NavItem
-	store     product.ProductStore
-	workStore work.WorkStore
+	store     *store.ProductStore
+	workStore *store.WorkStore
 }
 
-func NewSettingsHandler(nav []modules.NavItem, sections []modules.NavItem, store product.ProductStore, workStore work.WorkStore) *SettingsHandler {
+func NewSettingsHandler(nav []modules.NavItem, sections []modules.NavItem, store *store.ProductStore, workStore *store.WorkStore) *SettingsHandler {
 	return &SettingsHandler{nav: nav, sections: sections, store: store, workStore: workStore}
 }
 
@@ -66,7 +65,10 @@ func (h *SettingsHandler) WorkFilter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	entries, total, err := h.workStore.Filter(sig.Type, sig.Client, sig.Year, sig.Tool, sig.Search, sig.Sort, sig.Page, defaultLimit)
+	entries, total, err := h.workStore.Filter(store.WorkQuery{
+		Type: sig.Type, Client: sig.Client, Year: sig.Year, Tool: sig.Tool,
+		Search: sig.Search, Sort: sig.Sort, Page: sig.Page, Limit: defaultLimit,
+	})
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -77,7 +79,7 @@ func (h *SettingsHandler) WorkFilter(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SettingsHandler) WorkForm(w http.ResponseWriter, r *http.Request) {
-	var entry work.Work
+	var entry store.Work
 	if idStr := r.URL.Query().Get("id"); idStr != "" {
 		id, err := strconv.Atoi(idStr)
 		if err == nil {
@@ -112,7 +114,7 @@ func (h *SettingsHandler) WorkCreate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	entry := work.Work{
+	entry := store.Work{
 		SortOrder:   sig.SortOrder,
 		Title:       sig.Title,
 		WorkType:    sig.WorkType,
@@ -160,7 +162,7 @@ func (h *SettingsHandler) WorkUpdate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	entry := work.Work{
+	entry := store.Work{
 		ID:          sig.ID,
 		SortOrder:   sig.SortOrder,
 		Title:       sig.Title,
@@ -209,7 +211,7 @@ func (h *SettingsHandler) WorkDelete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SettingsHandler) Shop(w http.ResponseWriter, r *http.Request) {
-	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	products, total, err := h.store.Filter(store.ProductQuery{Page: 1, Limit: defaultLimit})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -254,12 +256,12 @@ func (h *SettingsHandler) ShopStock(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	products, _, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	products, _, err := h.store.Filter(store.ProductQuery{Page: 1, Limit: defaultLimit})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	var updated product.Product
+	var updated store.Product
 	for _, p := range products {
 		if p.ID == sig.ProductId {
 			updated = p
@@ -285,7 +287,10 @@ func (h *SettingsHandler) ShopFilter(w http.ResponseWriter, r *http.Request) {
 	if sig.Page < 1 {
 		sig.Page = 1
 	}
-	products, total, err := h.store.Filter(sig.Category, false, sig.OutOfStock, sig.Sort, sig.Search, sig.Page, defaultLimit)
+	products, total, err := h.store.Filter(store.ProductQuery{
+		Category: sig.Category, OutOfStock: sig.OutOfStock, Sort: sig.Sort,
+		Search: sig.Search, Page: sig.Page, Limit: defaultLimit,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -295,7 +300,7 @@ func (h *SettingsHandler) ShopFilter(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SettingsHandler) ShopProductForm(w http.ResponseWriter, r *http.Request) {
-	var p product.Product
+	var p store.Product
 	if idStr := r.URL.Query().Get("id"); idStr != "" {
 		id, err := strconv.Atoi(idStr)
 		if err == nil {
@@ -326,7 +331,7 @@ func (h *SettingsHandler) ShopProductCreate(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	p := product.Product{
+	p := store.Product{
 		Name:        sig.Name,
 		Description: sig.Description,
 		Price:       int(sig.Price * 100),
@@ -352,7 +357,7 @@ func (h *SettingsHandler) ShopProductCreate(w http.ResponseWriter, r *http.Reque
 		sse.PatchElementTempl(views.SettingsShopCategories(categories))
 	}
 	sse.MarshalAndPatchSignals(map[string]any{"modalOpen": false, "category": ""})
-	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	products, total, err := h.store.Filter(store.ProductQuery{Page: 1, Limit: defaultLimit})
 	if err == nil {
 		sse.PatchElementTempl(views.SettingsShopRows(products, 1, total, defaultLimit))
 	}
@@ -373,7 +378,7 @@ func (h *SettingsHandler) ShopProductUpdate(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	p := product.Product{
+	p := store.Product{
 		ID:          sig.ID,
 		Name:        sig.Name,
 		Description: sig.Description,
@@ -418,7 +423,7 @@ func (h *SettingsHandler) ShopProductDelete(w http.ResponseWriter, r *http.Reque
 		sse.PatchElementTempl(views.SettingsShopCategories(categories))
 	}
 	sse.MarshalAndPatchSignals(map[string]any{"category": ""})
-	products, total, err := h.store.Filter("", false, false, "", "", 1, defaultLimit)
+	products, total, err := h.store.Filter(store.ProductQuery{Page: 1, Limit: defaultLimit})
 	if err == nil {
 		sse.PatchElementTempl(views.SettingsShopRows(products, 1, total, defaultLimit))
 	}

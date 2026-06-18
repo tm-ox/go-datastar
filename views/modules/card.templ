@@ -4,7 +4,7 @@ package modules
 import (
 	"fmt"
 	"github.com/tm-ox/go-datastar/internal/content"
-	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/internal/store"
 )
 
 type CardVariant string
@@ -65,7 +65,7 @@ templ Card(props CardProps) {
 	}
 }
 
-templ CardProduct(p *product.Product) {
+templ ProductCard(p *store.Product) {
 	if p != nil {
 		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 bg-surface rounded-lg overflow-hidden mb-4">
 			if p.Image.Valid {

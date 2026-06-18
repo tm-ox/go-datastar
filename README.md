@@ -97,31 +97,53 @@ internal/
     site.go                  — site types (HomePage, AboutPage, Section, Card) + Load()
     content.yaml             — home + about copy
   db/
-    db.go                    — SQLite connection (modernc.org/sqlite)
+    db.go                    — SQLite connection; WAL + busy_timeout on file DBs
     migrate.go               — schema migrations, run at startup
-  store/
-    product/
-      product.go             — Product struct, ProductStore interface
-      sqlite.go              — SQLiteProductStore: List, Filter, GetBySlug, GetByID, UpdateStock, Create, Update, Delete
-    work/
-      work.go                — Work struct (with Images []WorkImage), WorkStore interface
-      sqlite.go              — SQLiteWorkStore: List, Filter, GetBySlug, GetByID, Create, Update, Delete, UniqueTypes/Clients/Years/Tools
+  store/                     — one package; concrete stores over *sql.DB, no interfaces (see docs/adr/0001)
+    cart.go                  — CartStore, CartSummary, Summary; shared itemDetails/subtotal helpers
+    product.go               — ProductStore, Product, ProductQuery; List/Filter/Get/Create/Update/Delete/UpdateStock
+    work.go                  — WorkStore, Work (with Images), WorkQuery; List/Filter/Get/Create/Update/Delete/Unique*
+    order.go                 — OrderStore.Place (one tx: persist order + clear cart), ErrEmptyCart
+    *_test.go                — store tests against in-memory SQLite
+  render/
+    render.go                — Page: full-page render, or Datastar SSE shell-patch — the page shell in one place
   handler/
     constants.go             — defaultLimit = 20
     site.go                  — SiteHandler: Index, About
     shop.go                  — ShopHandler: Index, Filter, Detail
-    settings.go              — SettingsHandler: Work, WorkFilter, WorkForm, WorkCreate, WorkUpdate, WorkDelete, Shop, ShopFilter, ShopStock, ShopProductForm, ShopProductCreate, ShopProductUpdate, ShopProductDelete
+    settings.go              — SettingsHandler: Work* and Shop* CRUD
     work.go                  — WorkHandler: Index, Filter, Detail
+    cart.go                  — CartHandler: Add, Remove, Total, Drawer, UpdateQty, Checkout, PlaceOrder, Success
   middleware/
+    cart.go                  — injects cart total into request context
     logging.go               — request logging middleware
 views/
   layouts/
     base.templ               — base HTML layout (id="main" swap target, id="site-header" for nav patch)
-    sub.templ                — SubLayout (unused — settings moved to BaseLayout + inline subnav)
-  modules/                   — Navbar, TabBar, Hero, Card, CardProduct, Button, Icon, Footer, Pagination, Search
-  pages/                     — page templates; each page has a full wrapper + *Content partial for SPA swap
+    sub.templ                — SubLayout (unused)
+  modules/                   — Navbar, TabBar, Hero, Card, ProductCard, Button, Icon, Footer, Pagination, Search
+  pages/                     — *Content partials wrapped by render.Page; NotFound and CartSuccess are full pages
 static/input.css             — Tailwind source (theme tokens, base styles, component classes)
 ```
+
+## Architecture notes
+
+- **Stores are concrete, not interfaces.** Each store is a struct over `*sql.DB`;
+  swapping the backend means rewriting `internal/store`, not the callers. Tested
+  against in-memory SQLite. See `docs/adr/0001`.
+- **`render.Page` owns the page shell.** Handlers pass a `*Content` partial plus
+  nav/path/meta; `render.Page` decides between a full `BaseLayout` render and a
+  Datastar SSE shell-patch (`site-header` + `main`). Domain vocabulary lives in
+  `CONTEXT.md`.
+
+## Test
+
+```bash
+go test ./...
+```
+
+Store, render, and db tests run against a throwaway in-memory SQLite database — no
+fixtures, no external services.
 
 ## SQLite Tables
 

@@ -19,7 +19,7 @@ func main() {
 
 	products := []struct {
 		name, description, category, slug, image string
-		price, stock                              int
+		price, stock                             int
 	}{
 		{"Test Product", "A test description.", "prints", "test-product", "https://picsum.photos/seed/test-product/400/300", 1999, 5},
 		{"Risograph Print No. 1", "Two-colour risograph print, A3 format.", "prints", "risograph-print-1", "https://picsum.photos/seed/risograph-print-1/400/300", 3500, 12},

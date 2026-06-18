@@ -2,20 +2,13 @@ package views
 
 import (
 	"fmt"
-	"github.com/tm-ox/go-datastar/internal/store/work"
-	"github.com/tm-ox/go-datastar/views/layouts"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 	"strings"
 )
 
-templ Work(items []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string, cartTotal int) {
-	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
-		@WorkContent(entries, total, limit, types, clients, years, tools)
-	}
-}
-
-templ WorkContent(entries []work.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
+templ WorkContent(entries []store.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
 		<h2>Work</h2>
 		<div class="flex w-full items-center mb-3">
@@ -59,7 +52,7 @@ templ WorkContent(entries []work.Work, total int, limit int, types []string, cli
 	</section>
 }
 
-templ WorkRows(entries []work.Work, page, total, limit int) {
+templ WorkRows(entries []store.Work, page, total, limit int) {
 	<div id="work-rows">
 		<div class="grid grid-cols-5 gap-4">
 			for _, img := range entries {
@@ -78,13 +71,7 @@ templ WorkRows(entries []work.Work, page, total, limit int) {
 	</div>
 }
 
-templ WorkDetail(items []modules.NavItem, currentPath string, entry *work.Work, meta modules.Meta, cartTotal int) {
-	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
-		@WorkDetailContent(entry)
-	}
-}
-
-func buildImageList(images []work.WorkImage) string {
+func buildImageList(images []store.WorkImage) string {
 	urls := make([]string, len(images))
 	for i, img := range images {
 		urls[i] = `"` + img.URL + `"`
@@ -92,7 +79,7 @@ func buildImageList(images []work.WorkImage) string {
 	return strings.Join(urls, ",")
 }
 
-templ WorkDetailContent(entry *work.Work) {
+templ WorkDetailContent(entry *store.Work) {
 	<section class="min-h-screen">
 		<h2>{ entry.Title }</h2>
 		<h5 class="text-accent font-bold">Type: <span class="text-muted font-normal">{ entry.WorkType }</span></h5>

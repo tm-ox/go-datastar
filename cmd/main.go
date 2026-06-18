@@ -14,10 +14,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/db"
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
-	"github.com/tm-ox/go-datastar/internal/store/cart"
-	"github.com/tm-ox/go-datastar/internal/store/order"
-	"github.com/tm-ox/go-datastar/internal/store/product"
-	"github.com/tm-ox/go-datastar/internal/store/work"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -49,10 +46,10 @@ func main() {
 		log.Fatalf("failed to run migrations: %v", err)
 	}
 
-	productStore := product.NewSQLiteProductStore(database)
-	workStore := work.NewSQLiteWorkStore(database)
-	cartStore := cart.NewSQLiteCartStore(database)
-	orderStore := order.NewSQLiteOrderStore(database)
+	productStore := store.NewProductStore(database)
+	workStore := store.NewWorkStore(database)
+	cartStore := store.NewCartStore(database)
+	orderStore := store.NewOrderStore(database)
 	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
 
 	site_h := handler.NewSiteHandler(nav, site)
@@ -73,7 +70,6 @@ func main() {
 	mux.HandleFunc("POST /cart/add", cart_h.Add)
 	mux.HandleFunc("/cart/total", cart_h.Total)
 	mux.HandleFunc("/cart/drawer", cart_h.Drawer)
-	mux.HandleFunc("POST /cart/drawer/qty", cart_h.DrawerUpdateQty)
 	mux.HandleFunc("POST /cart/remove", cart_h.Remove)
 	mux.HandleFunc("GET /cart", cart_h.Checkout)
 	mux.HandleFunc("POST /cart/qty", cart_h.UpdateQty)
