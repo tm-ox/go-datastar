@@ -1,6 +1,7 @@
 package views
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/tm-ox/go-datastar/internal/store/product"
 	"github.com/tm-ox/go-datastar/internal/store/work"
@@ -77,7 +78,7 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 			<div
 				data-show="$modalOpen"
 				data-on:click="$modalOpen = false"
-				class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+				class="fixed inset-0 bg-black/50 flex items-center justify-center pb-24 z-50"
 			>
 				<div
 					data-on:click="evt.stopPropagation()"
@@ -142,15 +143,42 @@ templ SettingsWorkRow(entry work.Work) {
 templ SettingsWorkForm(w work.Work) {
 	<div id="work-form">
 		<div
-			data-signals={ "{formId:" + strconv.Itoa(w.ID) + ",formSortOrder:" + strconv.Itoa(w.SortOrder) + ",formTitle:'" + w.Title + "',formType:'" + w.WorkType + "',formClient:'" + w.Client + "',formYear:" + strconv.Itoa(w.Year) + ",formTools:'" + w.Tools + "',formDescription:'" + w.Description + "',formWebsite:'" + w.Website + "',formLink:'" + w.Link + "',formCoverURL:'" + w.CoverURL + "'}" }
+			data-signals={ func() string {
+			mustJSON := func(v any) string {
+				b, _ := json.Marshal(v)
+				return string(b)
+			}
+			return fmt.Sprintf(
+				`{"formId":%d,"formSortOrder":%d,"formTitle":%s,"formType":%s,"formClient":%s,"formYear":%d,"formTools":%s,"formDescription":%s,"formWebsite":%s,"formLink":%s,"formCoverURL":%s}`,
+				w.ID,
+				w.SortOrder,
+				mustJSON(w.Title),
+				mustJSON(w.WorkType),
+				mustJSON(w.Client),
+				w.Year,
+				mustJSON(w.Tools),
+				mustJSON(w.Description),
+				mustJSON(w.Website),
+				mustJSON(w.Link),
+				mustJSON(w.CoverURL),
+			)
+		}() }
 		>
-			<h3 class="mb-4">
-				if w.ID == 0 {
-					Add Entry
-				} else {
-					Edit Entry
+			<div class="grid-2 mb-6">
+				<h3>
+					if w.ID == 0 {
+						Add Entry
+					} else {
+						Edit Entry
+					}
+				</h3>
+				if w.ID != 0 {
+					<div class="flex flex-col gap-1">
+						<h5 class="text-accent">Slug:</h5>
+						<p class="text-muted text-sm">{ w.Slug }</p>
+					</div>
 				}
-			</h3>
+			</div>
 			<div class="grid-2 mb-3">
 				<div class="flex flex-col gap-1 mb-3">
 					<h5 class="text-accent">Title:</h5>
@@ -286,7 +314,7 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 			<div
 				data-show="$modalOpen"
 				data-on:click="$modalOpen = false"
-				class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+				class="fixed inset-0 bg-black/50 flex items-center justify-center pb-24 z-50"
 			>
 				<div
 					data-on:click="evt.stopPropagation()"
@@ -382,12 +410,25 @@ templ SettingsShopProductForm(p product.Product) {
 	<div id="product-form">
 		<div
 			data-signals={ func() string {
-      		price := fmt.Sprintf("%.2f", float64(p.Price)/100)
-      		if p.ID == 0 {
-          		price = "0"
-      		}
-      		return "{formId:" + strconv.Itoa(p.ID) + ",formName:'" + p.Name + "',formDescription:'" + p.Description + "',formPrice:" + price + ",formCategory:'" + p.Category + "',formImage:'" + p.Image.String + "',formStock:" + strconv.Itoa(p.Stock) + "}"
-					}() }
+				mustJSON := func(v any) string {
+					b, _ := json.Marshal(v)
+					return string(b)
+				}
+				price := fmt.Sprintf("%.2f", float64(p.Price)/100)
+				if p.ID == 0 {
+					price = "0"
+				}
+				return fmt.Sprintf(
+					`{"formId":%d,"formName":%s,"formDescription":%s,"formPrice":%s,"formCategory":%s,"formImage":%s,"formStock":%d}`,
+					p.ID,
+					mustJSON(p.Name),
+					mustJSON(p.Description),
+					price,
+					mustJSON(p.Category),
+					mustJSON(p.Image.String),
+					p.Stock,
+				)
+			}() }
 		>
 			<h3 class="mb-4">
 				if p.ID == 0 {

@@ -135,7 +135,6 @@ func (h *SettingsHandler) WorkCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.SettingsWorkRow(*created), datastar.WithSelectorID("work-tbody"), datastar.WithMode(datastar.ElementPatchModePrepend))
 	entries, total, err := h.workStore.List(1, defaultLimit)
 	if err == nil {
 		sse.PatchElementTempl(views.SettingsWorkRows(entries, 1, total, defaultLimit))
@@ -348,8 +347,6 @@ func (h *SettingsHandler) ShopProductCreate(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.SettingsShopRow(*created), datastar.WithSelectorID("shop-tbody"), datastar.WithMode(datastar.ElementPatchModePrepend))
-
 	categories, err := h.store.UniqueCategories()
 	if err == nil {
 		sse.PatchElementTempl(views.SettingsShopCategories(categories))
