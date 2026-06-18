@@ -7,7 +7,7 @@ tmp/
 work
 
 # sqlite database
-*.db
+*.db*
 
 
 # generated — tailwind output

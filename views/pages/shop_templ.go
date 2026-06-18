@@ -963,7 +963,7 @@ func CheckoutRow(item cart.CartItemDetail) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "\" class=\"w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt\">−</button> <span data-text=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 61, "\" class=\"w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface\">−</button> <span data-text=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1002,7 +1002,7 @@ func CheckoutRow(item cart.CartItemDetail) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "\" class=\"w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt\">+</button></div><p class=\"w-16 text-right text-sm\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 64, "\" class=\"w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface\">+</button></div><p class=\"w-16 text-right text-sm\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
