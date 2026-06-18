@@ -5,6 +5,10 @@ node_modules/
 bin/
 tmp/
 work
+docs/
+!docs/adr/**
+!docs/adr/
+
 
 # sqlite database
 *.db*

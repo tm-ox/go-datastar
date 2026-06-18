@@ -21,14 +21,14 @@ func main() {
 		key, metaTitle, metaDesc, title, tagline, body string
 	}{
 		{
-			key:      "home",
+			key:       "home",
 			metaTitle: "Home",
 			metaDesc:  "A reference implementation built with Go, templ, Datastar, and Tailwind v4.",
 			title:     "go-datastar",
 			tagline:   "Server-driven UI without the JavaScript framework.",
 		},
 		{
-			key:      "about",
+			key:       "about",
 			metaTitle: "About",
 			metaDesc:  "About description.",
 			title:     "About",
@@ -70,7 +70,7 @@ func main() {
 
 	type card struct {
 		sectionKey, title, description, href, icon, buttonText, buttonHref, buttonTarget string
-		sortOrder                                                                         int
+		sortOrder                                                                        int
 	}
 
 	cards := []card{

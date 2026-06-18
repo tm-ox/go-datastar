@@ -2,22 +2,20 @@ package handler
 
 import (
 	"net/http"
-	"net/url"
 
-	"github.com/a-h/templ"
 	"github.com/starfederation/datastar-go/datastar"
-	"github.com/tm-ox/go-datastar/internal/middleware"
-	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/internal/render"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
 type ShopHandler struct {
 	nav   []modules.NavItem
-	store product.ProductStore
+	store *store.ProductStore
 }
 
-func NewShopHandler(nav []modules.NavItem, store product.ProductStore) *ShopHandler {
+func NewShopHandler(nav []modules.NavItem, store *store.ProductStore) *ShopHandler {
 	return &ShopHandler{nav: nav, store: store}
 }
 
@@ -32,17 +30,9 @@ func (h *ShopHandler) Index(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if r.URL.Query().Has("datastar") {
-		sse := datastar.NewSSE(w, r)
-		sse.PatchElementTempl(modules.Navbar(h.nav, "/shop"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
-		sse.PatchElementTempl(views.ShopContent(products, categories, 1, total, defaultLimit), datastar.WithSelectorID("main"), datastar.WithModeInner())
-		sse.ReplaceURL(url.URL{Path: "/shop"})
-		sse.ExecuteScript("window.scrollTo(0,0)")
-		return
-	}
 	meta := modules.Meta{Title: "Shop", Description: "Shop"}
-	cartTotal := middleware.GetCartTotal(r)
-	templ.Handler(views.Shop(h.nav, "/shop", meta, products, categories, 1, total, defaultLimit, cartTotal)).ServeHTTP(w, r)
+	render.Page(w, r, render.View{Nav: h.nav, Path: "/shop", Meta: meta,
+		Content: views.ShopContent(products, categories, 1, total, defaultLimit)})
 }
 
 func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
@@ -56,7 +46,10 @@ func (h *ShopHandler) Filter(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	products, total, err := h.store.Filter(sig.Category, sig.InStock, false, "", sig.Search, sig.Page, defaultLimit)
+	products, total, err := h.store.Filter(store.ProductQuery{
+		Category: sig.Category, InStock: sig.InStock,
+		Search: sig.Search, Page: sig.Page, Limit: defaultLimit,
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -76,15 +69,6 @@ func (h *ShopHandler) Detail(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	if r.URL.Query().Has("datastar") {
-		sse := datastar.NewSSE(w, r)
-		sse.PatchElementTempl(modules.Navbar(h.nav, r.URL.Path), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
-		sse.PatchElementTempl(views.ShopDetailContent(p), datastar.WithSelectorID("main"), datastar.WithModeInner())
-		sse.ReplaceURL(url.URL{Path: r.URL.Path})
-		sse.ExecuteScript("window.scrollTo(0,0)")
-		return
-	}
 	meta := modules.Meta{Title: p.Name, Description: p.Description}
-	cartTotal := middleware.GetCartTotal(r)
-	templ.Handler(views.ShopDetail(h.nav, r.URL.Path, meta, p, cartTotal)).ServeHTTP(w, r)
+	render.Page(w, r, render.View{Nav: h.nav, Path: r.URL.Path, Meta: meta, Content: views.ShopDetailContent(p)})
 }

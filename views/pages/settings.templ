@@ -3,22 +3,21 @@ package views
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tm-ox/go-datastar/internal/store/product"
-	"github.com/tm-ox/go-datastar/internal/store/work"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 	"strings"
 )
 
-templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total, limit int,
+templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []store.Work, total, limit int,
 	types, clients, years, tools []string, cartTotal int) {
 	@layouts.BaseLayout(items, "/settings/work", meta, cartTotal) {
 		@SettingsWorkContent(sections, currentPath, entries, total, limit, types, clients, years, tools)
 	}
 }
 
-templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []work.Work, total, limit int,
+templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []store.Work, total, limit int,
 	types, clients, years, tools []string) {
 	<div class="settings-entry">
 		<nav class="mt-16 content-width flex justify-end pr-25">
@@ -91,7 +90,7 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 	</div>
 }
 
-templ SettingsWorkRows(entries []work.Work, page, total, limit int) {
+templ SettingsWorkRows(entries []store.Work, page, total, limit int) {
 	<div id="settings-work-rows">
 		<table>
 			<thead>
@@ -119,7 +118,7 @@ templ SettingsWorkRows(entries []work.Work, page, total, limit int) {
 	</div>
 }
 
-templ SettingsWorkRow(entry work.Work) {
+templ SettingsWorkRow(entry store.Work) {
 	<tr id={ "work-" + strconv.Itoa(entry.ID) }>
 		<td><a href={ templ.URL("/work/" + entry.Slug) }>{ entry.Title }</a></td>
 		<td>{ entry.WorkType }</td>
@@ -140,7 +139,7 @@ templ SettingsWorkRow(entry work.Work) {
 	</tr>
 }
 
-templ SettingsWorkForm(w work.Work) {
+templ SettingsWorkForm(w store.Work) {
 	<div id="work-form">
 		<div
 			data-signals={ func() string {
@@ -261,13 +260,13 @@ templ SettingsWorkForm(w work.Work) {
 	</div>
 }
 
-templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int, cartTotal int) {
+templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []store.Product, categories []string, total, limit int, cartTotal int) {
 	@layouts.BaseLayout(items, "/settings/shop", meta, cartTotal) {
 		@SettingsShopContent(sections, currentPath, products, categories, total, limit)
 	}
 }
 
-templ SettingsShopContent(sections []modules.NavItem, currentPath string, products []product.Product, categories []string, total, limit int) {
+templ SettingsShopContent(sections []modules.NavItem, currentPath string, products []store.Product, categories []string, total, limit int) {
 	<div class="settings-entry">
 		<nav class="mt-16 content-width flex justify-end pr-25">
 			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
@@ -317,7 +316,7 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 	</div>
 }
 
-templ SettingsShopRows(products []product.Product, page, total, limit int) {
+templ SettingsShopRows(products []store.Product, page, total, limit int) {
 	<div id="settings-shop-rows">
 		<table>
 			<thead>
@@ -344,7 +343,7 @@ templ SettingsShopRows(products []product.Product, page, total, limit int) {
 	</div>
 }
 
-templ SettingsShopRow(p product.Product) {
+templ SettingsShopRow(p store.Product) {
 	<tr
 		id={ "product-" + strconv.Itoa(p.ID) }
 		data-signals={ "{id:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}" }
@@ -396,7 +395,7 @@ templ SettingsShopRow(p product.Product) {
 	</tr>
 }
 
-templ SettingsShopProductForm(p product.Product) {
+templ SettingsShopProductForm(p store.Product) {
 	<div id="product-form">
 		<div
 			data-signals={ func() string {

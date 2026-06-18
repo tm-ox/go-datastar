@@ -1,29 +1,28 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/a-h/templ"
 	"github.com/google/uuid"
 	"github.com/starfederation/datastar-go/datastar"
 	"github.com/tm-ox/go-datastar/internal/middleware"
-	"github.com/tm-ox/go-datastar/internal/store/cart"
-	"github.com/tm-ox/go-datastar/internal/store/order"
-	"github.com/tm-ox/go-datastar/internal/store/product"
+	"github.com/tm-ox/go-datastar/internal/render"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/modules"
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
 type CartHandler struct {
 	nav     []modules.NavItem
-	cart    cart.CartStore
-	product product.ProductStore
-	order   order.OrderStore
+	cart    *store.CartStore
+	product *store.ProductStore
+	order   *store.OrderStore
 }
 
-func NewCartHandler(nav []modules.NavItem, cart cart.CartStore, product product.ProductStore, order order.OrderStore) *CartHandler {
+func NewCartHandler(nav []modules.NavItem, cart *store.CartStore, product *store.ProductStore, order *store.OrderStore) *CartHandler {
 	return &CartHandler{
 		nav:     nav,
 		cart:    cart,
@@ -79,6 +78,17 @@ func (h *CartHandler) Add(w http.ResponseWriter, r *http.Request) {
 	sse.MarshalAndPatchSignals(map[string]any{"cartTotal": total})
 }
 
+// patchCartFragments emits the fragments a cart mutation can affect: the
+// drawer's item list and the checkout section, plus the cart-total signal.
+// Patching a target absent from the current page is a no-op, so one response
+// serves both the drawer and the checkout page.
+func (h *CartHandler) patchCartFragments(w http.ResponseWriter, r *http.Request, sum store.CartSummary) {
+	sse := datastar.NewSSE(w, r)
+	sse.PatchElementTempl(views.CartDrawerItems(sum.Items, sum.Subtotal), datastar.WithSelectorID("cart-drawer-items"), datastar.WithModeOuter())
+	sse.PatchElementTempl(views.CheckoutContent(sum.Items, sum.Subtotal), datastar.WithSelectorID("checkout-content"), datastar.WithModeOuter())
+	sse.MarshalAndPatchSignals(map[string]any{"cartTotal": sum.Count})
+}
+
 func (h *CartHandler) Remove(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
 		ProductID int `json:"productId"`
@@ -96,23 +106,12 @@ func (h *CartHandler) Remove(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	items, err := h.cart.GetItemDetails(c.Value)
+	sum, err := h.cart.Summary(c.Value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	total := 0
-	for _, item := range items {
-		total += item.Price * item.Quantity
-	}
-	qty, err := h.cart.TotalQuantity(c.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.CartDrawerItems(items, total), datastar.WithSelectorID("cart-drawer-items"), datastar.WithModeOuter())
-	sse.MarshalAndPatchSignals(map[string]any{"cartTotal": qty})
+	h.patchCartFragments(w, r, sum)
 }
 
 func (h *CartHandler) Total(w http.ResponseWriter, r *http.Request) {
@@ -136,101 +135,31 @@ func (h *CartHandler) Drawer(w http.ResponseWriter, r *http.Request) {
 		sse.PatchElementTempl(views.CartDrawer(nil, 0), datastar.WithSelectorID("cart-drawer"), datastar.WithModeInner())
 		return
 	}
-	items, err := h.cart.GetItemDetails(c.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	total := 0
-	for _, item := range items {
-		total += item.Price * item.Quantity
-	}
-	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.CartDrawer(items, total), datastar.WithSelectorID("cart-drawer"), datastar.WithModeInner())
-}
-
-func (h *CartHandler) DrawerUpdateQty(w http.ResponseWriter, r *http.Request) {
-	var sig struct {
-		ProductID int `json:"productId"`
-		Qty       int `json:"qty"`
-	}
-	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductID == 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	c, err := r.Cookie("cart_id")
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if sig.Qty <= 0 {
-		if err := h.cart.RemoveItem(c.Value, sig.ProductID); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	} else {
-		if err := h.cart.UpdateQuantity(c.Value, sig.ProductID, sig.Qty); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	}
-	items, err := h.cart.GetItemDetails(c.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	total := 0
-	for _, item := range items {
-		total += item.Price * item.Quantity
-	}
-	qty, err := h.cart.TotalQuantity(c.Value)
+	sum, err := h.cart.Summary(c.Value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.CartDrawerItems(items, total), datastar.WithSelectorID("cart-drawer-items"), datastar.WithModeOuter())
-	sse.PatchElementTempl(views.CheckoutContent(items, total), datastar.WithSelectorID("checkout-content"), datastar.WithModeOuter())
-	sse.MarshalAndPatchSignals(map[string]any{"cartTotal": qty})
+	sse.PatchElementTempl(views.CartDrawer(sum.Items, sum.Subtotal), datastar.WithSelectorID("cart-drawer"), datastar.WithModeInner())
 }
 
 func (h *CartHandler) Checkout(w http.ResponseWriter, r *http.Request) {
-	c, err := r.Cookie("cart_id")
-	if err != nil {
-		if r.URL.Query().Has("datastar") {
-			sse := datastar.NewSSE(w, r)
-			sse.PatchElementTempl(modules.Navbar(h.nav, "/cart"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
-			sse.PatchElementTempl(views.CheckoutContent(nil, 0), datastar.WithSelectorID("main"), datastar.WithModeInner())
-			sse.ReplaceURL(url.URL{Path: "/cart"})
+	var sum store.CartSummary
+	if c, err := r.Cookie("cart_id"); err == nil {
+		sum, err = h.cart.Summary(c.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		cartTotal := middleware.GetCartTotal(r)
-		meta := modules.Meta{Title: "Cart", Description: "Your cart"}
-		templ.Handler(views.Checkout(h.nav, "/cart", meta, nil, 0, cartTotal)).ServeHTTP(w, r)
-		return
 	}
-	items, err := h.cart.GetItemDetails(c.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	total := 0
-	for _, item := range items {
-		total += item.Price * item.Quantity
-	}
-	if r.URL.Query().Has("datastar") {
-		sse := datastar.NewSSE(w, r)
-		sse.PatchElementTempl(modules.Navbar(h.nav, "/cart"), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
-		sse.PatchElementTempl(views.CheckoutContent(items, total), datastar.WithSelectorID("main"), datastar.WithModeInner())
-		sse.ReplaceURL(url.URL{Path: "/cart"})
-		sse.ExecuteScript("window.scrollTo(0,0)")
-		return
-	}
-	cartTotal := middleware.GetCartTotal(r)
 	meta := modules.Meta{Title: "Cart", Description: "Your cart"}
-	templ.Handler(views.Checkout(h.nav, "/cart", meta, items, total, cartTotal)).ServeHTTP(w, r)
+	render.Page(w, r, render.View{Nav: h.nav, Path: "/cart", Meta: meta, Content: views.CheckoutContent(sum.Items, sum.Subtotal)})
 }
 
+// UpdateQty sets a cart line's quantity (removing it when qty drops to zero).
+// It serves both the drawer and the checkout page — patchCartFragments updates
+// whichever is on screen.
 func (h *CartHandler) UpdateQty(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
 		ProductID int `json:"productId"`
@@ -256,23 +185,12 @@ func (h *CartHandler) UpdateQty(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	items, err := h.cart.GetItemDetails(c.Value)
+	sum, err := h.cart.Summary(c.Value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	total := 0
-	for _, item := range items {
-		total += item.Price * item.Quantity
-	}
-	qty, err := h.cart.TotalQuantity(c.Value)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	sse := datastar.NewSSE(w, r)
-	sse.PatchElementTempl(views.CheckoutContent(items, total), datastar.WithSelectorID("main"), datastar.WithModeInner())
-	sse.MarshalAndPatchSignals(map[string]any{"cartTotal": qty})
+	h.patchCartFragments(w, r, sum)
 }
 
 func (h *CartHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
@@ -281,17 +199,12 @@ func (h *CartHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "no cart", http.StatusBadRequest)
 		return
 	}
-	items, err := h.cart.GetItemDetails(c.Value)
-	if err != nil || len(items) == 0 {
+	orderID, err := h.order.Place(c.Value)
+	if errors.Is(err, store.ErrEmptyCart) {
 		http.Error(w, "empty cart", http.StatusBadRequest)
 		return
 	}
-	orderID, err := h.order.Create(c.Value, items)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if err := h.cart.Clear(c.Value); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

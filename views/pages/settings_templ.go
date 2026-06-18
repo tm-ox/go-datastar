@@ -11,15 +11,14 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tm-ox/go-datastar/internal/store/product"
-	"github.com/tm-ox/go-datastar/internal/store/work"
+	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 	"strings"
 )
 
-func SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []work.Work, total, limit int,
+func SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, entries []store.Work, total, limit int,
 	types, clients, years, tools []string, cartTotal int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -67,7 +66,7 @@ func SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentPa
 	})
 }
 
-func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []work.Work, total, limit int,
+func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []store.Work, total, limit int,
 	types, clients, years, tools []string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -133,7 +132,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 45, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 44, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -146,7 +145,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 45, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 44, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -169,7 +168,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 51, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 50, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -182,7 +181,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 51, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 50, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -205,7 +204,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(y)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 57, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 56, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -218,7 +217,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(y)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 57, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 56, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -241,7 +240,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(t)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 63, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 62, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
@@ -254,7 +253,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(t)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 63, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 62, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -313,7 +312,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 	})
 }
 
-func SettingsWorkRows(entries []work.Work, page, total, limit int) templ.Component {
+func SettingsWorkRows(entries []store.Work, page, total, limit int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -365,7 +364,7 @@ func SettingsWorkRows(entries []work.Work, page, total, limit int) templ.Compone
 	})
 }
 
-func SettingsWorkRow(entry work.Work) templ.Component {
+func SettingsWorkRow(entry store.Work) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -393,7 +392,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue("work-" + strconv.Itoa(entry.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 123, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 122, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
@@ -406,7 +405,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var16 templ.SafeURL
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("/work/" + entry.Slug))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 124, Col: 48}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 123, Col: 48}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -419,7 +418,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 124, Col: 64}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 123, Col: 64}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {
@@ -432,7 +431,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(entry.WorkType)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 125, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 124, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {
@@ -445,7 +444,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(entry.Client)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 126, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 125, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 		if templ_7745c5c3_Err != nil {
@@ -458,7 +457,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(entry.Year))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 127, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 126, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
@@ -471,7 +470,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 		var templ_7745c5c3_Var21 string
 		templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(strings.ReplaceAll(entry.Tools, ",", ", "))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 128, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 127, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 		if templ_7745c5c3_Err != nil {
@@ -517,7 +516,7 @@ func SettingsWorkRow(entry work.Work) templ.Component {
 	})
 }
 
-func SettingsWorkForm(w work.Work) templ.Component {
+func SettingsWorkForm(w store.Work) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -564,7 +563,7 @@ func SettingsWorkForm(w work.Work) templ.Component {
 			)
 		}())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 165, Col: 5}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 164, Col: 5}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 		if templ_7745c5c3_Err != nil {
@@ -609,7 +608,7 @@ func SettingsWorkForm(w work.Work) templ.Component {
 				var templ_7745c5c3_Var26 string
 				templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(w.Slug)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 178, Col: 44}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 177, Col: 44}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 				if templ_7745c5c3_Err != nil {
@@ -996,7 +995,7 @@ func SettingsWorkForm(w work.Work) templ.Component {
 	})
 }
 
-func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []product.Product, categories []string, total, limit int, cartTotal int) templ.Component {
+func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPath string, meta modules.Meta, products []store.Product, categories []string, total, limit int, cartTotal int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -1043,7 +1042,7 @@ func SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentPa
 	})
 }
 
-func SettingsShopContent(sections []modules.NavItem, currentPath string, products []product.Product, categories []string, total, limit int) templ.Component {
+func SettingsShopContent(sections []modules.NavItem, currentPath string, products []store.Product, categories []string, total, limit int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -1147,7 +1146,7 @@ func SettingsShopContent(sections []modules.NavItem, currentPath string, product
 	})
 }
 
-func SettingsShopRows(products []product.Product, page, total, limit int) templ.Component {
+func SettingsShopRows(products []store.Product, page, total, limit int) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -1199,7 +1198,7 @@ func SettingsShopRows(products []product.Product, page, total, limit int) templ.
 	})
 }
 
-func SettingsShopRow(p product.Product) templ.Component {
+func SettingsShopRow(p store.Product) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -1227,7 +1226,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var47 string
 		templ_7745c5c3_Var47, templ_7745c5c3_Err = templ.ResolveAttributeValue("product-" + strconv.Itoa(p.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 349, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 348, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var47)
 		if templ_7745c5c3_Err != nil {
@@ -1240,7 +1239,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var48 string
 		templ_7745c5c3_Var48, templ_7745c5c3_Err = templ.ResolveAttributeValue("{id:" + strconv.Itoa(p.ID) + ",currentStock:" + strconv.Itoa(p.Stock) + ",stockValue:" + strconv.Itoa(p.Stock) + ",stockValue_" + strconv.Itoa(p.ID) + ":" + strconv.Itoa(p.Stock) + ",delta:0}")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 350, Col: 210}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 349, Col: 210}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var48)
 		if templ_7745c5c3_Err != nil {
@@ -1253,7 +1252,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var49 templ.SafeURL
 		templ_7745c5c3_Var49, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("/shop/" + p.Slug))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 352, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 351, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var49))
 		if templ_7745c5c3_Err != nil {
@@ -1266,7 +1265,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var50 string
 		templ_7745c5c3_Var50, templ_7745c5c3_Err = templ.JoinStringErrs(p.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 352, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 351, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var50))
 		if templ_7745c5c3_Err != nil {
@@ -1279,7 +1278,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var51 string
 		templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(p.Category)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 353, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 352, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
 		if templ_7745c5c3_Err != nil {
@@ -1292,7 +1291,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var52 string
 		templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(strconv.Itoa(p.Stock))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 354, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 353, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
 		if templ_7745c5c3_Err != nil {
@@ -1337,7 +1336,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 		var templ_7745c5c3_Var54 string
 		templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.ResolveAttributeValue("stockValue_" + strconv.Itoa(p.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 365, Col: 70}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 364, Col: 70}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var54)
 		if templ_7745c5c3_Err != nil {
@@ -1443,7 +1442,7 @@ func SettingsShopRow(p product.Product) templ.Component {
 	})
 }
 
-func SettingsShopProductForm(p product.Product) templ.Component {
+func SettingsShopProductForm(p store.Product) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -1490,7 +1489,7 @@ func SettingsShopProductForm(p product.Product) templ.Component {
 			)
 		}())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 421, Col: 6}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 420, Col: 6}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var59)
 		if templ_7745c5c3_Err != nil {
@@ -1806,7 +1805,7 @@ func SettingsShopCategories(categories []string) templ.Component {
 			var templ_7745c5c3_Var71 string
 			templ_7745c5c3_Var71, templ_7745c5c3_Err = templ.ResolveAttributeValue(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 503, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 502, Col: 20}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var71)
 			if templ_7745c5c3_Err != nil {
@@ -1819,7 +1818,7 @@ func SettingsShopCategories(categories []string) templ.Component {
 			var templ_7745c5c3_Var72 string
 			templ_7745c5c3_Var72, templ_7745c5c3_Err = templ.JoinStringErrs(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 503, Col: 26}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/settings.templ`, Line: 502, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var72))
 			if templ_7745c5c3_Err != nil {

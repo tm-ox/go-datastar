@@ -4,14 +4,14 @@ import (
 	"context"
 	"net/http"
 
-	cartstore "github.com/tm-ox/go-datastar/internal/store/cart"
+	"github.com/tm-ox/go-datastar/internal/store"
 )
 
 type contextKey string
 
 const CartTotalKey contextKey = "cartTotal"
 
-func CartTotal(store cartstore.CartStore, next http.Handler) http.Handler {
+func CartTotal(store *store.CartStore, next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		total := 0
 		if c, err := r.Cookie("cart_id"); err == nil {

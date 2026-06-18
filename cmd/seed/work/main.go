@@ -19,7 +19,7 @@ func main() {
 
 	entries := []struct {
 		slug, title, workType, client, tools, description, website, link, coverURL string
-		year, sort_order                                                            int
+		year, sort_order                                                           int
 	}{
 		{
 			slug: "logos", sort_order: 0, title: "Logo Design", workType: "Logo Design", client: "Various", year: 2024,
