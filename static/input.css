@@ -61,7 +61,7 @@
     }*/
 
     section {
-        @apply max-w-6xl mx-auto min-h-screen py-28 px-8;
+        @apply content-width min-h-screen py-28;
     }
 
     h1 {
@@ -125,13 +125,25 @@
         background-repeat: no-repeat;
         background-position: right 0.9rem center;
     }
+
+    /* number inputs: hide the native spin buttons everywhere */
+    input[type="number"] {
+        appearance: textfield;
+        -moz-appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+}
+
+/* Page width + horizontal gutter — the one place to tune for responsive. */
+@utility content-width {
+    @apply max-w-6xl mx-auto px-8;
 }
 
 @layer components {
-    .content-width {
-        @apply max-w-6xl mx-auto px-8;
-    }
-
     .grid-1 {
         @apply grid grid-cols-1 gap-x-4 gap-y-1;
     }

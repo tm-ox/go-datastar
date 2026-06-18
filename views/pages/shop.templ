@@ -202,12 +202,12 @@ templ CheckoutRow(item store.CartItemDetail) {
 		<div class="flex items-center gap-2">
 			<button
 				data-on:click={ fmt.Sprintf("$qty_%d--; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
-				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt"
+				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface"
 			>−</button>
 			<span data-text={ fmt.Sprintf("$qty_%d", item.ProductID) } class="w-6 text-center text-sm">{ fmt.Sprintf("%d", item.Quantity) }</span>
 			<button
 				data-on:click={ fmt.Sprintf("$qty_%d++; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
-				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface-alt"
+				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface"
 			>+</button>
 		</div>
 		<p class="w-16 text-right text-sm">{ fmt.Sprintf("$%.2f", float64(item.Price*item.Quantity)/100) }</p>

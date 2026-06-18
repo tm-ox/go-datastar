@@ -1,0 +1,11 @@
+package modules
+
+// Field is a labelled form control: a label stacked over its input (passed as
+// children). It carries no outer margin — vertical rhythm belongs to the form
+// container — so spacing and responsive behaviour change in one place.
+templ Field(label string) {
+	<div class="flex flex-col gap-1">
+		<h5 class="text-accent">{ label }</h5>
+		{ children... }
+	</div>
+}
