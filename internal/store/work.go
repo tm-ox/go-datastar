@@ -1,25 +1,40 @@
-package work
+package store
 
 import (
 	"database/sql"
-	"regexp"
 	"strings"
 )
 
-var nonAlphanumeric = regexp.MustCompile(`[^a-z0-9]+`)
-
-func slugify(s string) string {
-	s = strings.ToLower(s)
-	s = nonAlphanumeric.ReplaceAllString(s, "-")
-	return strings.Trim(s, "-")
+type WorkImage struct {
+	ID        int
+	WorkID    int
+	URL       string
+	Alt       string
+	SortOrder int
 }
 
-type SQLiteWorkStore struct {
+type Work struct {
+	ID          int
+	Slug        string
+	SortOrder   int
+	Title       string
+	WorkType    string
+	Client      string
+	Year        int
+	Tools       string
+	Description string
+	Website     string
+	CoverURL    string
+	Link        string
+	Images      []WorkImage
+}
+
+type WorkStore struct {
 	db *sql.DB
 }
 
-func NewSQLiteWorkStore(db *sql.DB) *SQLiteWorkStore {
-	return &SQLiteWorkStore{db: db}
+func NewWorkStore(db *sql.DB) *WorkStore {
+	return &WorkStore{db: db}
 }
 
 const cols = `id, slug, sort_order, title, type, client, year, tools, description, website, link, cover_url`
@@ -41,7 +56,7 @@ var sortCols = map[string]string{
 	"tools-desc":  "tools DESC",
 }
 
-func (s *SQLiteWorkStore) List(page, limit int) ([]Work, int, error) {
+func (s *WorkStore) List(page, limit int) ([]Work, int, error) {
 	var total int
 	if err := s.db.QueryRow("SELECT COUNT(*) FROM work").Scan(&total); err != nil {
 		return nil, 0, err
@@ -65,7 +80,7 @@ func (s *SQLiteWorkStore) List(page, limit int) ([]Work, int, error) {
 	return works, total, rows.Err()
 }
 
-func (s *SQLiteWorkStore) loadImages(workID int) ([]WorkImage, error) {
+func (s *WorkStore) loadImages(workID int) ([]WorkImage, error) {
 	rows, err := s.db.Query("SELECT id, work_id, url, alt, sort_order FROM work_images WHERE work_id = ? ORDER BY sort_order", workID)
 	if err != nil {
 		return nil, err
@@ -82,7 +97,7 @@ func (s *SQLiteWorkStore) loadImages(workID int) ([]WorkImage, error) {
 	return imgs, rows.Err()
 }
 
-func (s *SQLiteWorkStore) GetBySlug(slug string) (*Work, error) {
+func (s *WorkStore) GetBySlug(slug string) (*Work, error) {
 	var w Work
 	err := scanWork(s.db.QueryRow("SELECT "+cols+" FROM work WHERE slug = ?", slug), &w)
 	if err == sql.ErrNoRows {
@@ -95,7 +110,7 @@ func (s *SQLiteWorkStore) GetBySlug(slug string) (*Work, error) {
 	return &w, err
 }
 
-func (s *SQLiteWorkStore) GetByID(id int) (*Work, error) {
+func (s *WorkStore) GetByID(id int) (*Work, error) {
 	var w Work
 	err := scanWork(s.db.QueryRow("SELECT "+cols+" FROM work WHERE id = ?", id), &w)
 	if err == sql.ErrNoRows {
@@ -108,29 +123,42 @@ func (s *SQLiteWorkStore) GetByID(id int) (*Work, error) {
 	return &w, err
 }
 
-func (s *SQLiteWorkStore) Filter(workType, client, year, tools, search, sort string, page, limit int) ([]Work, int, error) {
+// WorkQuery describes a filtered, paginated work listing. Zero-valued fields
+// are unset; Tool matches a single tool within a work's comma-separated list.
+type WorkQuery struct {
+	Type   string
+	Client string
+	Year   string
+	Tool   string
+	Search string
+	Sort   string
+	Page   int
+	Limit  int
+}
+
+func (s *WorkStore) Filter(q WorkQuery) ([]Work, int, error) {
 	where := []string{}
 	args := []any{}
 
-	if workType != "" {
+	if q.Type != "" {
 		where = append(where, "type = ?")
-		args = append(args, workType)
+		args = append(args, q.Type)
 	}
-	if client != "" {
+	if q.Client != "" {
 		where = append(where, "client = ?")
-		args = append(args, client)
+		args = append(args, q.Client)
 	}
-	if year != "" {
+	if q.Year != "" {
 		where = append(where, "CAST(year AS TEXT) = ?")
-		args = append(args, year)
+		args = append(args, q.Year)
 	}
-	if tools != "" {
+	if q.Tool != "" {
 		where = append(where, "(',' || tools || ',') LIKE ?")
-		args = append(args, "%,"+tools+",%")
+		args = append(args, "%,"+q.Tool+",%")
 	}
-	if search != "" {
+	if q.Search != "" {
 		where = append(where, "(title LIKE ? OR client LIKE ? OR description LIKE ?)")
-		args = append(args, "%"+search+"%", "%"+search+"%", "%"+search+"%")
+		args = append(args, "%"+q.Search+"%", "%"+q.Search+"%", "%"+q.Search+"%")
 	}
 
 	base := "FROM work"
@@ -139,7 +167,7 @@ func (s *SQLiteWorkStore) Filter(workType, client, year, tools, search, sort str
 	}
 
 	orderBy := " ORDER BY sort_order ASC"
-	if cl, ok := sortCols[sort]; ok {
+	if cl, ok := sortCols[q.Sort]; ok {
 		orderBy = " ORDER BY " + cl
 	}
 
@@ -148,8 +176,8 @@ func (s *SQLiteWorkStore) Filter(workType, client, year, tools, search, sort str
 		return nil, 0, err
 	}
 
-	offset := (page - 1) * limit
-	rows, err := s.db.Query("SELECT "+cols+" "+base+orderBy+" LIMIT ? OFFSET ?", append(args, limit, offset)...)
+	offset := (q.Page - 1) * q.Limit
+	rows, err := s.db.Query("SELECT "+cols+" "+base+orderBy+" LIMIT ? OFFSET ?", append(args, q.Limit, offset)...)
 	if err != nil {
 		return nil, 0, err
 	}
@@ -166,15 +194,15 @@ func (s *SQLiteWorkStore) Filter(workType, client, year, tools, search, sort str
 	return works, total, rows.Err()
 }
 
-func (s *SQLiteWorkStore) UniqueTypes() ([]string, error) {
+func (s *WorkStore) UniqueTypes() ([]string, error) {
 	return uniqueCol(s.db, "type")
 }
 
-func (s *SQLiteWorkStore) UniqueClients() ([]string, error) {
+func (s *WorkStore) UniqueClients() ([]string, error) {
 	return uniqueCol(s.db, "client")
 }
 
-func (s *SQLiteWorkStore) UniqueYears() ([]string, error) {
+func (s *WorkStore) UniqueYears() ([]string, error) {
 	rows, err := s.db.Query("SELECT DISTINCT CAST(year AS TEXT) FROM work ORDER BY year DESC")
 	if err != nil {
 		return nil, err
@@ -191,7 +219,7 @@ func (s *SQLiteWorkStore) UniqueYears() ([]string, error) {
 	return out, rows.Err()
 }
 
-func (s *SQLiteWorkStore) UniqueTools() ([]string, error) {
+func (s *WorkStore) UniqueTools() ([]string, error) {
 	rows, err := s.db.Query("SELECT DISTINCT tools FROM work ORDER BY tools")
 	if err != nil {
 		return nil, err
@@ -233,10 +261,10 @@ func uniqueCol(db *sql.DB, col string) ([]string, error) {
 	return out, rows.Err()
 }
 
-func (s *SQLiteWorkStore) Create(w Work) (int, error) {
+func (s *WorkStore) Create(w Work) (int, error) {
 	w.Slug = slugify(w.Title)
 	res, err := s.db.Exec(
-		"INSERT INTO work (slug, sort_order, title, type, client, year, tools, description, website, link, cover_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		"INSERT INTO work (slug, sort_order, title, type, client, year, tools, description, website, link, cover_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 		w.Slug, w.SortOrder, w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL,
 	)
 	if err != nil {
@@ -246,7 +274,7 @@ func (s *SQLiteWorkStore) Create(w Work) (int, error) {
 	return int(id), err
 }
 
-func (s *SQLiteWorkStore) Update(w Work) error {
+func (s *WorkStore) Update(w Work) error {
 	_, err := s.db.Exec(
 		"UPDATE work SET sort_order = ?, title = ?, type = ?, client = ?, year = ?, tools = ?, description = ?, website = ?, link = ?, cover_url = ? WHERE id = ?",
 		w.SortOrder, w.Title, w.WorkType, w.Client, w.Year, w.Tools, w.Description, w.Website, w.Link, w.CoverURL, w.ID,
@@ -254,7 +282,7 @@ func (s *SQLiteWorkStore) Update(w Work) error {
 	return err
 }
 
-func (s *SQLiteWorkStore) Delete(id int) error {
+func (s *WorkStore) Delete(id int) error {
 	_, err := s.db.Exec("DELETE FROM work WHERE id = ?", id)
 	return err
 }

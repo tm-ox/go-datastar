@@ -2,7 +2,6 @@ package views
 
 import (
 	"github.com/tm-ox/go-datastar/internal/content"
-	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -16,12 +15,6 @@ func sectionGridClass(cols int) string {
 		return "grid-4"
 	default:
 		return "grid-2"
-	}
-}
-
-templ Index(items []modules.NavItem, currentPath string, home content.HomePage, meta modules.Meta, cartTotal int) {
-	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
-		@IndexContent(home)
 	}
 }
 
