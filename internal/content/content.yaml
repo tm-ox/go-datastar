@@ -83,4 +83,4 @@ about:
     title: About
     description: About description.
   title: About
-  body: Brief bio here.
+  body: This site serves as a learning project exploring Go, Datastar, templ, and Tailwind v4.
