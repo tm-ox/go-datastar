@@ -5,6 +5,7 @@
 package render
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
 
@@ -33,6 +34,7 @@ func Page(w http.ResponseWriter, r *http.Request, v View) {
 		sse.PatchElementTempl(v.Content, datastar.WithSelectorID("main"), datastar.WithModeInner())
 		sse.ReplaceURL(url.URL{Path: v.Path})
 		sse.ExecuteScript("window.scrollTo(0,0)")
+		sse.ExecuteScript(fmt.Sprintf("document.title = %q", v.Meta.Title))
 		return
 	}
 	cartTotal := middleware.GetCartTotal(r)
