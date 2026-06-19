@@ -54,7 +54,7 @@ templ WorkContent(entries []store.Work, total int, limit int, types []string, cl
 
 templ WorkRows(entries []store.Work, page, total, limit int) {
 	<div id="work-rows">
-		<div class="grid grid-cols-5 gap-4">
+		<div class="grid-5">
 			for _, img := range entries {
 				<a href={ templ.URL("/work/" + img.Slug) } data-on:click__prevent={ "document.startViewTransition ? document.startViewTransition(() => @get('/work/" + img.Slug + "')) : @get('/work/" + img.Slug + "')" } class="flex flex-col gap-2 border border-border rounded bg-canvas pb-2 hover:border-accent">
 					<img src={ img.CoverURL } style={ "view-transition-name: work-cover-" + img.Slug } class="w-full aspect-square object-cover border-b border-border bg-canvas"/>
@@ -92,7 +92,7 @@ templ WorkDetailContent(entry *store.Work) {
 		}
 		if len(entry.Images) > 0 {
 			<div
-				class="grid grid-cols-5 gap-4 mt-8"
+				class="grid-5 mt-8"
 				data-signals={ fmt.Sprintf("{lightboxImages: [%s]}", buildImageList(entry.Images)) }
 			>
 				for i, img := range entry.Images {
