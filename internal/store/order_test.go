@@ -1,6 +1,7 @@
 package store
 
 import (
+	"database/sql"
 	"errors"
 	"testing"
 )
@@ -55,6 +56,53 @@ func TestOrderStore_Place(t *testing.T) {
 	}
 	if sum.Count != 0 {
 		t.Errorf("cart count after Place = %d, want 0", sum.Count)
+	}
+}
+
+func TestOrderStore_GetByID(t *testing.T) {
+	cart := newTestCartStore(t)
+	orders := NewOrderStore(cart.db)
+	d := cart.db
+	if _, err := d.Exec(`INSERT INTO products (name, price, slug, stock) VALUES ('B', 1000, 'b', 5)`); err != nil {
+		t.Fatal(err)
+	}
+	const cartID = "cart-getbyid"
+	if err := cart.GetOrCreate(cartID); err != nil {
+		t.Fatal(err)
+	}
+	if err := cart.AddItem(cartID, 1, 5); err != nil {
+		t.Fatal(err)
+	}
+	orderID, err := orders.Place(cartID)
+	if err != nil {
+		t.Fatalf("Place: %v", err)
+	}
+
+	o, items, err := orders.GetByID(orderID)
+	if err != nil {
+		t.Fatalf("GetByID: %v", err)
+	}
+	if o.ID != orderID {
+		t.Errorf("order.ID = %d, want %d", o.ID, orderID)
+	}
+	if o.CartID != cartID {
+		t.Errorf("order.CartID = %q, want %q", o.CartID, cartID)
+	}
+	if o.Total != 1000 {
+		t.Errorf("order.Total = %d, want 1000", o.Total)
+	}
+	if len(items) != 1 {
+		t.Errorf("len(items) = %d, want 1", len(items))
+	}
+}
+
+func TestOrderStore_GetByID_NotFound(t *testing.T) {
+	cart := newTestCartStore(t)
+	orders := NewOrderStore(cart.db)
+
+	_, _, err := orders.GetByID(999)
+	if !errors.Is(err, sql.ErrNoRows) {
+		t.Fatalf("err = %v, want sql.ErrNoRows", err)
 	}
 }
 

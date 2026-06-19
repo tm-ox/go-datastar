@@ -33,6 +33,35 @@ func NewOrderStore(db *sql.DB) *OrderStore {
 	return &OrderStore{db: db}
 }
 
+func (s *OrderStore) GetByID(id int) (*Order, []OrderItem, error) {
+	var o Order
+	err := s.db.QueryRow(
+		"SELECT id, cart_id, status, total, created_at FROM orders WHERE id = ?", id,
+	).Scan(&o.ID, &o.CartID, &o.Status, &o.Total, &o.CreatedAt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	rows, err := s.db.Query(
+		"SELECT id, order_id, product_id, name, price, quantity FROM order_items WHERE order_id = ?", id,
+	)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer rows.Close()
+
+	var items []OrderItem
+	for rows.Next() {
+		var item OrderItem
+		if err := rows.Scan(&item.ID, &item.OrderID, &item.ProductID, &item.Name, &item.Price, &item.Quantity); err !=
+			nil {
+			return nil, nil, err
+		}
+		items = append(items, item)
+	}
+	return &o, items, rows.Err()
+}
+
 // Place turns a cart into an order: it snapshots the cart's items, persists the
 // order and its line items, and empties the cart — all in one transaction, so
 // the order and the cleared cart commit together or not at all. It returns

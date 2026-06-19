@@ -2,6 +2,7 @@ package views
 
 import (
 	"fmt"
+	"strconv"
 	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -214,11 +215,15 @@ templ CheckoutRow(item store.CartItemDetail) {
 	</div>
 }
 
-templ CartSuccess(items []modules.NavItem, currentPath string, meta modules.Meta, orderID string, cartTotal int) {
+templ CartSuccess(items []modules.NavItem, currentPath string, meta modules.Meta, order *store.Order, orderItems []store.OrderItem, cartTotal int) {
 	@layouts.BaseLayout(items, currentPath, meta, cartTotal) {
 		<section class="min-h-screen flex flex-col items-center justify-center gap-4">
 			<h2>Order placed</h2>
-			<p class="text-muted">Order #{ orderID } confirmed. Thank you.</p>
+			<p class="text-muted">Order #{ strconv.Itoa(order.ID) } confirmed. Thank you.</p>
+			for _, item := range orderItems {
+				<p class="text-sm text-muted">{ item.Name } × { strconv.Itoa(item.Quantity) } — { fmt.Sprintf("$%.2f", float64(item.Price*item.Quantity)/100) }</p>
+			}
+			<p class="font-bold">Total: { fmt.Sprintf("$%.2f", float64(order.Total)/100) }</p>
 			<a href="/shop" class="btn-primary">Continue shopping</a>
 		</section>
 	}

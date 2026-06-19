@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/google/uuid"
@@ -212,8 +214,26 @@ func (h *CartHandler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *CartHandler) Success(w http.ResponseWriter, r *http.Request) {
-	orderID := r.URL.Query().Get("order")
+	id, err := strconv.Atoi(r.URL.Query().Get("order"))
+	if err != nil {
+		http.Error(w, "invalid order", http.StatusBadRequest)
+		return
+	}
+	order, items, err := h.order.GetByID(id)
+	if errors.Is(err, sql.ErrNoRows) {
+		http.Error(w, "order not found", http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	c, err := r.Cookie("cart_id")
+	if err != nil || c.Value != order.CartID {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
 	cartTotal := middleware.GetCartTotal(r)
 	meta := modules.Meta{Title: "Order placed", Description: "Order confirmed"}
-	templ.Handler(views.CartSuccess(h.nav, "/cart/success", meta, orderID, cartTotal)).ServeHTTP(w, r)
+	templ.Handler(views.CartSuccess(h.nav, "/cart/success", meta, order, items, cartTotal)).ServeHTTP(w, r)
 }
