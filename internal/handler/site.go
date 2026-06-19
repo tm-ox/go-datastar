@@ -12,14 +12,20 @@ import (
 )
 
 type SiteHandler struct {
-	nav  []modules.NavItem
-	site content.SiteContent
+	nav         []modules.NavItem
+	site        content.SiteContent
+	contextHTML string
 }
 
 func NewSiteHandler(nav []modules.NavItem, site content.SiteContent) *SiteHandler {
+	ctx, err := content.LoadContext()
+	if err != nil {
+		panic(err)
+	}
 	return &SiteHandler{
-		nav:  nav,
-		site: site,
+		nav:         nav,
+		site:        site,
+		contextHTML: string(ctx),
 	}
 }
 
@@ -43,4 +49,12 @@ func (h *SiteHandler) About(w http.ResponseWriter, r *http.Request) {
 		Description: h.site.About.Meta.Description,
 	}
 	render.Page(w, r, render.View{Nav: h.nav, Path: "/about", Meta: meta, Content: views.AboutContent(h.site.About)})
+}
+
+func (h *SiteHandler) Context(w http.ResponseWriter, r *http.Request) {
+	meta := modules.Meta{
+		Title:       "Context",
+		Description: "Site context and conventions",
+	}
+	render.Page(w, r, render.View{Nav: h.nav, Path: "/context", Meta: meta, Content: views.ContextContent(h.contextHTML)})
 }
