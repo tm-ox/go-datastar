@@ -13,13 +13,15 @@ type ButtonSize string
 type ButtonType string
 
 const (
-	ButtonVariantDefault      ButtonVariant = "default"
-	ButtonVariantCTA          ButtonVariant = "cta"
-	ButtonVariantTab          ButtonVariant = "tab"
-	ButtonVariantTabActive    ButtonVariant = "tabActive"
-	ButtonVariantSubTab       ButtonVariant = "subTab"
-	ButtonVariantSubTabActive ButtonVariant = "subTabActive"
-	ButtonVariantPill         ButtonVariant = "pill"
+	ButtonVariantDefault       ButtonVariant = "default"
+	ButtonVariantCTA           ButtonVariant = "cta"
+	ButtonVariantTab           ButtonVariant = "tab"
+	ButtonVariantTabActive     ButtonVariant = "tabActive"
+	ButtonVariantSubTab        ButtonVariant = "subTab"
+	ButtonVariantSubTabActive  ButtonVariant = "subTabActive"
+	ButtonVariantPill          ButtonVariant = "pill"
+	ButtonVariantTabFull       ButtonVariant = "tabFull"
+	ButtonVariantTabFullActive ButtonVariant = "tabFullActive"
 )
 
 const (
@@ -101,7 +103,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var3 templ.SafeURL
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(p.Href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 66, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 68, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -114,7 +116,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(p.Target)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 66, Col: 53}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 68, Col: 53}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +181,7 @@ func Button(props ...ButtonProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(p.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 70, Col: 49}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/button.templ`, Line: 72, Col: 49}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -228,6 +230,10 @@ func (b ButtonProps) variantClasses() string {
 		return "bg-canvas text-muted rounded-t-none border-t-2 border-t-border hover:bg-surface/50"
 	case ButtonVariantSubTabActive:
 		return "bg-surface text-text rounded-t-none border-t-2 border-t-accent"
+	case ButtonVariantTabFull:
+		return "bg-surface text-muted rounded-none border-b border-b-border hover:bg-canvas/50"
+	case ButtonVariantTabFullActive:
+		return "bg-canvas text-text rounded-none border-b border-b-accent"
 	case ButtonVariantPill:
 		return "bg-canvas text-accent/50 !rounded-full !border-accent/50"
 	default:

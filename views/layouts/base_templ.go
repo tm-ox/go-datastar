@@ -35,7 +35,7 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -48,9 +48,9 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: ''}", cartTotal))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: ''}", cartTotal))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 19, Col: 171}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 20, Col: 188}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -80,7 +80,7 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 bg-black/50\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 bg-surface rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div><div id=\"lightbox\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$lightboxOpen\"><div class=\"absolute inset-0 bg-black/80\" data-on:click=\"$lightboxOpen = false\"></div><div class=\"absolute inset-0 flex items-center justify-center pointer-events-none\"><img data-attr:src=\"$lightboxSrc\" data-attr:alt=\"$lightboxAlt\" class=\"h-fit max-h-2/3 max-w-2/3 object-contain bg-canvas border border-border rounded-lg pointer-events-auto\"></div><button class=\"absolute left-16 top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8592;</button> <button class=\"absolute right-16 top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8594;</button></div></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 bg-black/50\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 bg-surface rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div><div id=\"lightbox\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$lightboxOpen\"><div class=\"absolute inset-0 bg-black/80\" data-on:click=\"$lightboxOpen = false\"></div><div class=\"absolute inset-0 flex items-center justify-center pointer-events-none\"><img data-attr:src=\"$lightboxSrc\" data-attr:alt=\"$lightboxAlt\" class=\"h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain bg-canvas border border-border rounded-lg pointer-events-auto\"></div><button class=\"absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8592;</button> <button class=\"absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8594;</button></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

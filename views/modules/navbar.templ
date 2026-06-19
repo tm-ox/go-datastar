@@ -11,22 +11,65 @@ templ Navbar(items []NavItem, currentPath string) {
 	<div class="content-width flex items-end justify-between h-full">
 		<a href="/" class="flex items-center gap-4 pb-2 font-semibold text-lg tracking-tight text-text uppercase">
 			@IconBug(IconProps{Size: "24", Class: "text-accent"})
-			Logo
+			Godst
 		</a>
-		<nav>
-			@TabBar(items, currentPath, ButtonVariantTabActive, ButtonVariantTab, ButtonSizeTab)
-			if strings.HasPrefix(currentPath, "/settings") {
-				<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-accent transition-colors">
-					@IconSettings(IconProps{Size: "20"})
-				</a>
-			} else {
-				<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-border hover:text-accent transition-colors">
-					@IconSettings(IconProps{Size: "20"})
-				</a>
-			}
-			@CartBadge()
+		<nav class="flex items-center">
+			<div class="hidden md:flex">
+				@TabBar(items, currentPath, ButtonVariantTabActive, ButtonVariantTab, ButtonSizeTab)
+				if strings.HasPrefix(currentPath, "/settings") {
+					<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-accent transition-colors">
+						@IconSettings(IconProps{Size: "20"})
+					</a>
+				} else {
+					<a href="/settings" data-on:click__prevent="@get('/settings/work')" class="ml-2 mb-1 text-border hover:text-accent transition-colors">
+						@IconSettings(IconProps{Size: "20"})
+					</a>
+				}
+			</div>
+			<div
+				class="fixed inset-0 z-50"
+				style="display:none"
+				data-show="$menuOpen"
+			>
+				<div class="absolute inset-0 bg-black/80" data-on:click="$menuOpen = !$menuOpen"></div>
+				<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-auto">
+					@MobileTabBar(items, currentPath)
+				</div>
+			</div>
+			<div class="flex gap-4 mb-2">
+				@CartBadge()
+				<div class="md:hidden" data-on:click="$menuOpen = !$menuOpen">
+					@IconMenu(IconProps{Size: "25", Class: "text-muted"})
+				</div>
+			</div>
 		</nav>
 	</div>
+}
+
+templ MobileTabBar(items []NavItem, currentPath string) {
+	for _, item := range items {
+		if item.URL == currentPath {
+			@Button(ButtonProps{
+				Variant:    ButtonVariantTabFullActive,
+				Href:       item.URL,
+				Size:       ButtonSizeLg,
+				FullWidth:  true,
+				Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
+			}) {
+				{ item.Label }
+			}
+		} else {
+			@Button(ButtonProps{
+				Variant:    ButtonVariantTabFull,
+				Href:       item.URL,
+				Size:       ButtonSizeLg,
+				FullWidth:  true,
+				Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
+			}) {
+				{ item.Label }
+			}
+		}
+	}
 }
 
 templ TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive ButtonVariant, size ButtonSize) {
