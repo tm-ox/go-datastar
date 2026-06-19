@@ -61,6 +61,7 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 |---|---|---|
 | GET | `/` | `site.Index` |
 | GET | `/about` | `site.About` |
+| GET | `/context` | `site.Context` |
 | GET | `/work` | `work.Index` |
 | GET | `/work/{slug}` | `work.Detail` |
 | GET | `/work/filter` | `work.Filter` (Datastar SSE) |
@@ -94,8 +95,9 @@ cmd/
     content/main.go          — site_pages, site_sections, site_cards
 internal/
   content/
-    site.go                  — site types (HomePage, AboutPage, Section, Card) + Load()
+    site.go                  — site types (HomePage, AboutPage, Section, Card) + Load() + LoadContext() (goldmark → HTML)
     content.yaml             — home + about copy
+    CONTEXT.md               — embedded markdown, rendered to HTML via LoadContext()
   db/
     db.go                    — SQLite connection; WAL + busy_timeout on file DBs
     migrate.go               — schema migrations, run at startup
@@ -109,7 +111,7 @@ internal/
     render.go                — Page: full-page render, or Datastar SSE shell-patch — the page shell in one place
   handler/
     constants.go             — defaultLimit = 20
-    site.go                  — SiteHandler: Index, About
+    site.go                  — SiteHandler: Index, About, Context
     shop.go                  — ShopHandler: Index, Filter, Detail
     settings.go              — SettingsHandler: Work* and Shop* CRUD
     work.go                  — WorkHandler: Index, Filter, Detail

@@ -26,7 +26,8 @@ func main() {
 
 	nav := []modules.NavItem{
 		{Label: "Home", URL: "/"},
-		{Label: "About", URL: "/about"},
+		// {Label: "About", URL: "/about"},
+		{Label: "Context", URL: "/context"},
 		{Label: "Work", URL: "/work"},
 		{Label: "Shop", URL: "/shop"},
 	}
@@ -61,6 +62,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/", site_h.Index)
 	mux.HandleFunc("/about", site_h.About)
+	mux.HandleFunc("/context", site_h.Context)
 	mux.HandleFunc("/work", work_h.Index)
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)

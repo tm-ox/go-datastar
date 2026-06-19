@@ -4,11 +4,25 @@ import (
 	_ "embed"
 	"sort"
 
+	"bytes"
+
+	"github.com/yuin/goldmark"
 	"gopkg.in/yaml.v3"
 )
 
 //go:embed content.yaml
 var siteData []byte
+
+//go:embed CONTEXT.md
+var contextData []byte
+
+func LoadContext() ([]byte, error) {
+	var buf bytes.Buffer
+	if err := goldmark.Convert(contextData, &buf); err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
 
 type PageMeta struct {
 	Title       string `yaml:"title"`

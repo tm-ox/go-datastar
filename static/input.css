@@ -56,10 +56,6 @@
         @apply flex gap-1 items-center;
     }
 
-    /*nav a {
-        @apply text-muted hover:text-text transition-colors;
-    }*/
-
     section {
         @apply content-width min-h-screen py-28;
     }
@@ -76,6 +72,10 @@
         @apply text-accent text-2xl my-2;
     }
 
+    h3 {
+        margin-block-start: 1.5rem;
+    }
+
     h4 {
         @apply text-2xl mb-3;
     }
@@ -85,15 +85,38 @@
     }
 
     p {
-        @apply text-lg text-muted mb-1;
+        @apply text-lg text-muted leading-normal;
+    }
+
+    p {
+        margin-block-start: 0.75rem;
+    }
+
+    b {
+        @apply text-text;
+    }
+
+    strong {
+        @apply text-muted;
     }
 
     a {
         @apply hover:text-accent;
     }
 
+    code {
+        @apply text-muted font-bold;
+    }
+
     hr {
         @apply border-accent my-4 pb-2;
+    }
+
+    blockquote {
+        @apply border-l-2 border-accent pl-8;
+        & p {
+            @apply text-2xl;
+        }
     }
 
     table {
