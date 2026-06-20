@@ -44,7 +44,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "Godst</a><nav class=\"flex items-center\"><div class=\"hidden md:flex\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "Godst</a><nav class=\"flex items-center\"><div class=\"hidden md:flex items-center h-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +53,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if strings.HasPrefix(currentPath, "/settings") {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/settings\" data-on:click__prevent=\"@get('/settings/work')\" class=\"ml-2 mb-1 text-accent transition-colors\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<a href=\"/settings\" data-on:click__prevent=\"@get('/settings/work')\" class=\"ml-3 pb-1 text-accent transition-colors\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -66,7 +66,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/settings\" data-on:click__prevent=\"@get('/settings/work')\" class=\"ml-2 mb-1 text-border hover:text-accent transition-colors\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<a href=\"/settings\" data-on:click__prevent=\"@get('/settings/work')\" class=\"ml-3 pb-1 text-border hover:text-accent transition-colors\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -87,7 +87,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div><div class=\"flex gap-4 mb-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div><div class=\"flex gap-4 items-end\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -99,7 +99,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = IconMenu(IconProps{Size: "25", Class: "text-muted"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = IconMenu(IconProps{Size: "40", Class: "text-muted"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -108,7 +108,7 @@ templ CartBadge() {
 		class="relative ml-2 group cursor-pointer"
 		data-on:click="$drawerOpen = true; @get('/cart/drawer')"
 	>
-		@IconCart(IconProps{Class: "mb-2 text-border hover:text-accent"})
+		@IconCart(IconProps{Class: "text-border hover:text-accent mb-2"})
 		<span
 			data-show="$cartTotal > 0"
 			data-text="$cartTotal"
