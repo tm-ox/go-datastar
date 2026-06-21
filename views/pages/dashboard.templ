@@ -1,8 +1,10 @@
 package views
 
 import (
+	"fmt"
 	"github.com/tm-ox/go-datastar/internal/stream"
 	"strconv"
+	"strings"
 )
 
 func botPct(s stream.Stats) string {
@@ -14,21 +16,24 @@ func botPct(s stream.Stats) string {
 
 templ DashboardContent() {
 	<section data-init="@get('/dashboard/stream', {requestCancellation: 'cleanup'})">
-		<h2>Wikimedia Dashboard</h2>
+		<p>Live edit activity across every Wikimedia wiki, updated each second.</p>
 		<h3>Stats</h3>
-		<h5 class="mb-4">Live edit activity across every Wikimedia wiki, updated each second.</h5>
-		<div id="stats"></div>
-		<h3>Leaderboard</h3>
-		<h5>The busiest Wikimedia wikis right now, ranked by edit volume.</h5>
-		<div id="leaderboard"></div>
-		// <div id="feed"></div>
+		<div class="flex flex-col gap-4">
+			<div id="stats"></div>
+			<div id="sparkline"></div>
+			<div id="leaderboard"></div>
+			<div class="border border-border rounded-lg px-4 py-3 bg-surface max-h-88 overflow-y-auto">
+				<h3 class="mt-0">Feed</h3>
+				<div id="feed"></div>
+			</div>
+		</div>
 	</section>
 }
 
 templ Ticker(title string, description string) {
-	<div class="border border-border rounded-lg p-4 bg-surface">
+	<div class="flex flex-col gap-1 border border-border rounded-lg px-4 py-3 bg-surface">
+		<h5 class="text-right">{ description }</h5>
 		<h4 class="text-right mb-0">{ title }</h4>
-		<p class="text-right">{ description }</p>
 	</div>
 }
 
@@ -44,7 +49,7 @@ templ StatsTiles(stats stream.Stats, rate int) {
 templ FeedRow(ev stream.Event) {
 	<div class="flex gap-3 text-sm border-b border-border py-1">
 		<span class="text-muted">{ ev.ServerName }</span>
-		<span class="flex-1">{ ev.Title }</span>
+		<span class="flex-1 text-accent">{ ev.Title }</span>
 		<span class="text-muted">{ ev.User }</span>
 		<span>{ strconv.Itoa(ev.ByteDelta) }</span>
 	</div>
@@ -60,16 +65,63 @@ func barPct(count, max int) string {
 templ Leaderboard(wikis []stream.WikiCount) {
 	if len(wikis) > 0 {
 		{{ max := wikis[0].Count }}
-		<div class="flex flex-col gap-2 my-4">
+		<div class="p-4 bg-surface border border-border rounded-lg">
+			<h3 class="mt-0">Leaderboard</h3>
 			for _, w := range wikis {
-				<div class="flex flex-col gap-2 px-3 pt-2 pb-3 bg-surface border border-border rounded-lg ">
+				<div class="flex flex-col gap-2 pt-2 pb-3">
 					<div class="flex justify-between text-sm">
 						<span class="text-muted">{ w.Name }</span>
 						<span>{ strconv.Itoa(w.Count) }</span>
 					</div>
-					<div class="bg-accent rounded-full h-1" style={ barPct(w.Count, max) }></div>
+					<div class="bg-accent rounded-full h-[0.75px]" style={ barPct(w.Count, max) }></div>
 				</div>
 			}
 		</div>
 	}
+}
+
+func sparklinePath(counts []int, w, h int) string {
+	if len(counts) == 0 {
+		return ""
+	}
+	max := 1
+	for _, c := range counts {
+		if c > max {
+			max = c
+		}
+	}
+	step := float64(w) / float64(len(counts)-1)
+	var b strings.Builder
+	for i, c := range counts {
+		x := float64(i) * step
+		y := float64(h) - float64(c)/float64(max)*float64(h)
+		if i == 0 {
+			fmt.Fprintf(&b, "M %.1f %.1f", x, y)
+		} else {
+			fmt.Fprintf(&b, " L %.1f %.1f", x, y)
+		}
+	}
+	return b.String()
+}
+
+func sparkMax(counts []int) int {
+	m := 0
+	for _, c := range counts {
+		if c > m {
+			m = c
+		}
+	}
+	return m
+}
+
+templ Sparkline(counts []int) {
+	<div class="border border-border rounded-lg p-4 pt-3 bg-surface">
+		<div class="flex justify-between text-sm text-muted mb-1">
+			<span>edits/sec · last 60s</span>
+			<span class="text-text">peak: { strconv.Itoa(sparkMax(counts)) }</span>
+		</div>
+		<svg viewBox="0 0 300 16" preserveAspectRatio="none" class="w-full h-10 text-accent">
+			<path d={ sparklinePath(counts, 300, 16) } fill="none" stroke="currentColor" stroke-width="0.5"></path>
+		</svg>
+	</div>
 }
