@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/starfederation/datastar-go/datastar"
 	"github.com/tm-ox/go-datastar/internal/render"
@@ -13,10 +14,11 @@ import (
 type DashboardHandler struct {
 	nav []modules.NavItem
 	hub *stream.Hub
+	agg *stream.Aggregator
 }
 
-func NewDashboardHandler(nav []modules.NavItem, hub *stream.Hub) *DashboardHandler {
-	return &DashboardHandler{nav: nav, hub: hub}
+func NewDashboardHandler(nav []modules.NavItem, hub *stream.Hub, agg *stream.Aggregator) *DashboardHandler {
+	return &DashboardHandler{nav: nav, hub: hub, agg: agg}
 }
 
 func (h *DashboardHandler) Index(w http.ResponseWriter, r *http.Request) {
@@ -36,10 +38,22 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 		sse.PatchElementTempl(views.FeedRow(ev), datastar.WithSelectorID("feed"), datastar.WithModePrepend())
 	}
 
+	stats := h.agg.Snapshot() // snapshot on connect
+	lastTotal := stats.TotalEdits
+	sse.PatchElementTempl(views.StatsTiles(stats, 0), datastar.WithSelectorID("stats"), datastar.WithModeInner())
+
+	ticker := time.NewTicker(time.Second)
+	defer ticker.Stop()
+
 	for {
 		select {
 		case ev := <-ch:
 			sse.PatchElementTempl(views.FeedRow(ev), datastar.WithSelectorID("feed"), datastar.WithModePrepend())
+		case <-ticker.C:
+			stats = h.agg.Snapshot()
+			rate := stats.TotalEdits - lastTotal // edits since last tick = per-second rate
+			lastTotal = stats.TotalEdits
+			sse.PatchElementTempl(views.StatsTiles(stats, rate), datastar.WithSelectorID("stats"), datastar.WithModeInner())
 		case <-r.Context().Done():
 			return
 		}

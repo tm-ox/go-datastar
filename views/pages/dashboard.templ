@@ -2,14 +2,32 @@ package views
 
 import (
 	"github.com/tm-ox/go-datastar/internal/stream"
+	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
 )
+
+func botPct(s stream.Stats) string {
+	if s.TotalEdits == 0 {
+		return "0%"
+	}
+	return strconv.Itoa(s.BotEdits*100/s.TotalEdits) + "%"
+}
 
 templ DashboardContent() {
 	<section data-init="@get('/dashboard/stream', {requestCancellation: 'cleanup'})">
 		<h2>Dashboard</h2>
-		<div id="feed"></div>
+		<div id="stats"></div>
+		// <div id="feed"></div>
 	</section>
+}
+
+templ StatsTiles(stats stream.Stats, rate int) {
+	<div class="grid-4">
+		@modules.Ticker(strconv.Itoa(rate), "edits/sec")
+		@modules.Ticker(strconv.Itoa(stats.TotalEdits), "total edits")
+		@modules.Ticker(botPct(stats), "bots")
+		@modules.Ticker(strconv.Itoa(stats.NetBytes), "net bytes")
+	</div>
 }
 
 templ FeedRow(ev stream.Event) {

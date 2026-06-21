@@ -56,11 +56,12 @@ func main() {
 	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
 
 	hub := stream.NewHub()
-	src := stream.NewSource(hub, "go-datastar-dashboard/1.0 (tim@tmox.net)")
+	agg := stream.NewAggregator()
+	src := stream.NewSource(hub, agg, "go-datastar-dashboard/1.0 (tim@tmox.net)")
 
 	site_h := handler.NewSiteHandler(nav, site)
 
-	dashboard_h := handler.NewDashboardHandler(nav, hub)
+	dashboard_h := handler.NewDashboardHandler(nav, hub, agg)
 	work_h := handler.NewWorkHandler(nav, workStore)
 	shop_h := handler.NewShopHandler(nav, productStore)
 	settings_h := handler.NewSettingsHandler(nav, settingsSections, productStore, workStore)
