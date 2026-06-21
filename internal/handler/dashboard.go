@@ -41,6 +41,7 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 	stats := h.agg.Snapshot() // snapshot on connect
 	lastTotal := stats.TotalEdits
 	sse.PatchElementTempl(views.StatsTiles(stats, 0), datastar.WithSelectorID("stats"), datastar.WithModeInner())
+	sse.PatchElementTempl(views.Leaderboard(stats.TopWikis), datastar.WithSelectorID("leaderboard"), datastar.WithModeInner())
 
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
@@ -54,6 +55,7 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 			rate := stats.TotalEdits - lastTotal // edits since last tick = per-second rate
 			lastTotal = stats.TotalEdits
 			sse.PatchElementTempl(views.StatsTiles(stats, rate), datastar.WithSelectorID("stats"), datastar.WithModeInner())
+			sse.PatchElementTempl(views.Leaderboard(stats.TopWikis), datastar.WithSelectorID("leaderboard"), datastar.WithModeInner())
 		case <-r.Context().Done():
 			return
 		}
