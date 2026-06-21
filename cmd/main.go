@@ -15,6 +15,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
 	"github.com/tm-ox/go-datastar/internal/store"
+	"github.com/tm-ox/go-datastar/internal/stream"
 	"github.com/tm-ox/go-datastar/views/modules"
 )
 
@@ -28,6 +29,7 @@ func main() {
 		{Label: "Home", URL: "/"},
 		// {Label: "About", URL: "/about"},
 		{Label: "Context", URL: "/context"},
+		{Label: "Dash", URL: "/dashboard"},
 		{Label: "Work", URL: "/work"},
 		{Label: "Shop", URL: "/shop"},
 	}
@@ -53,7 +55,12 @@ func main() {
 	orderStore := store.NewOrderStore(database)
 	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
 
+	hub := stream.NewHub()
+	src := stream.NewSource(hub, "go-datastar-dashboard/1.0 (tim@tmox.net)")
+
 	site_h := handler.NewSiteHandler(nav, site)
+
+	dashboard_h := handler.NewDashboardHandler(nav, hub)
 	work_h := handler.NewWorkHandler(nav, workStore)
 	shop_h := handler.NewShopHandler(nav, productStore)
 	settings_h := handler.NewSettingsHandler(nav, settingsSections, productStore, workStore)
@@ -63,6 +70,8 @@ func main() {
 	mux.HandleFunc("/", site_h.Index)
 	mux.HandleFunc("/about", site_h.About)
 	mux.HandleFunc("/context", site_h.Context)
+	mux.HandleFunc("/dashboard", dashboard_h.Index)
+	mux.HandleFunc("GET /dashboard/stream", dashboard_h.Stream)
 	mux.HandleFunc("/work", work_h.Index)
 	mux.HandleFunc("/work/{slug}", work_h.Detail)
 	mux.HandleFunc("/work/filter", work_h.Filter)
@@ -96,6 +105,8 @@ func main() {
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	go src.Run(ctx)
 
 	srv := &http.Server{Addr: ":8081", Handler: middleware.CartTotal(cartStore, middleware.Logging(mux))}
 	fmt.Println("Listening on :8081")
