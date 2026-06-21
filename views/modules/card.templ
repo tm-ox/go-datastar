@@ -107,3 +107,10 @@ templ ProductCard(p *store.Product) {
 		</div>
 	}
 }
+
+templ Ticker(title string, description string) {
+	<div class="border border-border rounded-lg p-4">
+		<h4>{ title }</h4>
+		<p>{ description }</p>
+	</div>
+}

@@ -11,13 +11,15 @@ import (
 
 type Source struct {
 	hub       *Hub
+	agg       *Aggregator
 	url       string
 	userAgent string
 }
 
-func NewSource(hub *Hub, userAgent string) *Source {
+func NewSource(hub *Hub, agg *Aggregator, userAgent string) *Source {
 	return &Source{
 		hub:       hub,
+		agg:       agg,
 		url:       "https://stream.wikimedia.org/v2/stream/recentchange",
 		userAgent: userAgent,
 	}
@@ -40,12 +42,13 @@ func (s *Source) stream(ctx context.Context) error {
 	for scanner.Scan() {
 		data, ok := strings.CutPrefix(scanner.Text(), "data: ")
 		if !ok {
-			continue // skip event:/id:/blank/comment lines
+			continue
 		}
 		ev, err := ParseEvent([]byte(data))
 		if err != nil {
-			continue // one bad line shouldn't kill the stream
+			continue
 		}
+		s.agg.Update(ev)
 		s.hub.Broadcast(ev)
 	}
 	return scanner.Err()
