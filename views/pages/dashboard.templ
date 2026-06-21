@@ -1,0 +1,22 @@
+package views
+
+import (
+	"github.com/tm-ox/go-datastar/internal/stream"
+	"strconv"
+)
+
+templ DashboardContent() {
+	<section data-init="@get('/dashboard/stream', {requestCancellation: 'cleanup'})">
+		<h2>Dashboard</h2>
+		<div id="feed"></div>
+	</section>
+}
+
+templ FeedRow(ev stream.Event) {
+	<div class="flex gap-3 text-sm border-b border-border py-1">
+		<span class="text-muted">{ ev.ServerName }</span>
+		<span class="flex-1">{ ev.Title }</span>
+		<span class="text-muted">{ ev.User }</span>
+		<span>{ strconv.Itoa(ev.ByteDelta) }</span>
+	</div>
+}
