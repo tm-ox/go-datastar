@@ -1,8 +1,11 @@
 ## Context
 
-> A portfolio-and-shop site: a public **Work** portfolio and a **Shop** of
-> **Products**, with a server-driven UI (Datastar over SSE). This file fixes the
-> domain language so modules and conversations use one word per concept.
+> A proof of concept site built with Go, Datastar and Tailwind: a public **Work**
+> portfolio, a **Shop** of **Products**, and a realtime **Dashboard** of public
+> Wikimedia activity. The UI is server-driven over Datastar SSE — both
+> request-response (filters, cart, CRUD) and long-lived server push (the
+> Dashboard stream). This file fixes the domain language so modules and
+> conversations use one word per concept.
 
 ### Entities
 
@@ -40,7 +43,13 @@ The places a visitor goes — sections and pages. A Surface is not an Entity:
 the **Shop** Surface lists **Product** entities; the **Work** Surface lists
 **Work** entities (same word, different layer).
 
-**Shop**, **Work**, **Settings**, **About**, **Home** — the top-level sections.
+**Shop**, **Work**, **Settings**, **About**, **Home**, **Dashboard** — the top-level sections.
+
+**Dashboard**:
+The Surface showing live Wikimedia activity, streamed over a long-lived SSE
+connection. Unlike every other Surface it has no stored Entity — its content is
+ephemeral, held in memory (see Live data) and pushed by the server, not fetched
+on request.
 
 **Checkout**:
 The Surface (and the act) of reviewing the Cart before placing an Order. Not a
@@ -49,6 +58,38 @@ stored thing — don't model it as an entity.
 **Drawer**:
 The slide-out panel showing Cart contents. A purely presentational element —
 belongs in the views layer only, never in store or handler vocabulary.
+
+### Live data
+
+In-memory, ephemeral domain nouns for the Dashboard's realtime pipeline — none
+are stored or persisted (no SQLite, no `store`). They live in `internal/stream`.
+
+**Event**:
+One parsed upstream change from the Wikimedia `recentchange` feed — title, user,
+wiki, bot flag, byte delta, timestamp. The unit the whole pipeline moves.
+_Avoid_: edit (an Event may be a non-edit change), record, message
+
+**Source**:
+The single upstream client that holds one connection to the feed and emits
+Events. Pluggable — a future poller (e.g. crypto prices) is just another Source.
+_Avoid_: feed, client, producer
+
+**Hub**:
+The in-memory fan-out — one Source broadcasts each Event to many subscribers
+(one per connected browser), with a bounded buffer and drop-on-full so a slow
+client can't stall the rest. Keeps a small ring buffer of recent Events to seed
+a new subscriber's first paint.
+_Avoid_: broker, bus, pubsub
+
+**Aggregator**:
+Owns the rolling statistics derived from the Event stream (counters, per-wiki
+top-N, per-second buckets). Fed reliably — never drops — and read via Snapshot.
+_Avoid_: stats, metrics (those name its output, not the owner)
+
+**Snapshot**:
+An immutable, point-in-time copy of the Aggregator's stats, used to render the
+tiles and charts. A value, not a live view.
+_Avoid_: state, view
 
 ### Naming rule
 
@@ -62,6 +103,11 @@ One axis, applied consistently:
 So `ShopHandler` (Surface) drives a `ProductStore` (Entity). `WorkHandler` +
 `WorkStore` only _look_ like an exception — that's the Work word overlap, not a
 broken rule.
+
+The **Dashboard** Surface (`DashboardHandler`) is the one Surface with no Entity
+store — it reads from the in-memory `Hub` and `Aggregator` (Live data) instead.
+Stream types are named by **role** (`Source`, `Hub`, `Aggregator`), not Entity,
+because nothing there is stored.
 
 Handler methods name the **domain action**, not the render target: `UpdateQty`,
 not `DrawerUpdateQty`. A method split only by which DOM region it patches is a

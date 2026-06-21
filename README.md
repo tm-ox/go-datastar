@@ -62,6 +62,8 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | GET | `/` | `site.Index` |
 | GET | `/about` | `site.About` |
 | GET | `/context` | `site.Context` |
+| GET | `/dashboard` | `dashboard.Index` |
+| GET | `/dashboard/stream` | `dashboard.Stream` (long-lived Datastar SSE) |
 | GET | `/work` | `work.Index` |
 | GET | `/work/{slug}` | `work.Detail` |
 | GET | `/work/filter` | `work.Filter` (Datastar SSE) |
@@ -109,9 +111,16 @@ internal/
     *_test.go                — store tests against in-memory SQLite
   render/
     render.go                — Page: full-page render, or Datastar SSE shell-patch — the page shell in one place
+  stream/                    — in-memory realtime pipeline for the Dashboard (no SQLite; see CONTEXT.md "Live data")
+    stream.go                — Event + ParseEvent (Wikimedia recentchange payload → Event)
+    hub.go                   — Hub: fan-out one Source to many subscribers; bounded buffer, drop-on-full, recent-event ring
+    source.go                — Source: single upstream connection to stream.wikimedia.org; feeds Aggregator + Hub
+    aggregator.go            — Aggregator + Stats: rolling counters, per-wiki top-N, per-second sparkline buckets; read via Snapshot
+    *_test.go                — ParseEvent, Hub, Aggregator unit tests (fixtures + fake channels, no network)
   handler/
     constants.go             — defaultLimit = 20
     site.go                  — SiteHandler: Index, About, Context
+    dashboard.go             — DashboardHandler: Index (skeleton), Stream (long-lived SSE: feed per-event + tiles/charts on 1s ticker)
     shop.go                  — ShopHandler: Index, Filter, Detail
     settings.go              — SettingsHandler: Work* and Shop* CRUD
     work.go                  — WorkHandler: Index, Filter, Detail
@@ -137,6 +146,15 @@ static/input.css             — Tailwind source (theme tokens, base styles, com
   nav/path/meta; `render.Page` decides between a full `BaseLayout` render and a
   Datastar SSE shell-patch (`site-header` + `main`). Domain vocabulary lives in
   `CONTEXT.md`.
+- **The Dashboard pushes, it doesn't pull.** `internal/stream` is a realtime
+  pipeline: one `Source` holds a single upstream connection to
+  `stream.wikimedia.org`, fans every `Event` out through an in-memory `Hub` to
+  many browser SSE subscribers (bounded buffer, drop-on-full so one slow client
+  can't stall the rest), and feeds an `Aggregator` of rolling stats read via
+  `Snapshot`. `/dashboard/stream` holds a long-lived SSE connection — opened by
+  `data-init` and torn down by `requestCancellation: 'cleanup'` on SPA
+  navigate-away — patching a live feed per event and the tiles/charts on a 1s
+  ticker. Everything is in-memory; state resets on restart, nothing is stored.
 
 ## Test
 
