@@ -43,6 +43,7 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 	sse.PatchElementTempl(views.StatsTiles(stats, 0), datastar.WithSelectorID("stats"), datastar.WithModeInner())
 	sse.PatchElementTempl(views.Leaderboard(stats.TopWikis), datastar.WithSelectorID("leaderboard"), datastar.WithModeInner())
 	sse.PatchElementTempl(views.Sparkline(stats.Sparkline), datastar.WithSelectorID("sparkline"), datastar.WithModeInner())
+	sse.PatchElementTempl(views.Donut(stats), datastar.WithSelectorID("donut"), datastar.WithModeInner())
 
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
@@ -58,6 +59,8 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 			sse.PatchElementTempl(views.StatsTiles(stats, rate), datastar.WithSelectorID("stats"), datastar.WithModeInner())
 			sse.PatchElementTempl(views.Leaderboard(stats.TopWikis), datastar.WithSelectorID("leaderboard"), datastar.WithModeInner())
 			sse.PatchElementTempl(views.Sparkline(stats.Sparkline), datastar.WithSelectorID("sparkline"), datastar.WithModeInner())
+			sse.PatchElementTempl(views.Donut(stats), datastar.WithSelectorID("donut"), datastar.WithModeInner())
+
 		case <-r.Context().Done():
 			return
 		}
