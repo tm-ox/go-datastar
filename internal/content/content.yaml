@@ -1,15 +1,15 @@
 home:
   meta:
     title: Home
-    description: A reference implementation built with Go, templ, Datastar, and Tailwind v4.
-  title: go-datastar
+    description: A proof of concept built with Go, templ, Datastar, and Tailwind v4.
+  title: go-datastar-templ
   tagline: Server-driven UI without the JavaScript framework.
   sections:
     - id: stack
       title: The Stack
       cards:
         - title: Server-Driven UI
-          icon: bug
+          icon: server
           description: Datastar replaces client-side state with SSE streams from the Go server. No virtual DOM, no hydration - the server owns the UI.
           order: 1
           button:
@@ -17,7 +17,7 @@ home:
             href: https://data-star.dev
             target: _blank
         - title: Type-Safe Templates
-          icon: bug
+          icon: type
           description: Templ compiles HTML components to Go functions. Template errors are caught at build time, not in the browser.
           order: 2
           button:
@@ -25,7 +25,7 @@ home:
             href: https://templ.guide
             target: _blank
         - title: No Framework
-          icon: bug
+          icon: zero
           description: Routing, middleware, and handlers use net/http stdlib only. No Gin, no Echo - just Go.
           order: 3
           button:
@@ -33,7 +33,7 @@ home:
             href: https://github.com/tm-ox/go-datastar
             target: _blank
         - title: CSS-First Styling
-          icon: bug
+          icon: tailwind
           description: Tailwind v4 with no config file. Theme tokens defined in CSS, not JavaScript.
           order: 4
           button:
@@ -44,43 +44,52 @@ home:
       title: Patterns Implemented
       cols: 2
       cards:
-        - title: SSE Filtering
-          icon: bug
-          description: Live product and work filtering via Datastar SSE - no page reload, server patches only the changed fragment.
+        - title: Realtime SSE Push
+          icon: push
+          description: The Dashboard holds a long-lived SSE connection - one upstream feed fanned out through an in-memory hub to every connected browser, with a throttled aggregator behind the charts.
           order: 1
-        - title: Pagination
-          icon: bug
-          description: Cursor-based pagination with disabled-state buttons, total count, and SSE-compatible partial rendering.
+        - title: SSE Filtering
+          icon: filter
+          description: Live product and work filtering via Datastar SSE - no page reload, server patches only the changed fragment.
           order: 2
-        - title: SQLite + Interfaces
-          icon: bug
-          description: ProductStore interface with SQLiteProductStore implementation - swappable backend, dynamic WHERE clause building.
+        - title: Pagination
+          icon: page
+          description: Cursor-based pagination with disabled-state buttons, total count, and SSE-compatible partial rendering.
           order: 3
-        - title: Content from YAML
-          icon: bug
-          description: Site copy and work entries loaded from embedded YAML at startup - no CMS, no database round-trips for static content.
+        - title: Concrete Stores
+          icon: struct
+          description: Each store is a concrete struct over database/sql - no speculative interfaces, tested against in-memory SQLite, with dynamic WHERE building for filters.
           order: 4
+        - title: Content from YAML
+          icon: yaml
+          description: Home page copy loaded from embedded YAML at startup - no CMS, no database round-trips for static content.
+          order: 5
+        - title: Context from Markdown
+          icon: markdown
+          description: The /context page embeds CONTEXT.md and renders it to HTML via goldmark at startup - bare semantic markup styled entirely by base CSS, no prose plugin.
+          order: 6
     - id: explore
       title: Explore
+      cols: 3
       cards:
-        - title: Work
-          icon: bug
-          description: Filterable work entries loaded from YAML. Demonstrates SSE partial rendering and tag-based filtering.
+        - title: Dashboard
+          icon: dash
+          description: Realtime view of public Wikimedia edits - live feed, KPI tiles, wiki leaderboard, and an edits-per-second sparkline, all streamed over SSE.
           order: 1
+          button:
+            text: View dashboard
+            href: /dashboard
+        - title: Work
+          icon: work
+          description: Filterable work portfolio backed by SQLite. Demonstrates SSE partial rendering and tag-based filtering.
+          order: 2
           button:
             text: View work
             href: /work
         - title: Shop
-          icon: bug
+          icon: shop
           description: Product catalogue backed by SQLite. Filter by category and stock, paginate results - all server-driven.
-          order: 2
+          order: 3
           button:
             text: View shop
             href: /shop
-
-about:
-  meta:
-    title: About
-    description: About description.
-  title: About
-  body: This site serves as a learning project exploring Go, Datastar, templ, and Tailwind v4.

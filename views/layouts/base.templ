@@ -20,6 +20,7 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 			data-signals={ fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: ''}", cartTotal) }
 			data-on:keydown__window="evt.key === 'Escape' && ($drawerOpen = false, $lightboxOpen = false); evt.key === 'ArrowRight' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex]); evt.key === 'ArrowLeft' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex])"
 		>
+			<div class="bg-ambient" aria-hidden="true"></div>
 			<header id="site-header" style="view-transition-name: site-header">
 				@modules.Navbar(items, currentPath)
 			</header>
@@ -30,12 +31,12 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 			<div
 				data-show="$drawerOpen"
 				data-on:click="$drawerOpen = false"
-				class="fixed inset-0 z-40 bg-black/50"
+				class="fixed inset-0 z-40 backdrop"
 			></div>
 			<div
 				id="cart-drawer"
 				data-class='{"translate-x-full": !$drawerOpen}'
-				class="fixed right-0 top-16 h-full w-96 z-50 bg-surface rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full"
+				class="fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full"
 			></div>
 			<div
 				id="lightbox"
@@ -43,12 +44,12 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 				style="display:none"
 				data-show="$lightboxOpen"
 			>
-				<div class="absolute inset-0 bg-black/80" data-on:click="$lightboxOpen = false"></div>
+				<div class="absolute inset-0 backdrop" data-on:click="$lightboxOpen = false"></div>
 				<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
 					<img
 						data-attr:src="$lightboxSrc"
 						data-attr:alt="$lightboxAlt"
-						class="h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain bg-canvas border border-border rounded-lg pointer-events-auto"
+						class="h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto"
 					/>
 				</div>
 				<button

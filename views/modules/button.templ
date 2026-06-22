@@ -5,15 +5,15 @@ type ButtonSize string
 type ButtonType string
 
 const (
-	ButtonVariantDefault      ButtonVariant = "default"
-	ButtonVariantCTA          ButtonVariant = "cta"
-	ButtonVariantTab          ButtonVariant = "tab"
-	ButtonVariantTabActive    ButtonVariant = "tabActive"
-	ButtonVariantSubTab       ButtonVariant = "subTab"
-	ButtonVariantSubTabActive ButtonVariant = "subTabActive"
-	ButtonVariantPill                ButtonVariant = "pill"
-	ButtonVariantTabFull             ButtonVariant = "tabFull"
-	ButtonVariantTabFullActive       ButtonVariant = "tabFullActive"
+	ButtonVariantDefault       ButtonVariant = "default"
+	ButtonVariantCTA           ButtonVariant = "cta"
+	ButtonVariantTab           ButtonVariant = "tab"
+	ButtonVariantTabActive     ButtonVariant = "tabActive"
+	ButtonVariantSubTab        ButtonVariant = "subTab"
+	ButtonVariantSubTabActive  ButtonVariant = "subTabActive"
+	ButtonVariantPill          ButtonVariant = "pill"
+	ButtonVariantTabFull       ButtonVariant = "tabFull"
+	ButtonVariantTabFullActive ButtonVariant = "tabFullActive"
 )
 
 const (
@@ -78,23 +78,23 @@ templ Button(props ...ButtonProps) {
 func (b ButtonProps) variantClasses() string {
 	switch b.Variant {
 	case ButtonVariantCTA:
-		return "bg-surface text-accent hover:bg-surface/50 hover:border-accent"
+		return "backdrop text-accent hover:bg-surface/50 hover:border-accent"
 	case ButtonVariantTab:
-		return "bg-surface text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
+		return "text-muted rounded-b-none border-b-2 border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabActive:
-		return "bg-canvas text-text rounded-b-none border-b-2 border-b-accent"
+		return "backdrop text-text rounded-b-none border-b-2 border-b-accent"
 	case ButtonVariantSubTab:
-		return "bg-canvas text-muted rounded-t-none border-t-2 border-t-border hover:bg-surface/50"
+		return "backdrop text-muted rounded-t-none border-t-2 border-t-border hover:bg-surface/50"
 	case ButtonVariantSubTabActive:
-		return "bg-surface text-text rounded-t-none border-t-2 border-t-accent"
+		return "bg-canvas text-text rounded-t-none border-t-2 border-t-accent"
 	case ButtonVariantTabFull:
 		return "bg-surface text-muted rounded-none border-b border-b-border hover:bg-canvas/50"
 	case ButtonVariantTabFullActive:
 		return "bg-canvas text-text rounded-none border-b border-b-accent"
 	case ButtonVariantPill:
-		return "bg-canvas text-accent/50 !rounded-full !border-accent/50"
+		return "text-accent !rounded-full !border-accent"
 	default:
-		return "bg-canvas text-accent hover:bg-primary/90 hover:border-accent"
+		return "backdrop text-accent hover:bg-primary/90 hover:border-accent"
 	}
 }
 

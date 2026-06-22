@@ -287,7 +287,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			return nil
 		})
 		templ_7745c5c3_Err = modules.Button(modules.ButtonProps{
-			Size:  modules.ButtonSizeXs,
+			Size:  modules.ButtonSizeSm,
 			Class: "ml-auto",
 			Attributes: templ.Attributes{
 				"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
@@ -1122,7 +1122,7 @@ func SettingsShopContent(sections []modules.NavItem, currentPath string, product
 			return nil
 		})
 		templ_7745c5c3_Err = modules.Button(modules.ButtonProps{
-			Size: modules.ButtonSizeXs,
+			Size: modules.ButtonSizeSm,
 			Attributes: templ.Attributes{
 				"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
 			},
@@ -1342,7 +1342,7 @@ func SettingsShopRow(p store.Product) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\" class=\"w-12 bg-canvas border border-border rounded px-2 py-1 text-xs text-center\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\" class=\"w-12 backdrop border border-border rounded px-2 py-1 text-xs text-center\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

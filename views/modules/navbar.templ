@@ -9,9 +9,9 @@ type NavItem struct {
 
 templ Navbar(items []NavItem, currentPath string) {
 	<div class="content-width flex items-end justify-between h-full">
-		<a href="/" class="flex items-center gap-4 pb-2 font-semibold text-lg tracking-tight text-text uppercase">
-			@IconBug(IconProps{Size: "24", Class: "text-accent"})
-			Godst
+		<a href="/" class="flex items-center pb-2 font-bold text-2xl tracking-tight text-accent uppercase">
+			@IconGo(IconProps{Size: "50"})
+			<div>dst</div>
 		</a>
 		<nav class="flex items-center">
 			<div class="hidden md:flex items-center h-full">
@@ -31,7 +31,7 @@ templ Navbar(items []NavItem, currentPath string) {
 				style="display:none"
 				data-show="$menuOpen"
 			>
-				<div class="absolute inset-0 bg-black/80" data-on:click="$menuOpen = !$menuOpen"></div>
+				<div class="absolute inset-0 backdrop" data-on:click="$menuOpen = !$menuOpen"></div>
 				<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-auto">
 					@MobileTabBar(items, currentPath)
 				</div>

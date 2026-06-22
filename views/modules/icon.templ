@@ -5,6 +5,174 @@ type IconProps struct {
 	Class string
 }
 
+templ IconGo(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } viewBox="0 185 640 250" class={ p.Class }>
+		<!-- Icon from Font Awesome Brands by Dave Gandy - https://creativecommons.org/licenses/by/4.0/ -->
+		<path fill="currentColor" d="M400.1 258.8c-10.9 2.8-19.9 4.3-29.1 7.6c-7.3 1.9-14.7 3.9-23.2 6.1l-.6.1c-4.2 1.2-4.6 1.3-8.5-3.2c-4.7-5.3-8.1-8.7-14.6-11.9c-19.7-9.6-38.7-6.8-56.4 4.7c-21.2 13.7-32.1 34-31.8 59.2c.3 25 17.4 45.5 41.2 48.9c22 2.8 39.8-4.6 53.8-20.5c2.1-2.6 4-5.3 6.1-8.3c.8-1 1.5-2.1 2.3-3.3h-60.1c-6.5 0-8.1-4-5.9-9.3c4-9.7 11.5-25.9 15.9-34c.9-1.8 3.1-5.8 6.9-5.8h101.1c4.5-13.4 11.8-26.9 21.6-39.7c22.7-29.9 49.3-45.5 87.2-52c31.8-5.6 61.7-2.5 88.9 15.9c24.6 16.8 39.8 39.6 43.9 69.5c5.3 42.1-6.9 76.3-36.7 105.6c-19.7 20.9-44.9 34-73.9 39.9c-5.6 1-11.1 1.5-16.5 2c-2.9.2-5.7.5-8.5.8c-28.3-.6-54.2-8.7-76-27.4c-15.3-13.3-25.9-29.6-31.1-48.5c-3.7 7.3-8 14.4-14 21.1c-21.6 29.6-50.9 48-87.9 52.9c-30.6 4.1-58.9-1.8-83.9-20.5c-23-17.5-36.1-40.5-39.5-69.2c-4.1-34 5.9-65.4 26.4-91.3c22.2-29 51.5-47.4 87.3-53.9c29.3-6.2 57.3-1.9 82.6 15.3c16.5 10.9 28.3 25.8 36.1 43.9c1.9 2.8.6 4.4-3.1 5.3m-351.8 5.6c-1.3 0-1.6-.6-.9-1.6l6.6-8.4c.6-.9 2.2-1.5 3.4-1.5h111.3c1.2 0 1.5.9.9 1.8l-5.3 8.1c-.6 1-2.2 1.9-3.1 1.9l-112.8-.3zM1.2 293.1c-1.2 0-1.6-.7-.9-1.6l6.5-8.4c.6-.9 2.2-1.6 3.4-1.6h142.1c1.2 0 1.8 1 1.5 1.9l-2.5 7.5c-.3 1.2-1.5 1.9-2.8 1.9zm74.5 26.8c-.6.9-.3 1.8.9 1.8l68 .3c.9 0 2.2-.9 2.2-2.1l.6-7.5c0-1.3-.6-2.2-1.9-2.2H83.2c-1.2 0-2.5.9-3.1 1.9zm501.5-18c-.2-2.6-.3-4.8-.7-7c-5.6-30.8-34-48.3-63.6-41.4c-29 6.5-47.7 24.9-54.5 54.2c-5.6 24.3 6.2 48.9 28.6 58.9c17.2 7.5 34.3 6.6 50.8-1.9c24.6-13.6 38-32.7 39.6-59.5c-.1-1.2-.1-2.3-.2-3.3"></path>
+	</svg>
+}
+
+templ IconServer(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ -->
+		<path fill="currentColor" fill-rule="evenodd" d="M3.516 15.725c.271-.019.618-.02 1.116-.02h14.736c.498 0 .845.001 1.117.02c.266.018.422.052.54.102c.387.161.695.47.855.86c.049.119.083.275.101.543c.019.273.019.622.019 1.123c0 .5 0 .85-.019 1.123c-.018.268-.052.424-.101.544c-.16.389-.468.698-.855.86c-.118.049-.274.083-.54.101c-.272.019-.619.019-1.117.019H4.632c-.498 0-.845 0-1.116-.019c-.267-.018-.423-.053-.541-.102a1.58 1.58 0 0 1-.855-.86c-.049-.119-.083-.275-.101-.543A18 18 0 0 1 2 18.353c0-.5 0-.85.019-1.123c.018-.268.052-.424.101-.544c.16-.389.468-.698.855-.86c.118-.049.274-.083.54-.101m1.116 3.687c.58 0 1.052-.474 1.052-1.06c0-.584-.471-1.058-1.052-1.058s-1.053.474-1.053 1.059s.471 1.059 1.053 1.059m.001-11.118c-.498 0-.845 0-1.116-.019c-.267-.018-.423-.052-.541-.102a1.58 1.58 0 0 1-.855-.86c-.049-.119-.083-.275-.101-.543A18 18 0 0 1 2 5.647c0-.5 0-.85.019-1.123c.018-.268.052-.424.101-.544c.16-.389.468-.698.855-.86c.118-.049.274-.083.54-.101A18 18 0 0 1 4.633 3h14.736c.498 0 .845 0 1.117.019c.266.018.422.052.54.102c.387.161.695.47.855.86c.049.119.083.275.101.543c.019.274.019.622.019 1.123c0 .5 0 .85-.019 1.123c-.018.268-.052.424-.101.544c-.16.389-.468.698-.855.86c-.118.049-.274.083-.54.101a18 18 0 0 1-1.117.02zm0 1.059c-.498 0-.845 0-1.116.019c-.267.018-.423.052-.541.102a1.58 1.58 0 0 0-.855.86c-.049.119-.083.275-.101.543C2 11.15 2 11.5 2 12s0 .85.019 1.123c.018.268.052.424.101.544c.16.389.468.698.855.86c.118.049.274.083.54.101c.272.019.619.02 1.117.02h14.736c.498 0 .845-.001 1.117-.02c.266-.018.422-.052.54-.102a1.58 1.58 0 0 0 .855-.86c.049-.119.083-.275.101-.543C22 12.85 22 12.5 22 12s0-.85-.019-1.123c-.018-.268-.052-.424-.101-.544a1.58 1.58 0 0 0-.855-.86c-.118-.049-.274-.083-.54-.101a18 18 0 0 0-1.117-.02zM5.684 12c0 .585-.471 1.059-1.052 1.059A1.056 1.056 0 0 1 3.579 12c0-.585.471-1.059 1.053-1.059c.58 0 1.052.474 1.052 1.059M4.632 6.706c.58 0 1.052-.474 1.052-1.059s-.471-1.059-1.052-1.059s-1.053.474-1.053 1.06c0 .584.471 1.058 1.053 1.058" clip-rule="evenodd"></path>
+	</svg>
+}
+
+templ IconType(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } viewBox="0 0 24 24" class={ p.Class }>
+		<!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+		<path fill="currentColor" d="M9.8 14.5h1.6l.8-2.3h3.65l.8 2.3h1.55l-3.4-9h-1.6zm2.85-3.6l1.3-3.75h.1l1.3 3.75zM8 18q-.825 0-1.412-.587T6 16V4q0-.825.588-1.412T8 2h12q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18zm-4 4q-.825 0-1.412-.587T2 20V6h2v14h14v2z"></path>
+	</svg>
+}
+
+templ IconZero(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Myna UI Icons by Praveen Juge - https://github.com/praveenjuge/mynaui-icons/blob/main/LICENSE -->
+		<g fill="currentColor"><path d="M10.25 10.5a1.75 1.75 0 1 1 3.5 0v3a1.75 1.75 0 1 1-3.5 0z"></path><path d="M9.367 2.25h5.266c1.092 0 1.958 0 2.655.057c.714.058 1.317.18 1.869.46a4.75 4.75 0 0 1 2.075 2.077c.281.55.403 1.154.461 1.868c.057.697.057 1.563.057 2.655v5.266c0 1.092 0 1.958-.057 2.655c-.058.714-.18 1.317-.46 1.869a4.75 4.75 0 0 1-2.076 2.075c-.552.281-1.155.403-1.869.461c-.697.057-1.563.057-2.655.057H9.367c-1.092 0-1.958 0-2.655-.057c-.714-.058-1.317-.18-1.868-.46a4.75 4.75 0 0 1-2.076-2.076c-.281-.552-.403-1.155-.461-1.869c-.057-.697-.057-1.563-.057-2.655V9.367c0-1.092 0-1.958.057-2.655c.058-.714.18-1.317.46-1.868a4.75 4.75 0 0 1 2.077-2.076c.55-.281 1.154-.403 1.868-.461c.697-.057 1.563-.057 2.655-.057m2.633 5a3.25 3.25 0 0 0-3.25 3.25v3a3.25 3.25 0 0 0 6.5 0v-3A3.25 3.25 0 0 0 12 7.25"></path></g>
+	</svg>
+}
+
+templ IconTailwind(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Remix Icon by Remix Design - https://github.com/Remix-Design/RemixIcon/blob/master/License -->
+		<path fill="currentColor" d="M12 4.86q-4.76 0-5.95 4.76q1.785-2.38 4.165-1.785c.905.226 1.552.883 2.268 1.61C13.651 10.63 15 12 17.95 12q4.76 0 5.95-4.76q-1.785 2.38-4.165 1.785c-.906-.226-1.552-.883-2.27-1.61C16.3 6.23 14.95 4.86 12 4.86M6.05 12Q1.29 12 .1 16.76q1.785-2.38 4.165-1.785c.905.226 1.552.883 2.269 1.61C7.7 17.77 9.05 19.14 12 19.14q4.76 0 5.95-4.76q-1.785 2.38-4.165 1.785c-.906-.226-1.552-.883-2.27-1.61C10.35 13.37 9 12 6.05 12"></path>
+	</svg>
+}
+
+templ IconPush(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 48 48">
+		<!-- Icon from IconPark Solid by ByteDance - https://github.com/bytedance/IconPark/blob/master/LICENSE -->
+		<g fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="4"><path stroke-linecap="round" d="M5 24h38"></path><path fill="currentColor" d="M28 4h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2ZM16 32H8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Zm24 0h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2Z"></path><path stroke-linecap="round" d="M24 24v-8m12 16v-8m-24 8v-8"></path></g>
+	</svg>
+}
+
+templ IconPage(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Fluent UI System Icons by Microsoft Corporation - https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE -->
+		<path fill="currentColor" d="M20.245 4.004c.967 0 1.75.784 1.75 1.75V18.25a1.75 1.75 0 0 1-1.75 1.75h-7.247q-.13 0-.256-.019V4.023q.125-.018.256-.019zm-9.247-.002q.125 0 .245.017V19.98q-.12.017-.245.017H3.75A1.75 1.75 0 0 1 2 18.247V5.752c0-.967.784-1.75 1.75-1.75zM17.625 16.5a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5m2.5 0a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5m-5 0a.75.75 0 1 0 0 1.5a.75.75 0 0 0 0-1.5"></path>
+	</svg>
+}
+
+templ IconStruct(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 256 256">
+		<!-- Icon from Phosphor by Phosphor Icons - https://github.com/phosphor-icons/core/blob/main/LICENSE -->
+		<path fill="currentColor" d="M144 96V80h-16a8 8 0 0 0-8 8v80a8 8 0 0 0 8 8h16v-16a16 16 0 0 1 16-16h48a16 16 0 0 1 16 16v48a16 16 0 0 1-16 16h-48a16 16 0 0 1-16-16v-16h-16a24 24 0 0 1-24-24v-32H72v8a16 16 0 0 1-16 16H24a16 16 0 0 1-16-16v-32a16 16 0 0 1 16-16h32a16 16 0 0 1 16 16v8h32V88a24 24 0 0 1 24-24h16V48a16 16 0 0 1 16-16h48a16 16 0 0 1 16 16v48a16 16 0 0 1-16 16h-48a16 16 0 0 1-16-16"></path>
+	</svg>
+}
+
+templ IconYaml(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 16 16">
+		<!-- Icon from Fluent UI System Icons by Microsoft Corporation - https://github.com/microsoft/fluentui-system-icons/blob/main/LICENSE -->
+		<path fill="currentColor" d="M8 4.5V1H4.5A1.5 1.5 0 0 0 3 2.5v6.881a1.5 1.5 0 0 1 1.75-.18a1.5 1.5 0 0 1 2.092.628l.658 1.317l.659-1.317a1.5 1.5 0 0 1 2.341-.447a1.5 1.5 0 0 1 2.5 1.09V6H9.5A1.5 1.5 0 0 1 8 4.5m1 0V1.25L12.75 5H9.5a.5.5 0 0 1-.5-.5M2.5 15a.5.5 0 0 0 .5-.5v-1.361l1.429-2.382a.5.5 0 1 0-.858-.515l-1.07 1.786l-1.072-1.786a.5.5 0 0 0-.858.515l1.43 2.382v1.36a.5.5 0 0 0 .5.5m3.447-4.724A.5.5 0 0 0 5 10.5v4a.5.5 0 1 0 1 0v-1.882l1.053 2.105a.5.5 0 0 0 .894 0L9 12.618V14.5a.5.5 0 1 0 1 0v-4a.5.5 0 0 0-.947-.224L7.5 13.382zM12 10.5a.5.5 0 0 0-1 0v4a.5.5 0 0 0 .5.5h2a.5.5 0 1 0 0-1H12z"></path>
+	</svg>
+}
+
+templ IconMarkdown(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 14 14">
+		<!-- Icon from Streamline by Streamline - https://creativecommons.org/licenses/by/4.0/ -->
+		<path fill="currentColor" fill-rule="evenodd" d="M2.5 0A1.5 1.5 0 0 0 1 1.5v11A1.5 1.5 0 0 0 2.5 14h9a1.5 1.5 0 0 0 1.5-1.5v-7a.5.5 0 0 0-.146-.354l-5-5A.5.5 0 0 0 7.5 0zm1.243 5.875c.341 0 .651.2.791.512L5 7.42l.466-1.034a.868.868 0 0 1 1.659.356V10.5a.625.625 0 1 1-1.25 0V8.523l-.023.051a.934.934 0 0 1-1.704 0l-.023-.05V10.5a.625.625 0 1 1-1.25 0V6.743c0-.48.389-.868.868-.868m6.382.625a.625.625 0 1 0-1.25 0V9H8.5a.5.5 0 0 0-.354.853l1 1a.5.5 0 0 0 .708 0l1-1A.5.5 0 0 0 10.5 9h-.375z" clip-rule="evenodd"></path>
+	</svg>
+}
+
+templ IconDash(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
+		<path fill="currentColor" d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h6v18zm8 0v-9h8v7q0 .825-.587 1.413T19 21zm0-11V3h6q.825 0 1.413.588T21 5v5z"></path>
+	</svg>
+}
+
+templ IconWork(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Sharp free icons by Streamline - https://creativecommons.org/licenses/by/4.0/ -->
+		<path fill="currentColor" fill-rule="evenodd" d="M5 1H4v10h7v2H1v10h2v-5h18v5h2V13H13v-2h7V1zm1 8V3h12v6z" clip-rule="evenodd"></path>
+	</svg>
+}
+
 templ IconBug(props ...IconProps) {
 	{{ var p IconProps }}
 	if len(props) > 0 {
