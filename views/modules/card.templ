@@ -57,7 +57,7 @@ func iconForName(name string, p IconProps) templ.Component {
 
 templ Card(props CardProps) {
 	if props.Variant == CardVariantLink {
-		<a href={ templ.URL(props.Card.Href) } class="block border border-border p-6 rounded-lg backdrop">
+		<a href={ templ.URL(props.Card.Href) } class="block border border-border p-6 rounded-lg backdrop mb-4">
 			if props.Card.Icon != "" {
 				<div class="mb-5">
 					@iconForName(props.Card.Icon, props.IconProps)
@@ -68,7 +68,7 @@ templ Card(props CardProps) {
 			{ children... }
 		</a>
 	} else {
-		<div class="grid grid-rows-subgrid row-span-4 border border-border p-6 rounded-lg backdrop">
+		<div class="grid grid-rows-subgrid row-span-4 border border-border p-6 rounded-lg backdrop mb-4">
 			if props.Card.Icon != "" {
 				<div class="mb-3">
 					@iconForName(props.Card.Icon, props.IconProps)

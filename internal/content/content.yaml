@@ -42,7 +42,7 @@ home:
             target: _blank
     - id: patterns
       title: Patterns Implemented
-      cols: 2
+      cols: 3
       cards:
         - title: Realtime SSE Push
           icon: push

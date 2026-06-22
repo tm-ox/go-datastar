@@ -13,6 +13,7 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			@modules.SEO(meta)
+			<link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
 			<link rel="stylesheet" href="/static/app.css"/>
 			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
 		</head>
@@ -28,6 +29,7 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 				{ children... }
 			</main>
 			@modules.Footer()
+			@modules.MobileMenu(items, currentPath)
 			<div
 				data-show="$drawerOpen"
 				data-on:click="$drawerOpen = false"

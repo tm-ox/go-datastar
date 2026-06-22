@@ -88,7 +88,7 @@ func SettingsWorkContent(sections []modules.NavItem, currentPath string, entries
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"settings-entry\"><nav class=\"mt-16 content-width flex gap-0 justify-end pr-25\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"settings-entry\"><nav class=\"mt-16 content-width flex gap-0 justify-start md:justify-end pr-25\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1063,7 +1063,7 @@ func SettingsShopContent(sections []modules.NavItem, currentPath string, product
 			templ_7745c5c3_Var43 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "<div class=\"settings-entry\"><nav class=\"mt-16 content-width flex gap-0 justify-end pr-25\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 67, "<div class=\"settings-entry\"><nav class=\"mt-16 content-width flex gap-0 justify-start md:justify-end pr-25\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

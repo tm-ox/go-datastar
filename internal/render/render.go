@@ -31,6 +31,7 @@ func Page(w http.ResponseWriter, r *http.Request, v View) {
 	if r.URL.Query().Has("datastar") {
 		sse := datastar.NewSSE(w, r)
 		sse.PatchElementTempl(modules.Navbar(v.Nav, v.Path), datastar.WithSelectorID("site-header"), datastar.WithModeInner())
+		sse.PatchElementTempl(modules.MobileMenu(v.Nav, v.Path), datastar.WithSelectorID("mobile-menu"), datastar.WithModeOuter())
 		sse.PatchElementTempl(v.Content, datastar.WithSelectorID("main"), datastar.WithModeInner())
 		sse.ReplaceURL(url.URL{Path: v.Path})
 		sse.ExecuteScript("window.scrollTo(0,0)")

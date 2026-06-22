@@ -20,7 +20,7 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []store.Work, total, limit int,
 	types, clients, years, tools []string) {
 	<div class="settings-entry">
-		<nav class="mt-16 content-width flex gap-0 justify-end pr-25">
+		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end pr-25">
 			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
 		</nav>
 		<section
@@ -268,7 +268,7 @@ templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentP
 
 templ SettingsShopContent(sections []modules.NavItem, currentPath string, products []store.Product, categories []string, total, limit int) {
 	<div class="settings-entry">
-		<nav class="mt-16 content-width flex gap-0 justify-end pr-25">
+		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end pr-25">
 			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
 		</nav>
 		<section

@@ -71,12 +71,16 @@
         @apply bg-canvas text-text tracking-wide overflow-x-hidden;
     }
 
+    main {
+        @apply pb-16;
+    }
+
     header {
         @apply fixed top-0 inset-x-0 z-50 backdrop border-b border-border h-16;
     }
 
     footer {
-        @apply flex justify-center items-center py-5 backdrop border-t border-border;
+        @apply flex justify-center items-center py-2 lg:py-4 backdrop border-t border-border;
     }
 
     nav {
@@ -84,7 +88,7 @@
     }
 
     section {
-        @apply content-width md:min-h-screen pt-24 md:py-28;
+        @apply content-width md:min-h-screen pt-24 md:py-24;
     }
 
     h1 {
@@ -204,19 +208,19 @@
 
 @layer components {
     .grid-1 {
-        @apply grid grid-cols-1 gap-x-4 gap-y-1;
+        @apply grid grid-cols-1 gap-4;
     }
 
     .grid-2 {
-        @apply grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-1;
+        @apply grid grid-cols-1 md:grid-cols-2 gap-x-4;
     }
 
     .grid-3 {
-        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1;
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4;
     }
 
     .grid-4 {
-        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-1;
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-4 lg:gap-y-4;
     }
     .grid-5 {
         @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4;
