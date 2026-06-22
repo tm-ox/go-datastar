@@ -2,10 +2,10 @@ package views
 
 import (
 	"fmt"
-	"strconv"
 	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
+	"strconv"
 )
 
 templ ShopContent(products []store.Product, categories []string, page int, total int, limit int) {
@@ -60,7 +60,7 @@ templ ShopDetailContent(p *store.Product) {
 					<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full object-cover border border-border rounded-lg"/>
 				}
 				<div class="flex flex-col h-full">
-					<div class="flex items-center justify-between mb-2">
+					<div class="flex items-center justify-between">
 						@modules.Button(modules.ButtonProps{
 							Variant: modules.ButtonVariantPill,
 							Size:    modules.ButtonSizeXs,
@@ -72,7 +72,7 @@ templ ShopDetailContent(p *store.Product) {
 					</div>
 					<h3>{ p.Name }</h3>
 					<div class="flex flex-col gap-4 h-full">
-						<p>{ p.Description }</p>
+						<p class="mt-0">{ p.Description }</p>
 						<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
 						@modules.Button(modules.ButtonProps{
 							Size:       modules.ButtonSizeSm,

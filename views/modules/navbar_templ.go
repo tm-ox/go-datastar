@@ -36,15 +36,15 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"content-width flex items-end justify-between h-full\"><a href=\"/\" class=\"flex items-center gap-4 pb-2 font-semibold text-lg tracking-tight text-text uppercase\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"content-width flex items-end justify-between h-full\"><a href=\"/\" class=\"flex items-center pb-2 font-bold text-2xl tracking-tight text-accent uppercase\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = IconBug(IconProps{Size: "24", Class: "text-accent"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = IconGo(IconProps{Size: "50"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "Godst</a><nav class=\"flex items-center\"><div class=\"hidden md:flex items-center h-full\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div>dst</div></a><nav class=\"flex items-center\"><div class=\"hidden md:flex items-center h-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -79,7 +79,7 @@ func Navbar(items []NavItem, currentPath string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$menuOpen\"><div class=\"absolute inset-0 bg-black/80\" data-on:click=\"$menuOpen = !$menuOpen\"></div><div class=\"absolute inset-0 flex flex-col items-center justify-center pointer-events-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$menuOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$menuOpen = !$menuOpen\"></div><div class=\"absolute inset-0 flex flex-col items-center justify-center pointer-events-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

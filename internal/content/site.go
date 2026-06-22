@@ -60,15 +60,8 @@ type Card struct {
 	Icon        string `yaml:"icon"`
 }
 
-type AboutPage struct {
-	Meta  PageMeta `yaml:"meta"`
-	Title string   `yaml:"title"`
-	Body  string   `yaml:"body"`
-}
-
 type SiteContent struct {
-	Home  HomePage  `yaml:"home"`
-	About AboutPage `yaml:"about"`
+	Home HomePage `yaml:"home"`
 }
 
 func Load() (SiteContent, error) {

@@ -43,14 +43,6 @@ func (h *SiteHandler) Index(w http.ResponseWriter, r *http.Request) {
 	render.Page(w, r, render.View{Nav: h.nav, Path: "/", Meta: meta, Content: views.IndexContent(h.site.Home)})
 }
 
-func (h *SiteHandler) About(w http.ResponseWriter, r *http.Request) {
-	meta := modules.Meta{
-		Title:       h.site.About.Meta.Title,
-		Description: h.site.About.Meta.Description,
-	}
-	render.Page(w, r, render.View{Nav: h.nav, Path: "/about", Meta: meta, Content: views.AboutContent(h.site.About)})
-}
-
 func (h *SiteHandler) Context(w http.ResponseWriter, r *http.Request) {
 	meta := modules.Meta{
 		Title:       "Context",

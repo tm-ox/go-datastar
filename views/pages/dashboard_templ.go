@@ -43,7 +43,7 @@ func DashboardContent() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-init=\"@get('/dashboard/stream', {requestCancellation: 'cleanup'})\"><p>Live edit activity across every Wikimedia wiki, updated each second.</p><h3>Stats</h3><div class=\"flex flex-col gap-4\"><div id=\"stats\"></div><div id=\"sparkline\"></div><div class=\"grid-4\"><div id=\"leaderboard\" class=\"col-span-2 lg:col-span-3\"></div><div id=\"donut\"></div></div><div class=\"border border-border rounded-lg px-4 py-3 bg-surface max-h-88 overflow-y-auto\"><h3 class=\"mt-0\">Feed</h3><div id=\"feed\"></div></div></div></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-init=\"@get('/dashboard/stream', {requestCancellation: 'cleanup'})\"><p>Realtime view of public Wikimedia edits - live feed, KPI tiles, wiki leaderboard, and an edits-per-second sparkline, all streamed over SSE.</p><h3>Stats</h3><div class=\"flex flex-col gap-4\"><div id=\"stats\"></div><div id=\"sparkline\"></div><div class=\"grid-4\"><div id=\"leaderboard\" class=\"col-span-2 lg:col-span-3\"></div><div id=\"donut\"></div></div><div class=\"border border-border rounded-lg px-4 py-3 backdrop max-h-88 overflow-y-auto\"><h3 class=\"mt-0\">Feed</h3><div id=\"feed\"></div></div></div></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -72,7 +72,7 @@ func Ticker(title string, description string) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-1 border border-border rounded-lg px-4 py-3 bg-surface\"><h5 class=\"text-right\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"flex flex-col gap-1 border border-border rounded-lg px-4 py-3 backdrop\"><h5 class=\"text-right\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -266,7 +266,7 @@ func Leaderboard(wikis []stream.WikiCount) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		if len(wikis) > 0 {
 			max := wikis[0].Count
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"p-4 bg-surface border border-border rounded-lg\"><h3 class=\"mt-0\">Leaderboard</h3>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<div class=\"p-4 backdrop border border-border rounded-lg\"><h3 class=\"mt-0\">Leaderboard</h3>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -379,7 +379,7 @@ func Sparkline(counts []int) templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"border border-border rounded-lg p-4 pt-3 bg-surface\"><div class=\"flex justify-between text-sm text-muted mb-1\"><span>edits/sec · last 60s</span> <span class=\"text-text\">peak: ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"border border-border rounded-lg p-4 pt-3 backdrop\"><div class=\"flex justify-between text-sm text-muted mb-1\"><span>edits/sec · last 60s</span> <span class=\"text-text\">peak: ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -442,7 +442,7 @@ func Donut(stats stream.Stats) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		pct := botPctNum(stats)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"h-full border border-border rounded-lg p-4 pt-3 bg-surface\"><h3 class=\"mt-0\">Bots vs. Humans</h3><div class=\"relative w-full aspect-square\"><svg viewBox=\"0 0 40 40\" class=\"w-full h-full -rotate-90\"><circle cx=\"20\" cy=\"20\" r=\"15.915\" fill=\"none\" class=\"stroke-border\" stroke-width=\"0.5\"></circle> <circle cx=\"20\" cy=\"20\" r=\"15.915\" fill=\"none\" class=\"stroke-accent\" stroke-width=\"0.5\" stroke-dasharray=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"h-full border border-border rounded-lg p-4 pt-3 backdrop\"><h3 class=\"mt-0\">Bots vs. Humans</h3><div class=\"relative w-full aspect-square\"><svg viewBox=\"0 0 40 40\" class=\"w-full h-full -rotate-90\"><circle cx=\"20\" cy=\"20\" r=\"15.915\" fill=\"none\" class=\"stroke-border\" stroke-width=\"0.5\"></circle> <circle cx=\"20\" cy=\"20\" r=\"15.915\" fill=\"none\" class=\"stroke-accent\" stroke-width=\"0.5\" stroke-dasharray=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

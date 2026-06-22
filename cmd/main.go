@@ -27,7 +27,6 @@ func main() {
 
 	nav := []modules.NavItem{
 		{Label: "Home", URL: "/"},
-		// {Label: "About", URL: "/about"},
 		{Label: "Context", URL: "/context"},
 		{Label: "Dash", URL: "/dashboard"},
 		{Label: "Work", URL: "/work"},
@@ -69,7 +68,6 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/", site_h.Index)
-	mux.HandleFunc("/about", site_h.About)
 	mux.HandleFunc("/context", site_h.Context)
 	mux.HandleFunc("/dashboard", dashboard_h.Index)
 	mux.HandleFunc("GET /dashboard/stream", dashboard_h.Stream)

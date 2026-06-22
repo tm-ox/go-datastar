@@ -21,7 +21,7 @@ templ WorkContent(entries []store.Work, total int, limit int, types []string, cl
 			<div class="mr-auto">
 				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/work/filter"})
 			</div>
-			<div class="grid grid-cols-4 gap-4 w-fit">
+			<div class="grid grid-cols-4 w-fit">
 				<select data-bind="type" data-on:change="$page = 1; @get('/work/filter')">
 					<option value="" class="">All Types</option>
 					for _, c := range types {
@@ -56,8 +56,8 @@ templ WorkRows(entries []store.Work, page, total, limit int) {
 	<div id="work-rows">
 		<div class="grid-5">
 			for _, img := range entries {
-				<a href={ templ.URL("/work/" + img.Slug) } data-on:click__prevent={ "document.startViewTransition ? document.startViewTransition(() => @get('/work/" + img.Slug + "')) : @get('/work/" + img.Slug + "')" } class="flex flex-col gap-2 border border-border rounded bg-canvas pb-2 hover:border-accent">
-					<img src={ img.CoverURL } style={ "view-transition-name: work-cover-" + img.Slug } class="w-full aspect-square object-cover border-b border-border bg-canvas"/>
+				<a href={ templ.URL("/work/" + img.Slug) } data-on:click__prevent={ "document.startViewTransition ? document.startViewTransition(() => @get('/work/" + img.Slug + "')) : @get('/work/" + img.Slug + "')" } class="flex flex-col gap-2 border border-border rounded pb-2 hover:border-accent">
+					<img src={ img.CoverURL } style={ "view-transition-name: work-cover-" + img.Slug } class="w-full aspect-square object-cover border-b border-border backdrop"/>
 					<h5 class="text-center">{ img.Title }</h5>
 				</a>
 			}

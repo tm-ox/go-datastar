@@ -64,7 +64,7 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 					</select>
 				</div>
 				@modules.Button(modules.ButtonProps{
-					Size:  modules.ButtonSizeXs,
+					Size:  modules.ButtonSizeSm,
 					Class: "ml-auto",
 					Attributes: templ.Attributes{
 						"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
@@ -291,7 +291,7 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 					<span class="text-muted peer-checked:text-accent">Out of Stock</span>
 				</label>
 				@modules.Button(modules.ButtonProps{
-					Size: modules.ButtonSizeXs,
+					Size: modules.ButtonSizeSm,
 					Attributes: templ.Attributes{
 						"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
 					},
@@ -361,7 +361,7 @@ templ SettingsShopRow(p store.Product) {
 			}) {
 				-
 			}
-			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-12 bg-canvas border border-border rounded px-2 py-1 text-xs text-center"/>
+			<input type="number" data-bind={ "stockValue_" + strconv.Itoa(p.ID) } class="w-12 backdrop border border-border rounded px-2 py-1 text-xs text-center"/>
 			@modules.Button(modules.ButtonProps{
 				Size:  modules.ButtonSizeXs,
 				Class: "text-muted",
