@@ -59,8 +59,8 @@ func main() {
 		{"Tote Bag — Black", "Black canvas tote, screen printed white logo.", "apparel", "tote-bag-black", 2400, 0},
 	}
 
-	for i, p := range products {
-		image := fmt.Sprintf("https://loremflickr.com/400/300/%s?lock=%d", p.category, i+1)
+	for _, p := range products {
+		image := fmt.Sprintf("https://picsum.photos/seed/%s/400/300", p.slug)
 		_, err := database.Exec(
 			`INSERT OR IGNORE INTO products (name, description, price, category, slug, image, stock) VALUES (?, ?, ?, ?, ?, ?, ?)`,
 			p.name, p.description, p.price, p.category, p.slug, image, p.stock,
