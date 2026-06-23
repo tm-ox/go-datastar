@@ -88,7 +88,7 @@
     }
 
     section {
-        @apply content-width md:min-h-screen pt-24 md:py-24;
+        @apply content-width md:min-h-screen pt-24 md:py-24 flex flex-col;
     }
 
     h1 {

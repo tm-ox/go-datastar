@@ -17,6 +17,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/internal/stream"
 	"github.com/tm-ox/go-datastar/views/modules"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func main() {
@@ -64,6 +65,34 @@ func main() {
 	work_h := handler.NewWorkHandler(nav, workStore)
 	shop_h := handler.NewShopHandler(nav, productStore)
 	settings_h := handler.NewSettingsHandler(nav, settingsSections, productStore, workStore)
+	settings := http.NewServeMux()
+	settings.HandleFunc("/settings/work", settings_h.Work)
+	settings.HandleFunc("/settings/work/filter", settings_h.WorkFilter)
+	settings.HandleFunc("/settings/work/form", settings_h.WorkForm)
+	settings.HandleFunc("POST /settings/work/create", settings_h.WorkCreate)
+	settings.HandleFunc("POST /settings/work/update", settings_h.WorkUpdate)
+	settings.HandleFunc("POST /settings/work/delete", settings_h.WorkDelete)
+	settings.HandleFunc("/settings/shop", settings_h.Shop)
+	settings.HandleFunc("/settings/shop/filter", settings_h.ShopFilter)
+	settings.HandleFunc("/settings/shop/stock", settings_h.ShopStock)
+	settings.HandleFunc("/settings/shop/products/form", settings_h.ShopProductForm)
+	settings.HandleFunc("POST /settings/shop/products/create", settings_h.ShopProductCreate)
+	settings.HandleFunc("POST /settings/shop/products/update", settings_h.ShopProductUpdate)
+	settings.HandleFunc("POST /settings/shop/products/delete", settings_h.ShopProductDelete)
+
+	adminPassword := os.Getenv("ADMIN_PASSWORD")
+	if adminPassword == "" {
+		log.Fatal("ADMIN_PASSWORD env var is required")
+	}
+	adminHash, err := bcrypt.GenerateFromPassword([]byte(adminPassword), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatalf("failed to hash admin password: %v", err)
+	}
+	sessionSecret := os.Getenv("SESSION_SECRET")
+	if sessionSecret == "" {
+		log.Fatal("SESSION_SECRET env var is required")
+	}
+	auth_h := handler.NewAuthHandler(nav, adminHash, []byte(sessionSecret))
 
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
@@ -85,22 +114,12 @@ func main() {
 	mux.HandleFunc("POST /cart/qty", cart_h.UpdateQty)
 	mux.HandleFunc("POST /cart/checkout", cart_h.PlaceOrder)
 	mux.HandleFunc("GET /cart/success", cart_h.Success)
+	mux.HandleFunc("POST /login", auth_h.Login)
+	mux.HandleFunc("GET /logout", auth_h.Logout)
+	mux.Handle("/settings/", middleware.RequireAuth([]byte(sessionSecret))(settings))
 	mux.HandleFunc("/settings", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings/work", http.StatusFound)
 	})
-	mux.HandleFunc("/settings/work", settings_h.Work)
-	mux.HandleFunc("/settings/work/filter", settings_h.WorkFilter)
-	mux.HandleFunc("/settings/work/form", settings_h.WorkForm)
-	mux.HandleFunc("POST /settings/work/create", settings_h.WorkCreate)
-	mux.HandleFunc("POST /settings/work/update", settings_h.WorkUpdate)
-	mux.HandleFunc("POST /settings/work/delete", settings_h.WorkDelete)
-	mux.HandleFunc("/settings/shop", settings_h.Shop)
-	mux.HandleFunc("/settings/shop/filter", settings_h.ShopFilter)
-	mux.HandleFunc("/settings/shop/stock", settings_h.ShopStock)
-	mux.HandleFunc("/settings/shop/products/form", settings_h.ShopProductForm)
-	mux.HandleFunc("POST /settings/shop/products/create", settings_h.ShopProductCreate)
-	mux.HandleFunc("POST /settings/shop/products/update", settings_h.ShopProductUpdate)
-	mux.HandleFunc("POST /settings/shop/products/delete", settings_h.ShopProductDelete)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

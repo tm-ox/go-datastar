@@ -4,6 +4,7 @@
   include_ext = ["go", "yaml"]
   exclude_dir = ["tmp", "vendor"]
   delay = 200
+  full_bin = "env $(cat .env | xargs) ./tmp/server"
 
 [misc]
   clean_on_exit = true

@@ -18,8 +18,8 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1/bundles/datastar.js"></script>
 		</head>
 		<body
-			data-signals={ fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: ''}", cartTotal) }
-			data-on:keydown__window="evt.key === 'Escape' && ($drawerOpen = false, $lightboxOpen = false); evt.key === 'ArrowRight' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex]); evt.key === 'ArrowLeft' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex])"
+			data-signals={ fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: '', adminOpen: false}", cartTotal) }
+			data-on:keydown__window="evt.key === 'Escape' && ($drawerOpen = false, $lightboxOpen = false, $adminOpen = false); evt.key === 'ArrowRight' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex]); evt.key === 'ArrowLeft' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex])"
 		>
 			<div class="bg-ambient" aria-hidden="true"></div>
 			<header id="site-header" style="view-transition-name: site-header">
@@ -30,39 +30,79 @@ templ BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta,
 			</main>
 			@modules.Footer()
 			@modules.MobileMenu(items, currentPath)
-			<div
-				data-show="$drawerOpen"
-				data-on:click="$drawerOpen = false"
-				class="fixed inset-0 z-40 backdrop"
-			></div>
-			<div
-				id="cart-drawer"
-				data-class='{"translate-x-full": !$drawerOpen}'
-				class="fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full"
-			></div>
-			<div
-				id="lightbox"
-				class="fixed inset-0 z-50"
-				style="display:none"
-				data-show="$lightboxOpen"
-			>
-				<div class="absolute inset-0 backdrop" data-on:click="$lightboxOpen = false"></div>
-				<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-					<img
-						data-attr:src="$lightboxSrc"
-						data-attr:alt="$lightboxAlt"
-						class="h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto"
-					/>
-				</div>
-				<button
-					class="absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
-					data-on:click="$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
-				>&#8592;</button>
-				<button
-					class="absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
-					data-on:click="$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
-				>&#8594;</button>
-			</div>
+			@Drawer()
+			@Lightbox()
+			@Admin()
 		</body>
 	</html>
+}
+
+templ Drawer() {
+	<div
+		data-show="$drawerOpen"
+		data-on:click="$drawerOpen = false"
+		class="fixed inset-0 z-40"
+	></div>
+	<div
+		id="cart-drawer"
+		data-class='{"translate-x-full": !$drawerOpen}'
+		class="fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full"
+	></div>
+}
+
+templ Lightbox() {
+	<div
+		id="lightbox"
+		class="fixed inset-0 z-50"
+		style="display:none"
+		data-show="$lightboxOpen"
+	>
+		<div class="absolute inset-0 backdrop" data-on:click="$lightboxOpen = false"></div>
+		<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+			<img
+				data-attr:src="$lightboxSrc"
+				data-attr:alt="$lightboxAlt"
+				class="h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto"
+			/>
+		</div>
+		<button
+			class="absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
+			data-on:click="$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
+		>&#8592;</button>
+		<button
+			class="absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
+			data-on:click="$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
+		>&#8594;</button>
+	</div>
+}
+
+templ Admin() {
+	<div
+		id="admin-modal"
+		class="fixed inset-0 z-50"
+		style="display:none"
+		data-show="$adminOpen"
+	>
+		<div class="absolute inset-0 backdrop" data-on:click="$adminOpen = false"></div>
+		<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+			<div class="flex flex-col gap-4 pointer-events-auto w-full max-w-sm mx-4 backdrop border border-border rounded-xl px-8 pt-4 pb-6">
+				@LoginModal()
+			</div>
+		</div>
+	</div>
+}
+
+templ LoginModal() {
+	<h3 class="m-0">Admin</h3>
+	<form data-signals="{password: ''}" data-on:submit__prevent="@post('/login')" class="flex flex-col gap-3">
+		<input type="password" data-bind="password" placeholder="Password" required/>
+		<div id="login-error"></div>
+		@modules.Button(modules.ButtonProps{
+			Variant: modules.ButtonVariantCTA,
+			Size:    modules.ButtonSizeSm,
+			Type:    "submit",
+		}) {
+			Sign In
+		}
+	</form>
 }
