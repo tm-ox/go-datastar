@@ -108,7 +108,7 @@
     }
 
     h4 {
-        @apply text-lg md:text-xl lg:text-2xl;
+        @apply text-xl lg:text-2xl;
     }
 
     h5 {
@@ -163,12 +163,18 @@
         background-repeat: no-repeat;
         background-position: right 0.9rem center;
     }
+
     td {
         @apply px-4 py-3 border-b border-border/50;
     }
 
     tbody tr {
         @apply text-muted hover:text-text hover:bg-accent/10 transition-all relative;
+    }
+
+    input,
+    textarea {
+        @apply px-3 py-1 border border-border rounded-lg;
     }
 
     select {

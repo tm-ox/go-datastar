@@ -10,8 +10,9 @@ import (
 type CardVariant string
 
 const (
-	CardVariantDefault CardVariant = "default"
-	CardVariantLink    CardVariant = "link"
+	CardVariantDefault    CardVariant = "default"
+	CardVariantLink       CardVariant = "link"
+	CardVariantStandalone CardVariant = "standalone"
 )
 
 type CardProps struct {
@@ -67,6 +68,10 @@ templ Card(props CardProps) {
 			<p>{ props.Card.Description }</p>
 			{ children... }
 		</a>
+	} else if props.Variant == CardVariantStandalone {
+		<div class="border border-border p-6 rounded-lg backdrop">
+			{ children... }
+		</div>
 	} else {
 		<div class="grid grid-rows-subgrid row-span-4 border border-border p-6 rounded-lg backdrop mb-4">
 			if props.Card.Icon != "" {
