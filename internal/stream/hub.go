@@ -51,3 +51,11 @@ func (h *Hub) Broadcast(ev Event) {
 		}
 	}
 }
+
+func (h *Hub) Recent() []Event {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	out := make([]Event, len(h.recent))
+	copy(out, h.recent)
+	return out
+}

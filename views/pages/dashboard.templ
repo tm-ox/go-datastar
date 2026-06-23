@@ -49,6 +49,12 @@ templ StatsTiles(stats stream.Stats, rate int) {
 	</div>
 }
 
+templ FeedList(events []stream.Event) {
+	for i := len(events) - 1; i >= 0; i-- {
+		@FeedRow(events[i])
+	}
+}
+
 templ FeedRow(ev stream.Event) {
 	<div class="flex gap-3 text-sm border-b border-border py-1">
 		<span class="text-muted">{ ev.ServerName }</span>

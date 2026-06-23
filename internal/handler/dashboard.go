@@ -34,9 +34,7 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 	ch, recent, cancel := h.hub.Subscribe()
 	defer cancel()
 
-	for _, ev := range recent { // seed first paint, oldest→newest
-		sse.PatchElementTempl(views.FeedRow(ev), datastar.WithSelectorID("feed"), datastar.WithModePrepend())
-	}
+	sse.PatchElementTempl(views.FeedList(recent), datastar.WithSelectorID("feed"), datastar.WithModeInner())
 
 	stats := h.agg.Snapshot() // snapshot on connect
 	lastTotal := stats.TotalEdits
@@ -51,7 +49,8 @@ func (h *DashboardHandler) Stream(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case ev := <-ch:
-			sse.PatchElementTempl(views.FeedRow(ev), datastar.WithSelectorID("feed"), datastar.WithModePrepend())
+			_ = ev
+			sse.PatchElementTempl(views.FeedList(h.hub.Recent()), datastar.WithSelectorID("feed"), datastar.WithModeInner())
 		case <-ticker.C:
 			stats = h.agg.Snapshot()
 			rate := stats.TotalEdits - lastTotal // edits since last tick = per-second rate
