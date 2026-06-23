@@ -37,7 +37,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex flex-col gap-2 mb-3\"><div class=\"flex items-center gap-4\"><div class=\"flex gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex flex-col md:flex-row gap-2 mb-3\"><div class=\"flex items-center gap-4 w-full\"><div class=\"flex gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -61,7 +61,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<label class=\"flex items-center gap-2 text-sm cursor-pointer ml-auto\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div><select data-bind=\"category\" data-on:change=\"@get('/shop/filter')\" class=\"w-full md:w-fit\"><option value=\"\">All Categories</option> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<label class=\"flex items-center gap-2 text-sm cursor-pointer md:mr-4 ml-auto\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div><select data-bind=\"category\" data-on:change=\"@get('/shop/filter')\" class=\"w-full md:w-fit\"><option value=\"\">All Categories</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

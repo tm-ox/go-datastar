@@ -11,7 +11,7 @@ import (
 templ WorkContent(entries []store.Work, total int, limit int, types []string, clients []string, years []string, tools []string) {
 	<section class="min-h-screen" data-signals="{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}">
 		<h2>Work</h2>
-		<div class="flex flex-col gap-2 mb-3">
+		<div class="flex flex-col md:flex-row gap-2 mb-3">
 			<div class="flex items-center gap-4">
 				<div class="flex gap-4">
 					@modules.IconFilter()
@@ -21,7 +21,7 @@ templ WorkContent(entries []store.Work, total int, limit int, types []string, cl
 				</div>
 				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/work/filter"})
 			</div>
-			<div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
+			<div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 md:ml-auto">
 				<select data-bind="type" data-on:change="$page = 1; @get('/work/filter')">
 					<option value="" class="">All Types</option>
 					for _, c := range types {

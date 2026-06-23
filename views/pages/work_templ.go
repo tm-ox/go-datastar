@@ -37,7 +37,7 @@ func WorkContent(entries []store.Work, total int, limit int, types []string, cli
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}\"><h2>Work</h2><div class=\"flex flex-col gap-2 mb-3\"><div class=\"flex items-center gap-4\"><div class=\"flex gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{type: '', client: '', year: '', tool: '', sort: '', page: 1, search: ''}\"><h2>Work</h2><div class=\"flex flex-col md:flex-row gap-2 mb-3\"><div class=\"flex items-center gap-4\"><div class=\"flex gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -61,7 +61,7 @@ func WorkContent(entries []store.Work, total int, limit int, types []string, cli
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4\"><select data-bind=\"type\" data-on:change=\"$page = 1; @get('/work/filter')\"><option value=\"\" class=\"\">All Types</option> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 md:ml-auto\"><select data-bind=\"type\" data-on:change=\"$page = 1; @get('/work/filter')\"><option value=\"\" class=\"\">All Types</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
