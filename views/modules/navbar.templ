@@ -44,7 +44,7 @@ templ MobileMenu(items []NavItem, currentPath string) {
 		data-show="$menuOpen"
 	>
 		<div class="absolute inset-0 backdrop" data-on:click="$menuOpen = !$menuOpen"></div>
-		<div class="absolute inset-0 flex flex-col gap-2 items-center justify-center mx-8 pointer-events-auto">
+		<div class="absolute inset-0 flex flex-col gap-3 items-center justify-center mx-8 pointer-events-auto">
 			@MobileTabBar(items, currentPath)
 			if strings.HasPrefix(currentPath, "/settings") {
 				<a href="/settings" data-on:click__prevent="$menuOpen = false; @get('/settings/work')" class="text-accent transition-colors">
@@ -63,10 +63,9 @@ templ MobileTabBar(items []NavItem, currentPath string) {
 	for _, item := range items {
 		if item.URL == currentPath {
 			@Button(ButtonProps{
-				Variant:    ButtonVariantTabActive,
+				Variant:    ButtonVariantTabFullActive,
 				Href:       item.URL,
 				Size:       ButtonSizeLg,
-				Class:      "rounded-lg",
 				FullWidth:  true,
 				Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 			}) {
@@ -74,10 +73,9 @@ templ MobileTabBar(items []NavItem, currentPath string) {
 			}
 		} else {
 			@Button(ButtonProps{
-				Variant:    ButtonVariantTab,
+				Variant:    ButtonVariantTabFull,
 				Href:       item.URL,
 				Size:       ButtonSizeLg,
-				Class:      "rounded-lg backdrop",
 				FullWidth:  true,
 				Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 			}) {

@@ -65,14 +65,16 @@ templ Lightbox() {
 				class="h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto"
 			/>
 		</div>
-		<button
-			class="absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
-			data-on:click="$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
-		>&#8592;</button>
-		<button
-			class="absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer"
-			data-on:click="$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
-		>&#8594;</button>
+		<div class="absolute bottom-12 inset-x-0 flex justify-center gap-8 pointer-events-none">
+			<button
+				class="text-muted text-5xl hover:text-accent cursor-pointer pointer-events-auto"
+				data-on:click="$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
+			>&#8592;</button>
+			<button
+				class="text-muted text-5xl hover:text-accent cursor-pointer pointer-events-auto"
+				data-on:click="$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]"
+			>&#8594;</button>
+		</div>
 	</div>
 }
 

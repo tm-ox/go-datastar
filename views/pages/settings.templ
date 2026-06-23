@@ -30,15 +30,26 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 			data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
 		>
 			<h2>Settings: Work</h2>
-			<div class="flex w-full items-center mb-3">
-				<div class="flex gap-4 mr-6">
-					@modules.IconFilter()
-					<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-						@modules.IconReset()
-					</button>
+			<div class="flex flex-col gap-2 mb-3">
+				<div class="flex items-center gap-4">
+					<div class="flex gap-4">
+						@modules.IconFilter()
+						<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+							@modules.IconReset()
+						</button>
+					</div>
+					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
+					@modules.Button(modules.ButtonProps{
+						Size:  modules.ButtonSizeSm,
+						Class: "ml-auto",
+						Attributes: templ.Attributes{
+							"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
+						},
+					}) {
+						Add Entry
+					}
 				</div>
-				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
-				<div class="grid grid-cols-4 gap-4 w-fit">
+				<div class="grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4">
 					<select data-bind="type" data-on:change="$page = 1; @get('/settings/work/filter')">
 						<option value="" class="">All Types</option>
 						for _, c := range types {
@@ -64,15 +75,6 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 						}
 					</select>
 				</div>
-				@modules.Button(modules.ButtonProps{
-					Size:  modules.ButtonSizeSm,
-					Class: "ml-auto",
-					Attributes: templ.Attributes{
-						"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
-					},
-				}) {
-					Add Entry
-				}
 			</div>
 			@SettingsWorkRows(entries, 1, total, limit)
 			<div
@@ -93,23 +95,25 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 
 templ SettingsWorkRows(entries []store.Work, page, total, limit int) {
 	<div id="settings-work-rows">
-		<table>
-			<thead>
-				<tr>
-					<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/4">Project</th>
-					<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/settings/work/filter')" class="w-[15%]">Type</th>
-					<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/5">Client</th>
-					<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/settings/work/filter')" class="w-[10%]">Year</th>
-					<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/settings/work/filter')" class="w-[25%]">Tools</th>
-					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Edit</th>
-				</tr>
-			</thead>
-			<tbody id="work-tbody">
-				for _, entry := range entries {
-					@SettingsWorkRow(entry)
-				}
-			</tbody>
-		</table>
+		<div class="overflow-x-auto">
+			<table>
+				<thead>
+					<tr>
+						<th data-on:click="$sort = $sort === 'title-asc' ? 'title-desc' : 'title-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/4">Project</th>
+						<th data-on:click="$sort = $sort === 'type-asc' ? 'type-desc' : 'type-asc'; $page = 1; @get('/settings/work/filter')" class="w-[15%]">Type</th>
+						<th data-on:click="$sort = $sort === 'client-asc' ? 'client-desc' : 'client-asc'; $page = 1; @get('/settings/work/filter')" class="w-1/5">Client</th>
+						<th data-on:click="$sort = $sort === 'year-asc' ? 'year-desc' : 'year-asc'; $page = 1; @get('/settings/work/filter')" class="w-[10%]">Year</th>
+						<th data-on:click="$sort = $sort === 'tools-asc' ? 'tools-desc' : 'tools-asc'; $page = 1; @get('/settings/work/filter')" class="w-[25%]">Tools</th>
+						<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Edit</th>
+					</tr>
+				</thead>
+				<tbody id="work-tbody">
+					for _, entry := range entries {
+						@SettingsWorkRow(entry)
+					}
+				</tbody>
+			</table>
+		</div>
 		@modules.Pagination(modules.PaginationProps{
 			Page:  page,
 			Total: total,
@@ -279,27 +283,31 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 			data-on:keydown__window="evt.key === 'Escape' && ($modalOpen = false)"
 		>
 			<h2>Settings: Shop</h2>
-			<div class="flex w-full items-center mb-3">
-				<div class="flex gap-4 mr-6">
-					@modules.IconFilter()
-					<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-						@modules.IconReset()
-					</button>
+			<div class="flex flex-col gap-2 mb-3">
+				<div class="flex items-center gap-4">
+					<div class="flex gap-4">
+						@modules.IconFilter()
+						<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+							@modules.IconReset()
+						</button>
+					</div>
+					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
+					<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer">
+						<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
+						<span class="text-muted peer-checked:text-accent">Out of Stock</span>
+					</label>
+					@modules.Button(modules.ButtonProps{
+						Size: modules.ButtonSizeSm,
+						Attributes: templ.Attributes{
+							"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
+						},
+					}) {
+						Add Product
+					}
 				</div>
-				@SettingsShopCategories(categories)
-				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
-				<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer mr-4">
-					<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
-					<span class="text-muted peer-checked:text-accent">Out of Stock</span>
-				</label>
-				@modules.Button(modules.ButtonProps{
-					Size: modules.ButtonSizeSm,
-					Attributes: templ.Attributes{
-						"data-on:click": "$modalOpen = true; @get('/settings/shop/products/form')",
-					},
-				}) {
-					Add Product
-				}
+				<div class="w-full">
+					@SettingsShopCategories(categories)
+				</div>
 			</div>
 			@SettingsShopRows(products, 1, total, limit)
 			<div
@@ -320,22 +328,24 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 
 templ SettingsShopRows(products []store.Product, page, total, limit int) {
 	<div id="settings-shop-rows">
-		<table>
-			<thead>
-				<tr>
-					<th data-on:click="$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; $page = 1; @get('/settings/shop/filter')">Name</th>
-					<th data-on:click="$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; $page = 1; @get('/settings/shop/filter')" class="w-1/5">Category</th>
-					<th data-on:click="$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; $page = 1; @get('/settings/shop/filter')" class="cursor-pointer select-none w-[10%]">Stock</th>
-					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Inventory</th>
-					<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]" style="backgrouund-image: none">Edit</th>
-				</tr>
-			</thead>
-			<tbody id="shop-body">
-				for _, p := range products {
-					@SettingsShopRow(p)
-				}
-			</tbody>
-		</table>
+		<div class="overflow-x-auto">
+			<table>
+				<thead>
+					<tr>
+						<th data-on:click="$sort = $sort === 'name-asc' ? 'name-desc' : 'name-asc'; $page = 1; @get('/settings/shop/filter')">Name</th>
+						<th data-on:click="$sort = $sort === 'category-asc' ? 'category-desc' : 'category-asc'; $page = 1; @get('/settings/shop/filter')" class="w-1/5">Category</th>
+						<th data-on:click="$sort = $sort === 'stock-asc' ? 'stock-desc' : 'stock-asc'; $page = 1; @get('/settings/shop/filter')" class="cursor-pointer select-none w-[10%]">Stock</th>
+						<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]">Inventory</th>
+						<th class="w-px whitespace-nowrap hover:text-muted cursor-default [background-image:none]" style="backgrouund-image: none">Edit</th>
+					</tr>
+				</thead>
+				<tbody id="shop-body">
+					for _, p := range products {
+						@SettingsShopRow(p)
+					}
+				</tbody>
+			</table>
+		</div>
 		@modules.Pagination(modules.PaginationProps{
 			Page:  page,
 			Total: total,
@@ -353,7 +363,7 @@ templ SettingsShopRow(p store.Product) {
 		<td><a href={ templ.URL("/shop/" + p.Slug) }>{ p.Name }</a></td>
 		<td>{ p.Category }</td>
 		<td class="text-center">{ strconv.Itoa(p.Stock) }</td>
-		<td class="flex gap-2 items-center">
+		<td class="flex gap-1 items-center">
 			@modules.Button(modules.ButtonProps{
 				Size:  modules.ButtonSizeXs,
 				Class: "text-muted",
