@@ -187,14 +187,14 @@ func ShopDetailContent(p *store.Product) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if p != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<section class=\"min-h-screen\"><div class=\"grid grid-cols-[2fr_1fr] gap-8\" data-signals=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<section class=\"min-h-screen\"><div class=\"grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8\" data-signals=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{productId: %d}", p.ID))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 58, Col: 98}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 58, Col: 113}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -670,7 +670,7 @@ func CheckoutContent(lineItems []store.CartItemDetail, total int) templ.Componen
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "<div class=\"flex gap-8 items-start\"><div class=\"flex-1 flex flex-col gap-4\" id=\"checkout-items\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 50, "<div class=\"flex flex-col md:flex-row gap-8 items-start\"><div class=\"flex-1 flex flex-col gap-4 w-full\" id=\"checkout-items\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
