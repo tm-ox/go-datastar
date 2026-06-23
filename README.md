@@ -49,7 +49,13 @@ cp .env.example .env
 ```
 ADMIN_PASSWORD=yourpassword
 SESSION_SECRET=<output of: openssl rand -hex 32>
+SMTP_HOST=mail.spacemail.com
+SMTP_PORT=587
+SMTP_USER=hello@tmox.net
+SMTP_PASS=yourpassword
 ```
+
+> `SMTP_*` vars are required for the contact form. Values with special characters must be single-quoted in `.env`.
 
 ```bash
 make dev
@@ -81,6 +87,7 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | GET | `/shop` | `shop.Index` |
 | GET | `/shop/{slug}` | `shop.Detail` |
 | GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
+| POST | `/contact` | `contact.Send` (Datastar SSE) |
 | POST | `/login` | `auth.Login` (Datastar SSE) |
 | GET | `/logout` | `auth.Logout` |
 | GET | `/settings` | redirect → `/settings/work` |
@@ -133,6 +140,7 @@ internal/
   handler/
     constants.go             — defaultLimit = 20
     auth.go                  — AuthHandler: Login, Logout; HMAC-signed session cookie
+    contact.go               — ContactHandler: Send; honeypot, validation, SMTP delivery via Spacemail
     site.go                  — SiteHandler: Index, About, Context
     dashboard.go             — DashboardHandler: Index (skeleton), Stream (long-lived SSE: feed per-event + tiles/charts on 1s ticker)
     shop.go                  — ShopHandler: Index, Filter, Detail

@@ -94,6 +94,15 @@ func main() {
 	}
 	auth_h := handler.NewAuthHandler(nav, adminHash, []byte(sessionSecret))
 
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	smtpUser := os.Getenv("SMTP_USER")
+	smtpPass := os.Getenv("SMTP_PASS")
+	if smtpHost == "" || smtpPort == "" || smtpUser == "" || smtpPass == "" {
+		log.Fatal("SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS env vars are required")
+	}
+	contact_h := handler.NewContactHandler(nav, smtpHost, smtpPort, smtpUser, smtpPass)
+
 	mux := http.NewServeMux()
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/", site_h.Index)
@@ -120,6 +129,7 @@ func main() {
 	mux.HandleFunc("/settings", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/settings/work", http.StatusFound)
 	})
+	mux.HandleFunc("POST /contact", contact_h.Send)
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

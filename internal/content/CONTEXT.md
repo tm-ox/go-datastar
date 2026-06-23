@@ -1,8 +1,8 @@
 ## Context
 
-> A proof of concept site built with Go, Templ, Datastar and Tailwind: a public **Work**
-> portfolio, a **Shop** of **Products**, and a realtime **Dashboard** of public
-> Wikimedia activity. The UI is server-driven over Datastar SSE — both
+> A proof of concept site built with Go, Templ, Datastar and Tailwind: a realtime **Dashboard**
+> of public Wikimedia activity, a public **Work** portfolio and a **Shop** of **Products**.
+> The UI is server-driven over Datastar SSE — both
 > request-response (filters, cart, CRUD) and long-lived server push (the
 > Dashboard stream). This file fixes the domain language so modules and
 > conversations use one word per concept.

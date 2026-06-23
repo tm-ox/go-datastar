@@ -159,7 +159,31 @@ templ IconDash(props ...IconProps) {
 	</svg>
 }
 
-templ IconWork(props ...IconProps) {
+templ IconWeb(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 1000.9 1000.9">
+		<defs>
+			<radialGradient id="icon-work-grad" cx="500" cy="494.61" r="459.21" gradientUnits="userSpaceOnUse">
+				<stop offset="0" stop-color="#1b1f22"></stop>
+				<stop offset="0.36" stop-color="#1b1f22" stop-opacity="0.96"></stop>
+				<stop offset="0.58" stop-color="#1b1f22" stop-opacity="0.82"></stop>
+				<stop offset="0.76" stop-color="#1b1f22" stop-opacity="0.57"></stop>
+				<stop offset="0.92" stop-color="#1b1f22" stop-opacity="0.23"></stop>
+				<stop offset="1" stop-color="#1b1f22" stop-opacity="0"></stop>
+			</radialGradient>
+		</defs>
+		<circle cx="500.45" cy="500.45" r="500.45" fill="#ff5964"></circle>
+		<path d="M932.22,426.19c-12.49,14.37-26.47,30.76-31.06,36.44l-4.8,4.79A146.56,146.56,0,0,1,689.09,260.15l4.8-4.8c5.67-4.59,27.51-23.3,48.53-41.59L767.47,192c21-18.28,18.67-45-5.21-59.29,0,0-145.47-87.27-262.26-87.27s-262.26,87.27-262.26,87.27c-23.88,14.33-26.23,41-5.21,59.29l25,21.79c21,18.29,42.86,37,48.53,41.59l4.8,4.8A146.56,146.56,0,0,1,103.64,467.42l-4.8-4.79c-4.59-5.68-18.57-22.07-31.06-36.44s-26.92-3.71-32.06,23.67c0,0-4.72,25.11-4.72,64.55,0,213.91,297.45,421.72,297.45,421.72,22.84,16,39.94,6.27,38-21.53l-8.1-116.38c-1.94-27.8-4.15-56.47-4.91-63.73V727.7a146.56,146.56,0,1,1,293.12,0v6.79c-.76,7.26-3,35.93-4.91,63.73l-8.1,116.38c-1.94,27.8,15.16,37.48,38,21.53,0,0,297.45-207.81,297.45-421.72,0-39.44-4.72-64.55-4.72-64.55C959.14,422.48,944.71,411.83,932.22,426.19Z" fill="url(#icon-work-grad)"></path>
+	</svg>
+}
+
+templ IconGithub(props ...IconProps) {
 	{{ var p IconProps }}
 	if len(props) > 0 {
 		{{ p = props[0] }}
@@ -168,8 +192,8 @@ templ IconWork(props ...IconProps) {
 		{{ p.Size = "24" }}
 	}
 	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
-		<!-- Icon from Sharp free icons by Streamline - https://creativecommons.org/licenses/by/4.0/ -->
-		<path fill="currentColor" fill-rule="evenodd" d="M5 1H4v10h7v2H1v10h2v-5h18v5h2V13H13v-2h7V1zm1 8V3h12v6z" clip-rule="evenodd"></path>
+		<!-- Icon from Remix Icon by Remix Design - https://github.com/Remix-Design/RemixIcon/blob/master/License -->
+		<path fill="currentColor" d="M12.001 2c-5.525 0-10 4.475-10 10a9.99 9.99 0 0 0 6.837 9.488c.5.087.688-.213.688-.476c0-.237-.013-1.024-.013-1.862c-2.512.463-3.162-.612-3.362-1.175c-.113-.288-.6-1.175-1.025-1.413c-.35-.187-.85-.65-.013-.662c.788-.013 1.35.725 1.538 1.025c.9 1.512 2.337 1.087 2.912.825c.088-.65.35-1.087.638-1.337c-2.225-.25-4.55-1.113-4.55-4.938c0-1.088.387-1.987 1.025-2.687c-.1-.25-.45-1.275.1-2.65c0 0 .837-.263 2.75 1.024a9.3 9.3 0 0 1 2.5-.337c.85 0 1.7.112 2.5.337c1.913-1.3 2.75-1.024 2.75-1.024c.55 1.375.2 2.4.1 2.65c.637.7 1.025 1.587 1.025 2.687c0 3.838-2.337 4.688-4.562 4.938c.362.312.675.912.675 1.85c0 1.337-.013 2.412-.013 2.75c0 .262.188.574.688.474A10.02 10.02 0 0 0 22 12c0-5.525-4.475-10-10-10"></path>
 	</svg>
 }
 
@@ -184,6 +208,20 @@ templ IconBug(props ...IconProps) {
 	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } viewBox="0 0 24 24" class={ p.Class }>
 		<!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE -->
 		<path fill="currentColor" d="M12 21q-1.625 0-3.012-.8T6.8 18H5q-.425 0-.712-.288T4 17t.288-.712T5 16h1.1q-.075-.5-.088-1T6 14H5q-.425 0-.713-.288T4 13t.288-.712T5 12h1q0-.5.013-1t.087-1H5q-.425 0-.712-.288T4 9t.288-.712T5 8h1.8q.35-.575.788-1.075T8.6 6.05l-.925-.95Q7.4 4.825 7.4 4.413t.3-.713q.275-.275.7-.275t.7.275l1.45 1.45q.7-.225 1.425-.225t1.425.225l1.5-1.475q.275-.275.687-.275t.713.3q.275.275.275.7t-.275.7l-.95.95q.575.375 1.037.863T17.2 8H19q.425 0 .713.288T20 9t-.288.713T19 10h-1.1q.075.5.088 1T18 12h1q.425 0 .712.288T20 13t-.288.713T19 14h-1q0 .5-.012 1t-.088 1H19q.425 0 .713.288T20 17t-.288.713T19 18h-1.8q-.8 1.4-2.187 2.2T12 21m-1-5h2q.425 0 .713-.288T14 15t-.288-.712T13 14h-2q-.425 0-.712.288T10 15t.288.713T11 16m0-4h2q.425 0 .713-.288T14 11t-.288-.712T13 10h-2q-.425 0-.712.288T10 11t.288.713T11 12M2 6q-.425 0-.712-.288T1 5V3q0-.825.588-1.412T3 1h2q.425 0 .713.288T6 2t-.288.713T5 3H3v2q0 .425-.288.713T2 6m1 17q-.825 0-1.412-.587T1 21v-2q0-.425.288-.712T2 18t.713.288T3 19v2h2q.425 0 .713.288T6 22t-.288.713T5 23zm18 0h-2q-.425 0-.712-.288T18 22t.288-.712T19 21h2v-2q0-.425.288-.712T22 18t.713.288T23 19v2q0 .825-.587 1.413T21 23m1-17q-.425 0-.712-.288T21 5V3h-2q-.425 0-.712-.288T18 2t.288-.712T19 1h2q.825 0 1.413.588T23 3v2q0 .425-.288.713T22 6"></path>
+	</svg>
+}
+
+templ IconWork(props ...IconProps) {
+	{{ var p IconProps }}
+	if len(props) > 0 {
+		{{ p = props[0] }}
+	}
+	if p.Size == "" {
+		{{ p.Size = "24" }}
+	}
+	<svg xmlns="http://www.w3.org/2000/svg" width={ p.Size } height={ p.Size } class={ p.Class } viewBox="0 0 24 24">
+		<!-- Icon from Sharp free icons by Streamline - https://creativecommons.org/licenses/by/4.0/ -->
+		<path fill="currentColor" fill-rule="evenodd" d="M5 1H4v10h7v2H1v10h2v-5h18v5h2V13H13v-2h7V1zm1 8V3h12v6z" clip-rule="evenodd"></path>
 	</svg>
 }
 

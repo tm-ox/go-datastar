@@ -10,5 +10,6 @@ templ Search(props SearchProps) {
 		placeholder={ props.Placeholder }
 		data-bind="search"
 		data-on:input__debounce.300ms={ "@get('" + props.Route + "')" }
+		class="border-none"
 	/>
 }
