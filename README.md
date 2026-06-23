@@ -40,6 +40,17 @@ go run ./cmd/seed/content/
 
 ## Dev
 
+Copy `.env.example` to `.env` and fill in values:
+
+```bash
+cp .env.example .env
+```
+
+```
+ADMIN_PASSWORD=yourpassword
+SESSION_SECRET=<output of: openssl rand -hex 32>
+```
+
 ```bash
 make dev
 ```
@@ -70,20 +81,22 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | GET | `/shop` | `shop.Index` |
 | GET | `/shop/{slug}` | `shop.Detail` |
 | GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
+| POST | `/login` | `auth.Login` (Datastar SSE) |
+| GET | `/logout` | `auth.Logout` |
 | GET | `/settings` | redirect → `/settings/work` |
-| GET | `/settings/work` | `settings.Work` |
-| GET | `/settings/work/filter` | `settings.WorkFilter` (Datastar SSE) |
-| GET | `/settings/work/form` | `settings.WorkForm` (Datastar SSE) |
-| POST | `/settings/work/create` | `settings.WorkCreate` (Datastar SSE) |
-| POST | `/settings/work/update` | `settings.WorkUpdate` (Datastar SSE) |
-| POST | `/settings/work/delete` | `settings.WorkDelete` (Datastar SSE) |
-| GET | `/settings/shop` | `settings.Shop` |
-| GET | `/settings/shop/filter` | `settings.ShopFilter` (Datastar SSE) |
-| POST | `/settings/shop/stock` | `settings.ShopStock` (Datastar SSE) |
-| GET | `/settings/shop/products/form` | `settings.ShopProductForm` (Datastar SSE) |
-| POST | `/settings/shop/products/create` | `settings.ShopProductCreate` (Datastar SSE) |
-| POST | `/settings/shop/products/update` | `settings.ShopProductUpdate` (Datastar SSE) |
-| POST | `/settings/shop/products/delete` | `settings.ShopProductDelete` (Datastar SSE) |
+| GET | `/settings/work` | `settings.Work` (requires auth) |
+| GET | `/settings/work/filter` | `settings.WorkFilter` (Datastar SSE, requires auth) |
+| GET | `/settings/work/form` | `settings.WorkForm` (Datastar SSE, requires auth) |
+| POST | `/settings/work/create` | `settings.WorkCreate` (Datastar SSE, requires auth) |
+| POST | `/settings/work/update` | `settings.WorkUpdate` (Datastar SSE, requires auth) |
+| POST | `/settings/work/delete` | `settings.WorkDelete` (Datastar SSE, requires auth) |
+| GET | `/settings/shop` | `settings.Shop` (requires auth) |
+| GET | `/settings/shop/filter` | `settings.ShopFilter` (Datastar SSE, requires auth) |
+| POST | `/settings/shop/stock` | `settings.ShopStock` (Datastar SSE, requires auth) |
+| GET | `/settings/shop/products/form` | `settings.ShopProductForm` (Datastar SSE, requires auth) |
+| POST | `/settings/shop/products/create` | `settings.ShopProductCreate` (Datastar SSE, requires auth) |
+| POST | `/settings/shop/products/update` | `settings.ShopProductUpdate` (Datastar SSE, requires auth) |
+| POST | `/settings/shop/products/delete` | `settings.ShopProductDelete` (Datastar SSE, requires auth) |
 
 ## Structure
 
@@ -119,6 +132,7 @@ internal/
     *_test.go                — ParseEvent, Hub, Aggregator unit tests (fixtures + fake channels, no network)
   handler/
     constants.go             — defaultLimit = 20
+    auth.go                  — AuthHandler: Login, Logout; HMAC-signed session cookie
     site.go                  — SiteHandler: Index, About, Context
     dashboard.go             — DashboardHandler: Index (skeleton), Stream (long-lived SSE: feed per-event + tiles/charts on 1s ticker)
     shop.go                  — ShopHandler: Index, Filter, Detail
@@ -126,6 +140,7 @@ internal/
     work.go                  — WorkHandler: Index, Filter, Detail
     cart.go                  — CartHandler: Add, Remove, Total, Drawer, UpdateQty, Checkout, PlaceOrder, Success
   middleware/
+    auth.go                  — RequireAuth: HMAC cookie verification; opens login modal on Datastar requests, redirects on full-page
     cart.go                  — injects cart total into request context
     logging.go               — request logging middleware
 views/

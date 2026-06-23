@@ -20,8 +20,9 @@ templ SettingsWork(items []modules.NavItem, sections []modules.NavItem, currentP
 templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entries []store.Work, total, limit int,
 	types, clients, years, tools []string) {
 	<div class="settings-entry">
-		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end pr-25">
+		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end md:pr-5 lg:pr-9">
 			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
+			<a href="/logout" class="ml-auto md:ml-3 text-muted hover:text-accent transition-colors text-sm self-end pb-1.75">Logout</a>
 		</nav>
 		<section
 			class="pt-3.5"
@@ -268,8 +269,9 @@ templ SettingsShop(items []modules.NavItem, sections []modules.NavItem, currentP
 
 templ SettingsShopContent(sections []modules.NavItem, currentPath string, products []store.Product, categories []string, total, limit int) {
 	<div class="settings-entry">
-		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end pr-25">
+		<nav class="mt-16 content-width flex gap-0 justify-start md:justify-end md:pr-5 lg:pr-9">
 			@modules.TabBar(sections, currentPath, modules.ButtonVariantSubTabActive, modules.ButtonVariantSubTab, modules.ButtonSizeTab)
+			<a href="/logout" class="ml-auto md:ml-3 text-muted hover:text-accent transition-colors text-sm self-end pb-1.75">Logout</a>
 		</nav>
 		<section
 			class="pt-3.5"

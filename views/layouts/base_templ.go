@@ -48,15 +48,15 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: ''}", cartTotal))
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("{cartTotal: %d, menuOpen: false, drawerOpen: false, lightboxOpen: false, lightboxIndex: 0, lightboxImages: [], lightboxSrc: '', lightboxAlt: '', adminOpen: false}", cartTotal))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 21, Col: 188}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layouts/base.templ`, Line: 21, Col: 206}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" data-on:keydown__window=\"evt.key === 'Escape' && ($drawerOpen = false, $lightboxOpen = false); evt.key === 'ArrowRight' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex]); evt.key === 'ArrowLeft' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex])\"><div class=\"bg-ambient\" aria-hidden=\"true\"></div><header id=\"site-header\" style=\"view-transition-name: site-header\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" data-on:keydown__window=\"evt.key === 'Escape' && ($drawerOpen = false, $lightboxOpen = false, $adminOpen = false); evt.key === 'ArrowRight' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex]); evt.key === 'ArrowLeft' && $lightboxOpen && ($lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length, $lightboxSrc = $lightboxImages[$lightboxIndex])\"><div class=\"bg-ambient\" aria-hidden=\"true\"></div><header id=\"site-header\" style=\"view-transition-name: site-header\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -84,7 +84,173 @@ func BaseLayout(items []modules.NavItem, currentPath string, meta modules.Meta, 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40 backdrop\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div><div id=\"lightbox\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$lightboxOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$lightboxOpen = false\"></div><div class=\"absolute inset-0 flex items-center justify-center pointer-events-none\"><img data-attr:src=\"$lightboxSrc\" data-attr:alt=\"$lightboxAlt\" class=\"h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto\"></div><button class=\"absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8592;</button> <button class=\"absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8594;</button></div></body></html>")
+		templ_7745c5c3_Err = Drawer().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Lightbox().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Admin().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</body></html>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func Drawer() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func Lightbox() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div id=\"lightbox\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$lightboxOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$lightboxOpen = false\"></div><div class=\"absolute inset-0 flex items-center justify-center pointer-events-none\"><img data-attr:src=\"$lightboxSrc\" data-attr:alt=\"$lightboxAlt\" class=\"h-fit max-h-2/3 max-w-[90%] md:max-w-2/3 object-contain backdrop border border-border rounded-lg pointer-events-auto\"></div><button class=\"absolute left-2 md:left-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex - 1 + $lightboxImages.length) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8592;</button> <button class=\"absolute right-2 md:right-16 top-[90%] md;top-1/2 -translate-y-1/2 text-muted text-6xl hover:text-accent cursor-pointer\" data-on:click=\"$lightboxIndex = ($lightboxIndex + 1) % $lightboxImages.length; $lightboxSrc = $lightboxImages[$lightboxIndex]\">&#8594;</button></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func Admin() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div id=\"admin-modal\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$adminOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$adminOpen = false\"></div><div class=\"absolute inset-0 flex items-center justify-center pointer-events-none\"><div class=\"flex flex-col gap-4 pointer-events-auto w-full max-w-sm mx-4 backdrop border border-border rounded-xl px-8 pt-4 pb-6\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = LoginModal().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func LoginModal() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var6 == nil {
+			templ_7745c5c3_Var6 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<h3 class=\"m-0\">Admin</h3><form data-signals=\"{password: ''}\" data-on:submit__prevent=\"@post('/login')\" class=\"flex flex-col gap-3\"><input type=\"password\" data-bind=\"password\" placeholder=\"Password\" required><div id=\"login-error\"></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var7 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "Sign In")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = modules.Button(modules.ButtonProps{
+			Variant: modules.ButtonVariantCTA,
+			Size:    modules.ButtonSizeSm,
+			Type:    "submit",
+		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -18,11 +18,11 @@ func sectionGridClass(cols int) string {
 	case 1:
 		return "grid-1"
 	case 3:
-		return "grid-3"
+		return "grid-3 my-auto"
 	case 4:
 		return "grid-4"
 	default:
-		return "grid-2"
+		return "grid-2 my-auto"
 	}
 }
 
@@ -110,14 +110,14 @@ func IndexContent(home content.HomePage) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if s.Title != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<h2>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<h2 class=\"sticky top-24\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(s.Title)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/index.templ`, Line: 34, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/index.templ`, Line: 34, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {

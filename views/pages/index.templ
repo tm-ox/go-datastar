@@ -10,11 +10,11 @@ func sectionGridClass(cols int) string {
 	case 1:
 		return "grid-1"
 	case 3:
-		return "grid-3"
+		return "grid-3 my-auto"
 	case 4:
 		return "grid-4"
 	default:
-		return "grid-2"
+		return "grid-2 my-auto"
 	}
 }
 
@@ -31,7 +31,7 @@ templ IndexContent(home content.HomePage) {
 	for _, s := range home.Sections {
 		<section id={ s.ID }>
 			if s.Title != "" {
-				<h2>{ s.Title }</h2>
+				<h2 class="sticky top-24">{ s.Title }</h2>
 			}
 			<div class={ sectionGridClass(s.Cols) }>
 				for _, c := range s.Cards {
