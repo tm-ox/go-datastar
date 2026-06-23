@@ -88,9 +88,9 @@ func (b ButtonProps) variantClasses() string {
 	case ButtonVariantSubTabActive:
 		return "bg-canvas text-text rounded-t-none border-t-2 border-t-accent"
 	case ButtonVariantTabFull:
-		return "bg-surface text-muted rounded-none border-b border-b-border hover:bg-canvas/50"
+		return "backdrop text-muted border-b border-b-border rounded-lg hover:bg-canvas/50"
 	case ButtonVariantTabFullActive:
-		return "bg-canvas text-text rounded-none border-b border-b-accent"
+		return "bg-canvas text-text border-b border-b-accent rounded-lg"
 	case ButtonVariantPill:
 		return "text-accent !rounded-full !border-accent"
 	default:

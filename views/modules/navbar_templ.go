@@ -124,7 +124,7 @@ func MobileMenu(items []NavItem, currentPath string) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div id=\"mobile-menu\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$menuOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$menuOpen = !$menuOpen\"></div><div class=\"absolute inset-0 flex flex-col gap-2 items-center justify-center mx-8 pointer-events-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div id=\"mobile-menu\" class=\"fixed inset-0 z-50\" style=\"display:none\" data-show=\"$menuOpen\"><div class=\"absolute inset-0 backdrop\" data-on:click=\"$menuOpen = !$menuOpen\"></div><div class=\"absolute inset-0 flex flex-col gap-3 items-center justify-center mx-8 pointer-events-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -205,7 +205,7 @@ func MobileTabBar(items []NavItem, currentPath string) templ.Component {
 					var templ_7745c5c3_Var5 string
 					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 73, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 72, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 					if templ_7745c5c3_Err != nil {
@@ -214,10 +214,9 @@ func MobileTabBar(items []NavItem, currentPath string) templ.Component {
 					return nil
 				})
 				templ_7745c5c3_Err = Button(ButtonProps{
-					Variant:    ButtonVariantTabActive,
+					Variant:    ButtonVariantTabFullActive,
 					Href:       item.URL,
 					Size:       ButtonSizeLg,
-					Class:      "rounded-lg",
 					FullWidth:  true,
 					Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 				}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
@@ -240,7 +239,7 @@ func MobileTabBar(items []NavItem, currentPath string) templ.Component {
 					var templ_7745c5c3_Var7 string
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 84, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 82, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -249,10 +248,9 @@ func MobileTabBar(items []NavItem, currentPath string) templ.Component {
 					return nil
 				})
 				templ_7745c5c3_Err = Button(ButtonProps{
-					Variant:    ButtonVariantTab,
+					Variant:    ButtonVariantTabFull,
 					Href:       item.URL,
 					Size:       ButtonSizeLg,
-					Class:      "rounded-lg backdrop",
 					FullWidth:  true,
 					Attributes: templ.Attributes{"data-on:click__prevent": "$menuOpen = false; document.startViewTransition ? document.startViewTransition(() => @get('" + item.URL + "')) : @get('" + item.URL + "')"},
 				}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
@@ -303,7 +301,7 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					var templ_7745c5c3_Var10 string
 					templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 99, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 97, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 					if templ_7745c5c3_Err != nil {
@@ -336,7 +334,7 @@ func TabBar(items []NavItem, currentPath string, active ButtonVariant, inactive 
 					var templ_7745c5c3_Var12 string
 					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 108, Col: 16}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/modules/navbar.templ`, Line: 106, Col: 16}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 					if templ_7745c5c3_Err != nil {

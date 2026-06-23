@@ -37,7 +37,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex gap-2 w-full items-center mb-3\"><div class=\"flex gap-4 mr-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex flex-col gap-2 mb-3\"><div class=\"flex items-center gap-4\"><div class=\"flex gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +53,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</button></div><div class=\"mr-auto\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -61,7 +61,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><select data-bind=\"category\" data-on:change=\"@get('/shop/filter')\"><option value=\"\">All Categories</option> ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<label class=\"flex items-center gap-2 text-sm cursor-pointer ml-auto\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div><select data-bind=\"category\" data-on:change=\"@get('/shop/filter')\" class=\"w-full md:w-fit\"><option value=\"\">All Categories</option> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -73,7 +73,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 27, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 31, Col: 22}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 			if templ_7745c5c3_Err != nil {
@@ -86,7 +86,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(c)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 27, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/pages/shop.templ`, Line: 31, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -97,7 +97,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</select> <label class=\"flex items-center gap-2 text-sm cursor-pointer\"><input type=\"checkbox\" data-bind=\"inStock\" data-on:change=\"$page = 1; @get('/shop/filter')\" class=\"peer hidden\"> <span class=\"text-muted peer-checked:text-accent\">In Stock</span></label></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</select></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

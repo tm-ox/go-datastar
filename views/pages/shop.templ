@@ -11,26 +11,26 @@ import (
 templ ShopContent(products []store.Product, categories []string, page int, total int, limit int) {
 	<section class="min-h-screen" data-signals="{category: '', search: '', inStock: false, page: 1}">
 		<h2>Shop</h2>
-		<div class="flex gap-2 w-full items-center mb-3">
-			<div class="flex gap-4 mr-4">
-				@modules.IconFilter()
-				<button data-on:click="$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-					@modules.IconReset()
-				</button>
-			</div>
-			<div class="mr-auto">
+		<div class="flex flex-col gap-2 mb-3">
+			<div class="flex items-center gap-4">
+				<div class="flex gap-4">
+					@modules.IconFilter()
+					<button data-on:click="$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						@modules.IconReset()
+					</button>
+				</div>
 				@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/shop/filter"})
+				<label class="flex items-center gap-2 text-sm cursor-pointer ml-auto">
+					<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
+					<span class="text-muted peer-checked:text-accent">In Stock</span>
+				</label>
 			</div>
-			<select data-bind="category" data-on:change="@get('/shop/filter')">
+			<select data-bind="category" data-on:change="@get('/shop/filter')" class="w-full md:w-fit">
 				<option value="">All Categories</option>
 				for _, c := range categories {
 					<option value={ c }>{ c }</option>
 				}
 			</select>
-			<label class="flex items-center gap-2 text-sm cursor-pointer">
-				<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
-				<span class="text-muted peer-checked:text-accent">In Stock</span>
-			</label>
 		</div>
 		@ShopGrid(products, page, total, limit)
 	</section>
