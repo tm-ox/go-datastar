@@ -57,7 +57,7 @@ templ WorkRows(entries []store.Work, page, total, limit int) {
 		<div class="grid-5">
 			for _, img := range entries {
 				<a href={ templ.URL("/work/" + img.Slug) } data-on:click__prevent={ "document.startViewTransition ? document.startViewTransition(() => @get('/work/" + img.Slug + "')) : @get('/work/" + img.Slug + "')" } class="flex flex-col gap-2 border border-border rounded pb-2 hover:border-accent">
-					<img src={ img.CoverURL } style={ "view-transition-name: work-cover-" + img.Slug } class="w-full aspect-square object-cover border-b border-border backdrop"/>
+					<img src={ img.CoverURL } class="w-full aspect-square object-cover border-b border-border backdrop"/>
 					<h5 class="text-center">{ img.Title }</h5>
 				</a>
 			}
@@ -103,9 +103,6 @@ templ WorkDetailContent(entry *store.Work) {
 						data-lightbox-src={ img.URL }
 						data-lightbox-alt={ img.Alt }
 						data-on:click={ fmt.Sprintf("$lightboxIndex = %d; $lightboxSrc = '%s'; $lightboxAlt = '%s'; $lightboxOpen = true", i, img.URL, img.Alt) }
-						if img.URL == entry.CoverURL {
-							style={ "view-transition-name: work-cover-" + entry.Slug }
-						}
 					/>
 				}
 			</div>
