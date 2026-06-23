@@ -37,7 +37,7 @@ func ShopContent(products []store.Product, categories []string, page int, total 
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section class=\"min-h-screen\" data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex flex-col md:flex-row gap-2 mb-3\"><div class=\"flex items-center gap-4 w-full\"><div class=\"flex gap-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-signals=\"{category: '', search: '', inStock: false, page: 1}\"><h2>Shop</h2><div class=\"flex flex-col md:flex-row gap-2 mb-3\"><div class=\"flex items-center gap-4 w-full\"><div class=\"flex gap-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -187,7 +187,7 @@ func ShopDetailContent(p *store.Product) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if p != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<section class=\"min-h-screen\"><div class=\"grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8\" data-signals=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<section><div class=\"grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8\" data-signals=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -660,7 +660,7 @@ func CheckoutContent(lineItems []store.CartItemDetail, total int) templ.Componen
 			templ_7745c5c3_Var30 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<section id=\"checkout-content\" class=\"min-h-screen\"><h2>Cart</h2>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 48, "<section id=\"checkout-content\"><h2>Cart</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -915,7 +915,7 @@ func CartSuccess(items []modules.NavItem, currentPath string, meta modules.Meta,
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "<section class=\"min-h-screen flex flex-col items-center justify-center gap-4\"><h2>Order placed</h2><p class=\"text-muted\">Order #")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 66, "<section class=\"flex flex-col items-center justify-center gap-4\"><h2>Order placed</h2><p class=\"text-muted\">Order #")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
