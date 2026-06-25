@@ -125,7 +125,7 @@ func Drawer() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div data-show=\"$drawerOpen\" data-on:click=\"$drawerOpen = false\" class=\"fixed inset-0 z-40\"></div><div id=\"cart-drawer\" data-class='{\"translate-x-full\": !$drawerOpen}' class=\"fixed right-0 top-16 h-full w-4/5 md:w-96 z-50 backdrop rounded-l-lg border-l border-y border-border transition-transform duration-300 translate-x-full\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

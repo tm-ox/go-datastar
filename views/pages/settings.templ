@@ -31,17 +31,19 @@ templ SettingsWorkContent(sections []modules.NavItem, currentPath string, entrie
 		>
 			<h2>Settings: Work</h2>
 			<div class="flex flex-col gap-2 mb-3">
-				<div class="flex items-center gap-4">
-					<div class="flex gap-4">
-						@modules.IconFilter()
-						<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-							@modules.IconReset()
-						</button>
+				<div class="flex flex-col md:flex-row gap-4">
+					<div class="flex items-center">
+						<div class="flex gap-4">
+							@modules.IconFilter()
+							<button data-on:click="$page = 1; $search = ''; $type = ''; $client = ''; $year = ''; $tool = ''; $sort = ''; @get('/settings/work/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+								@modules.IconReset()
+							</button>
+						</div>
+						@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
 					</div>
-					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/work/filter"})
 					@modules.Button(modules.ButtonProps{
 						Size:  modules.ButtonSizeSm,
-						Class: "ml-auto",
+						Class: "md:ml-auto",
 						Attributes: templ.Attributes{
 							"data-on:click": "$modalOpen = true; @get('/settings/work/form')",
 						},
@@ -284,15 +286,17 @@ templ SettingsShopContent(sections []modules.NavItem, currentPath string, produc
 		>
 			<h2>Settings: Shop</h2>
 			<div class="flex flex-col gap-2 mb-3">
-				<div class="flex items-center gap-4">
-					<div class="flex gap-4">
-						@modules.IconFilter()
-						<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
-							@modules.IconReset()
-						</button>
+				<div class="flex flex-col md:flex-row gap-4">
+					<div class="flex items-center">
+						<div class="flex gap-4">
+							@modules.IconFilter()
+							<button data-on:click="$category = ''; $page = 1; $search = ''; $outOfStock = false; $sort = ''; @get('/settings/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+								@modules.IconReset()
+							</button>
+						</div>
+						@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
 					</div>
-					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/settings/shop/filter"})
-					<label class="flex items-center gap-2 ml-auto text-sm cursor-pointer">
+					<label class="flex items-center gap-2 md:ml-auto text-sm cursor-pointer">
 						<input type="checkbox" data-bind="outOfStock" data-on:change="$page = 1; @get('/settings/shop/filter')" class="peer hidden"/>
 						<span class="text-muted peer-checked:text-accent">Out of Stock</span>
 					</label>

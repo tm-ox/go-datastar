@@ -104,7 +104,7 @@ func Card(props CardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Card.Icon != "" {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"mb-5\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"mb-2 md:mb-4\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -169,7 +169,7 @@ func Card(props CardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"grid grid-rows-subgrid row-span-4 border border-border p-6 rounded-lg backdrop mb-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"grid grid-rows-subgrid row-span-4 border border-border p-6 rounded-lg backdrop mb-2 md:mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -283,7 +283,7 @@ func ProductCard(p *store.Product) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if p != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"grid row-span-6 grid-rows-subgrid border border-border pb-4 backdrop rounded-lg overflow-hidden mb-4\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"grid row-span-6 grid-rows-subgrid border border-border pb-4 backdrop rounded-lg overflow-hidden mb-2 md:mb-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

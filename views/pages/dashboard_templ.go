@@ -43,7 +43,7 @@ func DashboardContent() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-init=\"@get('/dashboard/stream', {requestCancellation: 'cleanup'})\"><p>Realtime view of public Wikimedia edits - live feed, KPI tiles, wiki leaderboard, and an edits-per-second sparkline, all streamed over SSE.</p><h3>Stats</h3><div class=\"flex flex-col gap-4\"><div id=\"stats\"></div><div id=\"sparkline\"></div><div class=\"grid-4\"><div id=\"leaderboard\" class=\"col-span-2 lg:col-span-3\"></div><div id=\"donut\" class=\"col-span-2 sm:col-span-1\"></div></div><div class=\"border border-border rounded-lg px-4 py-3 backdrop max-h-88 overflow-y-auto\"><h3 class=\"mt-0\">Feed</h3><div id=\"feed\"></div></div></div></section>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<section data-init=\"@get('/dashboard/stream', {requestCancellation: 'cleanup'})\"><p>Realtime view of public Wikimedia edits - live feed, KPI tiles, wiki leaderboard, and an edits-per-second sparkline, all streamed over SSE.</p><h3>Stats</h3><div class=\"flex flex-col gap-2 md:gap-4\"><div id=\"stats\"></div><div id=\"sparkline\"></div><div class=\"grid-4\"><div id=\"leaderboard\" class=\"col-span-2 lg:col-span-3\"></div><div id=\"donut\" class=\"col-span-2 sm:col-span-1\"></div></div><div class=\"border border-border rounded-lg px-4 py-3 backdrop max-h-88 overflow-y-auto\"><h3 class=\"mt-0\">Feed</h3><div id=\"feed\"></div></div></div></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
