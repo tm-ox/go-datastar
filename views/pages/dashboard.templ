@@ -18,7 +18,7 @@ templ DashboardContent() {
 	<section data-init="@get('/dashboard/stream', {requestCancellation: 'cleanup'})">
 		<p>Realtime view of public Wikimedia edits - live feed, KPI tiles, wiki leaderboard, and an edits-per-second sparkline, all streamed over SSE.</p>
 		<h3>Stats</h3>
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-2 md:gap-4">
 			<div id="stats"></div>
 			<div id="sparkline"></div>
 			<div class="grid-4">

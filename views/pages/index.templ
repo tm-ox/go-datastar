@@ -31,7 +31,7 @@ templ IndexContent(home content.HomePage) {
 	for _, s := range home.Sections {
 		<section id={ s.ID }>
 			if s.Title != "" {
-				<h2 class="sticky top-24">{ s.Title }</h2>
+				<h2 class="md:sticky top-24">{ s.Title }</h2>
 			}
 			<div class={ sectionGridClass(s.Cols) }>
 				for _, c := range s.Cards {
@@ -48,7 +48,7 @@ templ IndexContent(home content.HomePage) {
 
 templ ContactSection() {
 	<section id="contact">
-		<h2 class="sticky top-24">Contact</h2>
+		<h2 class="md:sticky top-24">Contact</h2>
 		<div class="my-auto flex flex-col gap-4">
 			@modules.Card(modules.CardProps{Variant: modules.CardVariantStandalone}) {
 				@ContactForm()

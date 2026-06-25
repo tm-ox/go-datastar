@@ -88,7 +88,7 @@
     }
 
     section {
-        @apply content-width md:min-h-screen pt-24 md:py-24 flex flex-col;
+        @apply content-width min-h-dvh pt-20 pb-0 md:py-24 flex flex-col;
     }
 
     h1 {
@@ -222,14 +222,14 @@
     }
 
     .grid-3 {
-        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4;
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-2 md:gap-x-4;
     }
 
     .grid-4 {
-        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-4 lg:gap-y-4;
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-4;
     }
     .grid-5 {
-        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4;
+        @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4;
     }
 }
 
