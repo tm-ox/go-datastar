@@ -98,7 +98,7 @@ templ Card(props CardProps) {
 
 templ ProductCard(p *store.Product) {
 	if p != nil {
-		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 backdrop rounded-lg overflow-hidden mb-4">
+		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 backdrop rounded-lg overflow-hidden mb-2 md:mb-4">
 			if p.Image.Valid {
 				<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full aspect-video object-cover bg-canvas border-b border-border"/>
 			}
