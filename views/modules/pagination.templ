@@ -38,3 +38,41 @@ templ Pagination(props PaginationProps) {
 		</div>
 	</div>
 }
+
+type PaginationCursorProps struct {
+	HasNext bool
+	HasPrev bool
+	Route   string
+	Total   int
+	Limit   int
+}
+
+templ PaginationCursor(props PaginationCursorProps) {
+	{{ totalPages := 1 }}
+	if props.Total > 0 && props.Limit > 0 {
+		{{ totalPages = int(math.Ceil(float64(props.Total) / float64(props.Limit))) }}
+	}
+	<div class="grid grid-cols-[1fr_auto_1fr] gap-4 w-full items-center mt-6">
+		<div class="flex justify-end">
+			if props.HasPrev {
+				@Button(ButtonProps{
+					Size:       ButtonSizeSm,
+					Attributes: templ.Attributes{"data-on:click": "$shopPage = $shopPage - 1; $nextCursor = ''; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
+				}) {
+					Prev
+				}
+			}
+		</div>
+		<span class="text-center text-muted w-12"><span data-text="$shopPage">1</span>{ fmt.Sprintf(" / %d", totalPages) }</span>
+		<div>
+			if props.HasNext {
+				@Button(ButtonProps{
+					Size:       ButtonSizeSm,
+					Attributes: templ.Attributes{"data-on:click": "$shopPage = $shopPage + 1; $prevCursor = ''; @get('" + props.Route + "'); window.scrollTo({top:0,behavior:'smooth'})"},
+				}) {
+					Next
+				}
+			}
+		</div>
+	</div>
+}

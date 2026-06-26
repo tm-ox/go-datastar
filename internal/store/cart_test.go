@@ -22,22 +22,18 @@ func newTestCartStore(t *testing.T) *CartStore {
 
 func TestCartStore_Summary(t *testing.T) {
 	s := newTestCartStore(t)
-	d := s.db
-	if _, err := d.Exec(`INSERT INTO products (name, price, slug, stock) VALUES ('A', 500, 'a', 9), ('B', 250, 'b', 9)`); err != nil {
-		t.Fatal(err)
-	}
 	const cartID = "cart-1"
 	if err := s.GetOrCreate(cartID); err != nil {
 		t.Fatal(err)
 	}
-	// 2× product 1 (500c) + 3× product 2 (250c)
+	// 2× product-a (500c) + 3× product-b (250c)
 	for i := 0; i < 2; i++ {
-		if err := s.AddItem(cartID, 1, 9); err != nil {
+		if err := s.AddItem(cartID, "product-a", "Product A", 500, 9); err != nil {
 			t.Fatal(err)
 		}
 	}
 	for i := 0; i < 3; i++ {
-		if err := s.AddItem(cartID, 2, 9); err != nil {
+		if err := s.AddItem(cartID, "product-b", "Product B", 250, 9); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -59,13 +55,13 @@ func TestCartStore_Summary(t *testing.T) {
 
 func TestAddItem_ClampsAtStock(t *testing.T) {
 	s := newTestCartStore(t)
-	const cartID, productID, maxStock = "cart-1", 1, 2
+	const cartID, maxStock = "cart-1", 2
 
 	if err := s.GetOrCreate(cartID); err != nil {
 		t.Fatal(err)
 	}
-	for i := 0; i < 5; i++ { // add 5 times, stock is 2
-		if err := s.AddItem(cartID, productID, maxStock); err != nil {
+	for i := 0; i < 5; i++ { // add 5 times, stock cap is 2
+		if err := s.AddItem(cartID, "product-a", "Product A", 500, maxStock); err != nil {
 			t.Fatal(err)
 		}
 	}

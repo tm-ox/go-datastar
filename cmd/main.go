@@ -14,6 +14,7 @@ import (
 	"github.com/tm-ox/go-datastar/internal/db"
 	"github.com/tm-ox/go-datastar/internal/handler"
 	"github.com/tm-ox/go-datastar/internal/middleware"
+	"github.com/tm-ox/go-datastar/internal/shopify"
 	"github.com/tm-ox/go-datastar/internal/store"
 	"github.com/tm-ox/go-datastar/internal/stream"
 	"github.com/tm-ox/go-datastar/views/modules"
@@ -36,7 +37,6 @@ func main() {
 
 	settingsSections := []modules.NavItem{
 		{Label: "Work", URL: "/settings/work"},
-		{Label: "Shop", URL: "/settings/shop"},
 	}
 
 	database, err := db.Open("./data.db")
@@ -49,11 +49,17 @@ func main() {
 		log.Fatalf("failed to run migrations: %v", err)
 	}
 
-	productStore := store.NewProductStore(database)
+	shopifyDomain := os.Getenv("SHOPIFY_STORE_DOMAIN")
+	shopifyToken := os.Getenv("SHOPIFY_STOREFRONT_TOKEN")
+	if shopifyDomain == "" || shopifyToken == "" {
+		log.Fatal("SHOPIFY_STORE_DOMAIN and SHOPIFY_STOREFRONT_TOKEN env vars are required")
+	}
+
+	productStore := shopify.NewProductStore(shopifyDomain, shopifyToken)
+
 	workStore := store.NewWorkStore(database)
 	cartStore := store.NewCartStore(database)
 	orderStore := store.NewOrderStore(database)
-	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
 
 	hub := stream.NewHub()
 	agg := stream.NewAggregator()
@@ -64,7 +70,8 @@ func main() {
 	dashboard_h := handler.NewDashboardHandler(nav, hub, agg)
 	work_h := handler.NewWorkHandler(nav, workStore)
 	shop_h := handler.NewShopHandler(nav, productStore)
-	settings_h := handler.NewSettingsHandler(nav, settingsSections, productStore, workStore)
+	cart_h := handler.NewCartHandler(nav, cartStore, productStore, orderStore)
+	settings_h := handler.NewSettingsHandler(nav, settingsSections, workStore)
 	settings := http.NewServeMux()
 	settings.HandleFunc("/settings/work", settings_h.Work)
 	settings.HandleFunc("/settings/work/filter", settings_h.WorkFilter)
@@ -72,13 +79,6 @@ func main() {
 	settings.HandleFunc("POST /settings/work/create", settings_h.WorkCreate)
 	settings.HandleFunc("POST /settings/work/update", settings_h.WorkUpdate)
 	settings.HandleFunc("POST /settings/work/delete", settings_h.WorkDelete)
-	settings.HandleFunc("/settings/shop", settings_h.Shop)
-	settings.HandleFunc("/settings/shop/filter", settings_h.ShopFilter)
-	settings.HandleFunc("/settings/shop/stock", settings_h.ShopStock)
-	settings.HandleFunc("/settings/shop/products/form", settings_h.ShopProductForm)
-	settings.HandleFunc("POST /settings/shop/products/create", settings_h.ShopProductCreate)
-	settings.HandleFunc("POST /settings/shop/products/update", settings_h.ShopProductUpdate)
-	settings.HandleFunc("POST /settings/shop/products/delete", settings_h.ShopProductDelete)
 
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
 	if adminPassword == "" {

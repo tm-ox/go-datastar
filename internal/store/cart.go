@@ -3,18 +3,18 @@ package store
 import "database/sql"
 
 type CartItem struct {
-	ID        int
-	CartID    string
-	ProductID int
-	Quantity  int
+	ID            int
+	CartID        string
+	ProductHandle string
+	Quantity      int
 }
 
 type CartItemDetail struct {
-	ID        int
-	ProductID int
-	Name      string
-	Price     int
-	Quantity  int
+	ID            int
+	ProductHandle string
+	Name          string
+	Price         int
+	Quantity      int
 }
 
 // CartSummary is the computed view of a Cart: its line items plus the money
@@ -36,10 +36,9 @@ type dbtx interface {
 // CartStore.GetItemDetails (pool) and OrderStore.Place (in-transaction).
 func itemDetails(q dbtx, cartID string) ([]CartItemDetail, error) {
 	rows, err := q.Query(`
-                SELECT ci.id, ci.product_id, p.name, p.price, ci.quantity
-                FROM cart_items ci
-                JOIN products p ON p.id = ci.product_id
-                WHERE ci.cart_id = ?`, cartID)
+      SELECT id, product_handle, name, price, quantity
+      FROM cart_items
+      WHERE cart_id = ?`, cartID)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +47,7 @@ func itemDetails(q dbtx, cartID string) ([]CartItemDetail, error) {
 	var items []CartItemDetail
 	for rows.Next() {
 		var item CartItemDetail
-		if err := rows.Scan(&item.ID, &item.ProductID, &item.Name, &item.Price, &item.Quantity); err != nil {
+		if err := rows.Scan(&item.ID, &item.ProductHandle, &item.Name, &item.Price, &item.Quantity); err != nil {
 			return nil, err
 		}
 		items = append(items, item)
@@ -96,20 +95,20 @@ func (s *CartStore) GetOrCreate(cartID string) error {
 	return err
 }
 
-func (s *CartStore) AddItem(cartID string, productID int, maxStock int) error {
+func (s *CartStore) AddItem(cartID, handle, name string, price, maxStock int) error {
 	_, err := s.db.Exec(`
-                  INSERT INTO cart_items (cart_id, product_id, quantity)
-                  VALUES (?, ?, 1)
-                  ON CONFLICT(cart_id, product_id)
-                  DO UPDATE SET quantity = MIN(quantity + 1, ?)`,
-		cartID, productID, maxStock,
+          INSERT INTO cart_items (cart_id, product_handle, name, price, quantity)
+          VALUES (?, ?, ?, ?, 1)
+          ON CONFLICT(cart_id, product_handle)
+          DO UPDATE SET quantity = MIN(quantity + 1, ?)`,
+		cartID, handle, name, price, maxStock,
 	)
 	return err
 }
 
 func (s *CartStore) GetItems(cartID string) ([]CartItem, error) {
 	rows, err := s.db.Query(
-		"SELECT id, cart_id, product_id, quantity FROM cart_items WHERE cart_id = ?",
+		"SELECT id, cart_id, product_handle, quantity FROM cart_items WHERE cart_id = ?",
 		cartID,
 	)
 	if err != nil {
@@ -120,7 +119,7 @@ func (s *CartStore) GetItems(cartID string) ([]CartItem, error) {
 	var items []CartItem
 	for rows.Next() {
 		var item CartItem
-		if err := rows.Scan(&item.ID, &item.CartID, &item.ProductID, &item.Quantity); err != nil {
+		if err := rows.Scan(&item.ID, &item.CartID, &item.ProductHandle, &item.Quantity); err != nil {
 			return nil, err
 		}
 		items = append(items, item)
@@ -141,18 +140,18 @@ func (s *CartStore) TotalQuantity(cartID string) (int, error) {
 	return total, err
 }
 
-func (s *CartStore) UpdateQuantity(cartID string, productID int, qty int) error {
+func (s *CartStore) UpdateQuantity(cartID string, handle string, qty int) error {
 	_, err := s.db.Exec(
-		"UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_id = ?",
-		qty, cartID, productID,
+		"UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_handle = ?",
+		qty, cartID, handle,
 	)
 	return err
 }
 
-func (s *CartStore) RemoveItem(cartID string, productID int) error {
+func (s *CartStore) RemoveItem(cartID string, handle string) error {
 	_, err := s.db.Exec(
-		"DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?",
-		cartID, productID,
+		"DELETE FROM cart_items WHERE cart_id = ? AND product_handle = ?",
+		cartID, handle,
 	)
 	return err
 }

@@ -6,50 +6,60 @@ import (
 	"github.com/tm-ox/go-datastar/views/layouts"
 	"github.com/tm-ox/go-datastar/views/modules"
 	"strconv"
+	"strings"
 )
 
-templ ShopContent(products []store.Product, categories []string, page int, total int, limit int) {
-	<section data-signals="{category: '', search: '', inStock: false, page: 1}">
+templ ShopContent(products []store.Product, productTypes []string, vendors []string, hasNext bool, hasPrev bool, nextCursor string, prevCursor string, total int) {
+	<section data-signals={ fmt.Sprintf(`{productType: '', vendor: '', search: '', inStock: false, shopPage: 1, shopTotal: %d, nextCursor: '%s', prevCursor: '%s'}`, total, nextCursor, prevCursor) }>
 		<h2>Shop</h2>
 		<div class="flex flex-col md:flex-row gap-2 mb-3">
 			<div class="flex flex-col md:flex-row gap-4 w-full">
-				<div class="flex items-center">
+				<div class="flex items-center gap-4">
 					<div class="flex gap-4">
 						@modules.IconFilter()
-						<button data-on:click="$category = '', $search = '', $inStock = false; $page = 1; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
+						<button data-on:click="$productType = ''; $vendor = ''; $search = ''; $inStock = false; $shopPage = 1; $nextCursor = ''; $prevCursor = ''; @get('/shop/filter')" class="text-muted hover:text-text hover:cursor-pointer">
 							@modules.IconReset()
 						</button>
 					</div>
 					@modules.Search(modules.SearchProps{Placeholder: "Search...", Route: "/shop/filter"})
 				</div>
 				<label class="flex items-center gap-2 text-sm cursor-pointer mr-auto md:mr-4 md:ml-auto">
-					<input type="checkbox" data-bind="inStock" data-on:change="$page = 1; @get('/shop/filter')" class="peer hidden"/>
+					<input type="checkbox" data-bind="inStock" data-on:change="$shopPage = 1; $nextCursor = ''; $prevCursor = ''; @get('/shop/filter')" class="peer hidden"/>
 					<span class="text-muted peer-checked:text-accent">In Stock</span>
 				</label>
 			</div>
-			<select data-bind="category" data-on:change="@get('/shop/filter')" class="w-full md:w-fit">
-				<option value="">All Categories</option>
-				for _, c := range categories {
-					<option value={ c }>{ c }</option>
-				}
-			</select>
+			<div class="flex gap-2">
+				<select data-bind="productType" data-on:change="$shopPage = 1; $nextCursor = ''; $prevCursor = ''; @get('/shop/filter')" class="w-full md:w-fit">
+					<option value="">All Types</option>
+					for _, t := range productTypes {
+						<option value={ t }>{ t }</option>
+					}
+				</select>
+				<select data-bind="vendor" data-on:change="$shopPage = 1; $nextCursor = ''; $prevCursor = ''; @get('/shop/filter')" class="w-full md:w-fit">
+					<option value="">All Brands</option>
+					for _, v := range vendors {
+						<option value={ v }>{ v }</option>
+					}
+				</select>
+			</div>
 		</div>
-		@ShopGrid(products, page, total, limit)
+		@ShopGrid(products, hasNext, hasPrev, total)
 	</section>
 }
 
-templ ShopGrid(products []store.Product, page, total, limit int) {
+templ ShopGrid(products []store.Product, hasNext bool, hasPrev bool, total int) {
 	<div id="shop-grid" class="flex flex-col">
 		<div class="grid-3 grid-rows-[auto_auto_auto_auto_auto_auto]">
 			for _, p := range products {
 				@modules.ProductCard(&p)
 			}
 		</div>
-		@modules.Pagination(modules.PaginationProps{
-			Page:  page,
-			Total: total,
-			Limit: limit,
-			Route: "/shop/filter",
+		@modules.PaginationCursor(modules.PaginationCursorProps{
+			HasNext: hasNext,
+			HasPrev: hasPrev,
+			Route:   "/shop/filter",
+			Total:   total,
+			Limit:   9,
 		})
 	</div>
 }
@@ -57,9 +67,9 @@ templ ShopGrid(products []store.Product, page, total, limit int) {
 templ ShopDetailContent(p *store.Product) {
 	if p != nil {
 		<section>
-			<div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8" data-signals={ fmt.Sprintf("{productId: %d}", p.ID) }>
-				if p.Image.Valid {
-					<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full object-cover border border-border rounded-lg"/>
+			<div class="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-8" data-signals={ fmt.Sprintf(`{productHandle: '%s'}`, p.Slug) }>
+				if p.Image != "" {
+					<img src={ p.Image } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full object-cover border border-border rounded-lg"/>
 				}
 				<div class="flex flex-col h-full">
 					<div class="flex items-center justify-between">
@@ -70,18 +80,28 @@ templ ShopDetailContent(p *store.Product) {
 						}) {
 							{ p.Category }
 						}
-						<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
+						if p.AvailableForSale {
+							<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.QuantityAvailable) }</h5>
+						} else {
+							<h5 class="text-muted">Out of stock</h5>
+						}
 					</div>
 					<h3>{ p.Name }</h3>
 					<div class="flex flex-col gap-4 h-full">
 						<p class="mt-0">{ p.Description }</p>
-						<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+						<div class="flex items-baseline gap-2">
+							<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+							if p.CompareAtPrice > 0 {
+								<h5 class="text-muted line-through">{ fmt.Sprintf("$%.2f", float64(p.CompareAtPrice)/100) }</h5>
+								<span class="text-xs font-bold text-accent bg-accent/10 px-1 rounded">Sale</span>
+							}
+						</div>
 						@modules.Button(modules.ButtonProps{
 							Size:       modules.ButtonSizeSm,
 							FullWidth:  false,
 							Class:      "w-fit",
-							Disabled:   p.Stock == 0,
-							Attributes: templ.Attributes{"data-on:click": "@post('/cart/add')"},
+							Disabled:   !p.AvailableForSale,
+							Attributes: templ.Attributes{"data-on:click": fmt.Sprintf("$productHandle = '%s'; @post('/cart/add')", p.Slug)},
 						}) {
 							Add to cart
 						}
@@ -111,9 +131,10 @@ templ CartDrawerItems(items []store.CartItemDetail, total int) {
 			<a href="/shop">Proceed to Shop</a>
 		} else {
 			for _, item := range items {
+				{{ sig := "dqty_" + strings.ReplaceAll(item.ProductHandle, "-", "_") }}
 				<div
 					class="flex items-center justify-between gap-4"
-					data-signals={ fmt.Sprintf("{dqty_%d: %d}", item.ProductID, item.Quantity) }
+					data-signals={ fmt.Sprintf(`{%s: %d}`, sig, item.Quantity) }
 				>
 					<div class="flex flex-col flex-1">
 						<p class="text-text">{ item.Name }</p>
@@ -122,19 +143,19 @@ templ CartDrawerItems(items []store.CartItemDetail, total int) {
 					<div class="flex flex-col gap-2 items-end">
 						<div class="flex items-center gap-1">
 							<button
-								data-on:click={ fmt.Sprintf("$dqty_%d--; $productId = %d; $qty = $dqty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+								data-on:click={ fmt.Sprintf("$%s--; $productHandle = '%s'; $qty = $%s; @post('/cart/qty')", sig, item.ProductHandle, sig) }
 								class="w-6 h-6 flex items-center justify-center border border-border rounded text-muted hover:text-text"
 							>−</button>
-							<span data-text={ fmt.Sprintf("$dqty_%d", item.ProductID) } class="w-5 text-center text-xs">{ fmt.Sprintf("%d", item.Quantity) }</span>
+							<span data-text={ fmt.Sprintf("$%s", sig) } class="w-5 text-center text-xs">{ fmt.Sprintf("%d", item.Quantity) }</span>
 							<button
-								data-on:click={ fmt.Sprintf("$dqty_%d++; $productId = %d; $qty = $dqty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+								data-on:click={ fmt.Sprintf("$%s++; $productHandle = '%s'; $qty = $%s; @post('/cart/qty')", sig, item.ProductHandle, sig) }
 								class="w-6 h-6 flex items-center justify-center border border-border rounded text-muted hover:text-text"
 							>+</button>
 						</div>
 						<div class="flex gap-2">
 							<h5 class="text-accent">{ fmt.Sprintf("$%.2f", float64(item.Price*item.Quantity)/100) }</h5>
 							<button
-								data-on:click={ fmt.Sprintf("$productId = %d; @post('/cart/remove')", item.ProductID) }
+								data-on:click={ fmt.Sprintf("$productHandle = '%s'; @post('/cart/remove')", item.ProductHandle) }
 								class="text-muted hover:text-text transition-colors"
 							>
 								@modules.IconClose(modules.IconProps{Size: "16", Class: "hover:text-accent cursor-pointer"})
@@ -193,9 +214,10 @@ templ CheckoutContent(lineItems []store.CartItemDetail, total int) {
 }
 
 templ CheckoutRow(item store.CartItemDetail) {
+	{{ sig := "qty_" + strings.ReplaceAll(item.ProductHandle, "-", "_") }}
 	<div
-		id={ fmt.Sprintf("checkout-row-%d", item.ProductID) }
-		data-signals={ fmt.Sprintf("{qty_%d: %d}", item.ProductID, item.Quantity) }
+		id={ "checkout-row-" + item.ProductHandle }
+		data-signals={ fmt.Sprintf(`{%s: %d}`, sig, item.Quantity) }
 		class="flex items-center gap-4 border-b border-border pb-4"
 	>
 		<div class="flex-1">
@@ -204,12 +226,12 @@ templ CheckoutRow(item store.CartItemDetail) {
 		</div>
 		<div class="flex items-center gap-2">
 			<button
-				data-on:click={ fmt.Sprintf("$qty_%d--; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+				data-on:click={ fmt.Sprintf("$%s--; $productHandle = '%s'; $qty = $%s; @post('/cart/qty')", sig, item.ProductHandle, sig) }
 				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface"
 			>−</button>
-			<span data-text={ fmt.Sprintf("$qty_%d", item.ProductID) } class="w-6 text-center text-sm">{ fmt.Sprintf("%d", item.Quantity) }</span>
+			<span data-text={ fmt.Sprintf("$%s", sig) } class="w-6 text-center text-sm">{ fmt.Sprintf("%d", item.Quantity) }</span>
 			<button
-				data-on:click={ fmt.Sprintf("$qty_%d++; $productId = %d; $qty = $qty_%d; @post('/cart/qty')", item.ProductID, item.ProductID, item.ProductID) }
+				data-on:click={ fmt.Sprintf("$%s++; $productHandle = '%s'; $qty = $%s; @post('/cart/qty')", sig, item.ProductHandle, sig) }
 				class="w-7 h-7 flex items-center justify-center border border-border rounded hover:bg-surface"
 			>+</button>
 		</div>

@@ -1,8 +1,8 @@
 ## Context
 
 > A proof of concept site built with Go, Templ, Datastar and Tailwind: a realtime **Dashboard**
-> of public Wikimedia activity, a public **Work** portfolio and a **Shop** of **Products**.
-> The UI is server-driven over Datastar SSE — both
+> of public Wikimedia activity, a public **Work** portfolio and a **Shop** backed by the
+> **Shopify Storefront API**. The UI is server-driven over Datastar SSE — both
 > request-response (filters, cart, CRUD) and long-lived server push (the
 > Dashboard stream). This file fixes the domain language so modules and
 > conversations use one word per concept.
@@ -18,8 +18,10 @@ entity is the thing; the Surface is the page that lists it.
 _Avoid_: project, portfolio item, entry
 
 **Product**:
-An item for sale in the Shop, with price (stored as integer cents), stock, and
-category.
+An item for sale in the Shop, sourced from the Shopify Storefront API. Carries
+price and compareAtPrice (integer cents), vendor, category (productType),
+availableForSale flag, and quantityAvailable (total inventory from Shopify).
+Not stored in SQLite — fetched and filtered at request time.
 _Avoid_: item, SKU, listing
 
 **Cart**:
@@ -97,10 +99,10 @@ One axis, applied consistently:
 
 - **Handlers are named by Surface/feature**: `SiteHandler`, `ShopHandler`,
   `WorkHandler`, `SettingsHandler`, `CartHandler`.
-- **Stores and types are named by Entity**: `ProductStore`, `WorkStore`,
-  `CartStore`, `OrderStore`; `Product`, `Work`, `Cart`, `Order`.
+- **Stores and types are named by Entity**: `WorkStore`, `CartStore`,
+  `OrderStore`; `Product`, `Work`, `Cart`, `Order`.
 
-So `ShopHandler` (Surface) drives a `ProductStore` (Entity). `WorkHandler` +
+So `ShopHandler` (Surface) drives `shopify.ProductStore` (Entity — external). `WorkHandler` +
 `WorkStore` only _look_ like an exception — that's the Work word overlap, not a
 broken rule.
 

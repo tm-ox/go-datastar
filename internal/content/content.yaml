@@ -88,7 +88,7 @@ home:
             href: /work
         - title: Shop
           icon: shop
-          description: Product catalogue backed by SQLite. Filter by category and stock, paginate results - all server-driven.
+          description: Product catalogue sourced from the Shopify Storefront API. Filter by type, vendor, and stock, search by name - all server-driven over SSE.
           order: 3
           button:
             text: View shop

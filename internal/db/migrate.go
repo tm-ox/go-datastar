@@ -4,17 +4,6 @@ import "database/sql"
 
 func Migrate(db *sql.DB) error {
 	_, err := db.Exec(`
-		CREATE TABLE IF NOT EXISTS products (
-			id INTEGER PRIMARY KEY AUTOINCREMENT,
-			name TEXT NOT NULL,
-			description TEXT,
-			price INTEGER NOT NULL,
-			category TEXT,
-			slug TEXT UNIQUE NOT NULL,
-			image TEXT,
-			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-			stock INTEGER NOT NULL DEFAULT 0
-		);
 		CREATE TABLE IF NOT EXISTS carts (
       		id INTEGER PRIMARY KEY AUTOINCREMENT,
       		cart_id TEXT UNIQUE NOT NULL,
@@ -24,22 +13,24 @@ func Migrate(db *sql.DB) error {
         CREATE TABLE IF NOT EXISTS cart_items (
         	id INTEGER PRIMARY KEY AUTOINCREMENT,
         	cart_id TEXT NOT NULL REFERENCES carts(cart_id),
-        	product_id INTEGER NOT NULL REFERENCES products(id),
+         	product_handle TEXT NOT NULL,
+         	name TEXT NOT NULL,
+          	price INTEGER NOT NULL,
         	quantity INTEGER NOT NULL DEFAULT 1,
         	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        	UNIQUE(cart_id, product_id)
+        	UNIQUE(cart_id, product_handle)
         );
         CREATE TABLE IF NOT EXISTS orders (
-              id INTEGER PRIMARY KEY AUTOINCREMENT,
-              cart_id TEXT NOT NULL,
-              status TEXT NOT NULL DEFAULT 'pending',
-              total INTEGER NOT NULL,
-              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cart_id TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending',
+            total INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE TABLE IF NOT EXISTS order_items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             order_id INTEGER NOT NULL REFERENCES orders(id),
-            product_id INTEGER NOT NULL,
+            product_handle TEXT NOT NULL,
             name TEXT NOT NULL,
             price INTEGER NOT NULL,
             quantity INTEGER NOT NULL

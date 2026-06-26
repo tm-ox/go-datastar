@@ -17,14 +17,18 @@ import (
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
+type productStockChecker interface {
+	GetByHandle(handle string) (*store.Product, error)
+}
+
 type CartHandler struct {
 	nav     []modules.NavItem
 	cart    *store.CartStore
-	product *store.ProductStore
+	product productStockChecker
 	order   *store.OrderStore
 }
 
-func NewCartHandler(nav []modules.NavItem, cart *store.CartStore, product *store.ProductStore, order *store.OrderStore) *CartHandler {
+func NewCartHandler(nav []modules.NavItem, cart *store.CartStore, product productStockChecker, order *store.OrderStore) *CartHandler {
 	return &CartHandler{
 		nav:     nav,
 		cart:    cart,
@@ -51,14 +55,14 @@ func getOrCreateCartID(w http.ResponseWriter, r *http.Request) string {
 
 func (h *CartHandler) Add(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
-		ProductID int `json:"productId"`
+		ProductHandle string `json:"productHandle"`
 	}
-	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductID == 0 {
+	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductHandle == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	p, err := h.product.GetByID(sig.ProductID)
-	if err != nil || p == nil || p.Stock == 0 {
+	p, err := h.product.GetByHandle(sig.ProductHandle)
+	if err != nil || p == nil || !p.AvailableForSale {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -67,7 +71,7 @@ func (h *CartHandler) Add(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if err := h.cart.AddItem(cartID, sig.ProductID, p.Stock); err != nil {
+	if err := h.cart.AddItem(cartID, sig.ProductHandle, p.Name, p.Price, p.QuantityAvailable); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -93,9 +97,9 @@ func (h *CartHandler) patchCartFragments(w http.ResponseWriter, r *http.Request,
 
 func (h *CartHandler) Remove(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
-		ProductID int `json:"productId"`
+		ProductHandle string `json:"productHandle"`
 	}
-	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductID == 0 {
+	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductHandle == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -104,7 +108,7 @@ func (h *CartHandler) Remove(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if err := h.cart.RemoveItem(c.Value, sig.ProductID); err != nil {
+	if err := h.cart.RemoveItem(c.Value, sig.ProductHandle); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -164,10 +168,10 @@ func (h *CartHandler) Checkout(w http.ResponseWriter, r *http.Request) {
 // whichever is on screen.
 func (h *CartHandler) UpdateQty(w http.ResponseWriter, r *http.Request) {
 	var sig struct {
-		ProductID int `json:"productId"`
-		Qty       int `json:"qty"`
+		ProductHandle string `json:"productHandle"`
+		Qty           int    `json:"qty"`
 	}
-	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductID == 0 {
+	if err := datastar.ReadSignals(r, &sig); err != nil || sig.ProductHandle == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -177,12 +181,12 @@ func (h *CartHandler) UpdateQty(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if sig.Qty <= 0 {
-		if err := h.cart.RemoveItem(c.Value, sig.ProductID); err != nil {
+		if err := h.cart.RemoveItem(c.Value, sig.ProductHandle); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	} else {
-		if err := h.cart.UpdateQuantity(c.Value, sig.ProductID, sig.Qty); err != nil {
+		if err := h.cart.UpdateQuantity(c.Value, sig.ProductHandle, sig.Qty); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

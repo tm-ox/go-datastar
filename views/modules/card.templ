@@ -98,13 +98,19 @@ templ Card(props CardProps) {
 
 templ ProductCard(p *store.Product) {
 	if p != nil {
-		<div class="grid row-span-6 grid-rows-subgrid border border-border pb-4 backdrop rounded-lg overflow-hidden mb-2 md:mb-4">
-			if p.Image.Valid {
-				<img src={ p.Image.String } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full aspect-video object-cover bg-canvas border-b border-border"/>
+		<div class="grid row-span-6 grid-rows-subgrid gap-2 border border-border pb-4 backdrop rounded-lg overflow-hidden mb-2 md:mb-4">
+			if p.Image != "" {
+				<img src={ p.Image } alt={ p.Name } style={ "view-transition-name: shop-cover-" + p.Slug } class="w-full aspect-video object-cover bg-canvas border-b border-border"/>
 			}
 			<p class="text-bold text-text mx-5">{ p.Name }</p>
 			<h5 class="mx-5">{ p.Description }</h5>
-			<h5 class="text-bold text-accent mx-5 mt-2 mb-1">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+			<div class="flex items-baseline gap-2 mx-5 mt-2 mb-1">
+				<h5 class="text-bold text-accent">{ fmt.Sprintf("$%.2f", float64(p.Price)/100) }</h5>
+				if p.CompareAtPrice > 0 {
+					<h5 class="text-muted line-through">{ fmt.Sprintf("$%.2f", float64(p.CompareAtPrice)/100) }</h5>
+					<span class="text-xs font-bold text-accent bg-accent/10 px-1 rounded">Sale</span>
+				}
+			</div>
 			<div class="flex mx-5 my-2">
 				@Button(ButtonProps{
 					Href:       "/shop/" + p.Slug,
@@ -119,14 +125,18 @@ templ ProductCard(p *store.Product) {
 					Size:       ButtonSizeSm,
 					FullWidth:  true,
 					Class:      "rounded-l-none",
-					Disabled:   p.Stock == 0,
-					Attributes: templ.Attributes{"data-on:click": fmt.Sprintf("$productId = %d; @post('/cart/add')", p.ID)},
+					Disabled:   !p.AvailableForSale,
+					Attributes: templ.Attributes{"data-on:click": fmt.Sprintf("$productHandle = '%s'; @post('/cart/add')", p.Slug)},
 				}) {
 					Add to cart
 				}
 			</div>
 			<div class="flex items-center justify-between mx-5 mt-2">
-				<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.Stock) }</h5>
+				if p.AvailableForSale {
+					<h5 class="text-muted">Stock: { fmt.Sprintf("%d", p.QuantityAvailable) }</h5>
+				} else {
+					<h5 class="text-muted">Out of stock</h5>
+				}
 				@Button(ButtonProps{
 					Variant: ButtonVariantPill,
 					Size:    ButtonSizeXs,
