@@ -17,12 +17,12 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID        int
-	OrderID   int
-	ProductID int
-	Price     int
-	Quantity  int
-	Name      string
+	ID            int
+	OrderID       int
+	ProductHandle string
+	Price         int
+	Quantity      int
+	Name          string
 }
 
 type OrderStore struct {
@@ -43,7 +43,7 @@ func (s *OrderStore) GetByID(id int) (*Order, []OrderItem, error) {
 	}
 
 	rows, err := s.db.Query(
-		"SELECT id, order_id, product_id, name, price, quantity FROM order_items WHERE order_id = ?", id,
+		"SELECT id, order_id, product_handle, name, price, quantity FROM order_items WHERE order_id = ?", id,
 	)
 	if err != nil {
 		return nil, nil, err
@@ -53,7 +53,7 @@ func (s *OrderStore) GetByID(id int) (*Order, []OrderItem, error) {
 	var items []OrderItem
 	for rows.Next() {
 		var item OrderItem
-		if err := rows.Scan(&item.ID, &item.OrderID, &item.ProductID, &item.Name, &item.Price, &item.Quantity); err !=
+		if err := rows.Scan(&item.ID, &item.OrderID, &item.ProductHandle, &item.Name, &item.Price, &item.Quantity); err !=
 			nil {
 			return nil, nil, err
 		}
@@ -94,8 +94,8 @@ func (s *OrderStore) Place(cartID string) (int, error) {
 	}
 	for _, item := range items {
 		if _, err := tx.Exec(
-			"INSERT INTO order_items (order_id, product_id, name, price, quantity) VALUES (?, ?, ?, ?, ?)",
-			orderID, item.ProductID, item.Name, item.Price, item.Quantity,
+			"INSERT INTO order_items (order_id, product_handle, name, price, quantity) VALUES (?, ?, ?, ?, ?)",
+			orderID, item.ProductHandle, item.Name, item.Price, item.Quantity,
 		); err != nil {
 			return 0, err
 		}

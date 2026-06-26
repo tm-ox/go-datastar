@@ -9,6 +9,7 @@ A learning project exploring Go, [Datastar](https://data-star.dev), [templ](http
 - **Datastar v1.0.1** — SSE-based reactivity (server-driven UI)
 - **Tailwind v4** — CSS-first, no config file
 - **SQLite** — `modernc.org/sqlite`, pure Go, no CGo
+- **Shopify Storefront API** — products sourced via GraphQL (`genqlient`)
 
 ## Prerequisites
 
@@ -30,13 +31,13 @@ bun run build:css
 Populate the database. Run each command once after first startup — safe to re-run, uses `INSERT OR IGNORE`.
 
 ```bash
-go run ./cmd/seed/products/
 go run ./cmd/seed/work/
 go run ./cmd/seed/work_images/
 go run ./cmd/seed/content/
 ```
 
 > Must be run in order — `work_images` depends on work IDs existing.
+> Products are sourced from Shopify — no seed step required.
 
 ## Dev
 
@@ -49,12 +50,15 @@ cp .env.example .env
 ```
 ADMIN_PASSWORD=yourpassword
 SESSION_SECRET=<output of: openssl rand -hex 32>
+SHOPIFY_STORE_DOMAIN=your-store.myshopify.com
+SHOPIFY_STOREFRONT_TOKEN=your-storefront-access-token
 SMTP_HOST=mail.spacemail.com
 SMTP_PORT=587
 SMTP_USER=hello@tmox.net
 SMTP_PASS=yourpassword
 ```
 
+> `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_STOREFRONT_TOKEN` are required — the server will not start without them.
 > `SMTP_*` vars are required for the contact form. Values with special characters must be single-quoted in `.env`.
 
 ```bash
@@ -77,7 +81,6 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | Method | Path | Handler |
 |---|---|---|
 | GET | `/` | `site.Index` |
-| GET | `/about` | `site.About` |
 | GET | `/context` | `site.Context` |
 | GET | `/dashboard` | `dashboard.Index` |
 | GET | `/dashboard/stream` | `dashboard.Stream` (long-lived Datastar SSE) |
@@ -87,6 +90,14 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | GET | `/shop` | `shop.Index` |
 | GET | `/shop/{slug}` | `shop.Detail` |
 | GET | `/shop/filter` | `shop.Filter` (Datastar SSE) |
+| POST | `/cart/add` | `cart.Add` (Datastar SSE) |
+| GET | `/cart/total` | `cart.Total` (Datastar SSE) |
+| GET | `/cart/drawer` | `cart.Drawer` (Datastar SSE) |
+| POST | `/cart/remove` | `cart.Remove` (Datastar SSE) |
+| GET | `/cart` | `cart.Checkout` |
+| POST | `/cart/qty` | `cart.UpdateQty` (Datastar SSE) |
+| POST | `/cart/checkout` | `cart.PlaceOrder` |
+| GET | `/cart/success` | `cart.Success` |
 | POST | `/contact` | `contact.Send` (Datastar SSE) |
 | POST | `/login` | `auth.Login` (Datastar SSE) |
 | GET | `/logout` | `auth.Logout` |
@@ -97,13 +108,6 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 | POST | `/settings/work/create` | `settings.WorkCreate` (Datastar SSE, requires auth) |
 | POST | `/settings/work/update` | `settings.WorkUpdate` (Datastar SSE, requires auth) |
 | POST | `/settings/work/delete` | `settings.WorkDelete` (Datastar SSE, requires auth) |
-| GET | `/settings/shop` | `settings.Shop` (requires auth) |
-| GET | `/settings/shop/filter` | `settings.ShopFilter` (Datastar SSE, requires auth) |
-| POST | `/settings/shop/stock` | `settings.ShopStock` (Datastar SSE, requires auth) |
-| GET | `/settings/shop/products/form` | `settings.ShopProductForm` (Datastar SSE, requires auth) |
-| POST | `/settings/shop/products/create` | `settings.ShopProductCreate` (Datastar SSE, requires auth) |
-| POST | `/settings/shop/products/update` | `settings.ShopProductUpdate` (Datastar SSE, requires auth) |
-| POST | `/settings/shop/products/delete` | `settings.ShopProductDelete` (Datastar SSE, requires auth) |
 
 ## Structure
 
@@ -111,7 +115,6 @@ If air serves a stale binary after changes: `rm tmp/server && make dev`.
 cmd/
   main.go                    — server wiring, route registration, startup
   seed/
-    products/main.go         — 36 products (INSERT OR IGNORE)
     work/main.go             — 10 work entries (INSERT OR IGNORE)
     work_images/main.go      — 86 images across 10 entries
     content/main.go          — site_pages, site_sections, site_cards
@@ -123,9 +126,15 @@ internal/
   db/
     db.go                    — SQLite connection; WAL + busy_timeout on file DBs
     migrate.go               — schema migrations, run at startup
+  shopify/
+    store.go                 — ProductStore: List, Filter (client-side search/filter), GetByHandle, FilterMeta
+    queries.graphql          — ListProducts, GetProduct, GetCollectionFilters queries
+    schema.graphql           — Shopify Storefront API schema (2025-01)
+    genqlient.yaml           — genqlient config; run go generate ./internal/shopify/... to regenerate
+    generated.go             — genqlient-generated typed GraphQL client (do not edit)
   store/                     — one package; concrete stores over *sql.DB, no interfaces (see docs/adr/0001)
     cart.go                  — CartStore, CartSummary, Summary; shared itemDetails/subtotal helpers
-    product.go               — ProductStore, Product, ProductQuery; List/Filter/Get/Create/Update/Delete/UpdateStock
+    product.go               — Product, ProductQuery domain types (products sourced from Shopify, not SQLite)
     work.go                  — WorkStore, Work (with Images), WorkQuery; List/Filter/Get/Create/Update/Delete/Unique*
     order.go                 — OrderStore.Place (one tx: persist order + clear cart), ErrEmptyCart
     *_test.go                — store tests against in-memory SQLite
@@ -138,15 +147,15 @@ internal/
     aggregator.go            — Aggregator + Stats: rolling counters, per-wiki top-N, per-second sparkline buckets; read via Snapshot
     *_test.go                — ParseEvent, Hub, Aggregator unit tests (fixtures + fake channels, no network)
   handler/
-    constants.go             — defaultLimit = 20
+    constants.go             — defaultLimit = 9
     auth.go                  — AuthHandler: Login, Logout; HMAC-signed session cookie
     contact.go               — ContactHandler: Send; honeypot, validation, SMTP delivery via Spacemail
-    site.go                  — SiteHandler: Index, About, Context
+    site.go                  — SiteHandler: Index, Context
     dashboard.go             — DashboardHandler: Index (skeleton), Stream (long-lived SSE: feed per-event + tiles/charts on 1s ticker)
-    shop.go                  — ShopHandler: Index, Filter, Detail
-    settings.go              — SettingsHandler: Work* and Shop* CRUD
+    shop.go                  — ShopHandler: Index, Filter, Detail; productReader consumer-side interface
+    settings.go              — SettingsHandler: Work CRUD
     work.go                  — WorkHandler: Index, Filter, Detail
-    cart.go                  — CartHandler: Add, Remove, Total, Drawer, UpdateQty, Checkout, PlaceOrder, Success
+    cart.go                  — CartHandler: Add (Shopify stock check), Remove, Total, Drawer, UpdateQty, Checkout, PlaceOrder, Success
   middleware/
     auth.go                  — RequireAuth: HMAC cookie verification; opens login modal on Datastar requests, redirects on full-page
     cart.go                  — injects cart total into request context
@@ -162,22 +171,10 @@ static/input.css             — Tailwind source (theme tokens, base styles, com
 
 ## Architecture notes
 
-- **Stores are concrete, not interfaces.** Each store is a struct over `*sql.DB`;
-  swapping the backend means rewriting `internal/store`, not the callers. Tested
-  against in-memory SQLite. See `docs/adr/0001`.
-- **`render.Page` owns the page shell.** Handlers pass a `*Content` partial plus
-  nav/path/meta; `render.Page` decides between a full `BaseLayout` render and a
-  Datastar SSE shell-patch (`site-header` + `main`). Domain vocabulary lives in
-  `CONTEXT.md`.
-- **The Dashboard pushes, it doesn't pull.** `internal/stream` is a realtime
-  pipeline: one `Source` holds a single upstream connection to
-  `stream.wikimedia.org`, fans every `Event` out through an in-memory `Hub` to
-  many browser SSE subscribers (bounded buffer, drop-on-full so one slow client
-  can't stall the rest), and feeds an `Aggregator` of rolling stats read via
-  `Snapshot`. `/dashboard/stream` holds a long-lived SSE connection — opened by
-  `data-init` and torn down by `requestCancellation: 'cleanup'` on SPA
-  navigate-away — patching a live feed per event and the tiles/charts on a 1s
-  ticker. Everything is in-memory; state resets on restart, nothing is stored.
+- **Products are Shopify-sourced.** `internal/shopify.ProductStore` fetches products from the Shopify Storefront API via `genqlient`-generated GraphQL queries. `ShopHandler` depends on a small consumer-side `productReader` interface; `CartHandler` uses a `productStockChecker` interface — both satisfied by `shopify.ProductStore`. Filtering (type, vendor, in-stock, search) is applied client-side in Go after fetching up to 250 products, avoiding Shopify `ProductFilter` serialisation quirks with zero-value booleans.
+- **Stores are concrete, not interfaces.** SQLite stores (`WorkStore`, `CartStore`, `OrderStore`) are structs over `*sql.DB`; swapping the backend means rewriting `internal/store`, not the callers. Tested against in-memory SQLite. See `docs/adr/0001`.
+- **`render.Page` owns the page shell.** Handlers pass a `*Content` partial plus nav/path/meta; `render.Page` decides between a full `BaseLayout` render and a Datastar SSE shell-patch (`site-header` + `main`). Domain vocabulary lives in `CONTEXT.md`.
+- **The Dashboard pushes, it doesn't pull.** `internal/stream` is a realtime pipeline: one `Source` holds a single upstream connection to `stream.wikimedia.org`, fans every `Event` out through an in-memory `Hub` to many browser SSE subscribers (bounded buffer, drop-on-full so one slow client can't stall the rest), and feeds an `Aggregator` of rolling stats read via `Snapshot`. `/dashboard/stream` holds a long-lived SSE connection — opened by `data-init` and torn down by `requestCancellation: 'cleanup'` on SPA navigate-away — patching a live feed per event and the tiles/charts on a 1s ticker. Everything is in-memory; state resets on restart, nothing is stored.
 
 ## Test
 
@@ -185,16 +182,17 @@ static/input.css             — Tailwind source (theme tokens, base styles, com
 go test ./...
 ```
 
-Store, render, and db tests run against a throwaway in-memory SQLite database — no
-fixtures, no external services.
+Store, render, and db tests run against a throwaway in-memory SQLite database — no fixtures, no external services.
 
 ## SQLite Tables
 
 | Table | Purpose |
 |---|---|
-| `products` | Shop products |
 | `work` | Work portfolio entries |
 | `work_images` | Work entry images (FK → work.id) |
+| `cart_items` | Active cart line items (keyed by cart_id cookie) |
+| `orders` | Placed orders |
+| `order_items` | Order line items (FK → orders.id) |
 | `site_pages` | Page-level copy (title, tagline, body) |
 | `site_sections` | Page sections |
 | `site_cards` | Section cards |

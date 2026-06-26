@@ -1,0 +1,22 @@
+schema: schema.graphql
+operations:
+  - queries.graphql
+generated: generated.go
+package: shopify
+bindings:
+  Decimal:
+    type: string
+  DateTime:
+    type: string
+  ISO8601DateTime:
+    type: string
+  HTML:
+    type: string
+  JSON:
+    type: string
+  URL:
+    type: string
+  Color:
+    type: string
+  UnsignedInt64:
+    type: string

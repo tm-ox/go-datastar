@@ -1,0 +1,126 @@
+query ListProducts(
+    $handle: String!
+    # @genqlient(pointer: true)
+    $first: Int
+    # @genqlient(pointer: true)
+    $after: String
+    # @genqlient(pointer: true)
+    $last: Int
+    # @genqlient(pointer: true)
+    $before: String
+    $filters: [ProductFilter!]
+) {
+    collection(handle: $handle) {
+        products(
+            first: $first
+            after: $after
+            last: $last
+            before: $before
+            filters: $filters
+        ) {
+            nodes {
+                handle
+                title
+                description
+                productType
+                vendor
+                availableForSale
+                totalInventory
+                priceRange {
+                    minVariantPrice {
+                        amount
+                        currencyCode
+                    }
+                }
+                compareAtPriceRange {
+                    minVariantPrice {
+                        amount
+                        currencyCode
+                    }
+                }
+                images(first: 1) {
+                    nodes {
+                        url
+                        altText
+                    }
+                }
+                variants(first: 1) {
+                    nodes {
+                        id
+                        availableForSale
+                    }
+                }
+            }
+            pageInfo {
+                hasNextPage
+                hasPreviousPage
+                startCursor
+                endCursor
+            }
+            filters {
+                id
+                label
+                type
+                values {
+                    id
+                    label
+                    count
+                    input
+                }
+            }
+        }
+    }
+}
+
+query GetProduct($handle: String!) {
+    product(handle: $handle) {
+        handle
+        title
+        description
+        productType
+        vendor
+        availableForSale
+        totalInventory
+        priceRange {
+            minVariantPrice {
+                amount
+                currencyCode
+            }
+        }
+        compareAtPriceRange {
+            minVariantPrice {
+                amount
+                currencyCode
+            }
+        }
+        images(first: 5) {
+            nodes {
+                url
+                altText
+            }
+        }
+        variants(first: 1) {
+            nodes {
+                availableForSale
+            }
+        }
+    }
+}
+
+query GetCollectionFilters($handle: String!) {
+    collection(handle: $handle) {
+        products(first: 1) {
+            filters {
+                id
+                label
+                type
+                values {
+                    id
+                    label
+                    count
+                    input
+                }
+            }
+        }
+    }
+}
