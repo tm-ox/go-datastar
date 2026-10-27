@@ -2,7 +2,9 @@ package handler
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"net/mail"
 	"net/smtp"
 	"strings"
 
@@ -48,13 +50,29 @@ func (h *ContactHandler) Send(w http.ResponseWriter, r *http.Request) {
 			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
 		return
 	}
-	body := fmt.Sprintf("From: %s <%s>\r\nSubject: Contact from go.tmox.net\r\n\r\n%s", sig.Name, sig.Email, sig.Message)
-	auth := smtp.PlainAuth("", h.user, h.pass, h.host)
-	err := smtp.SendMail(h.host+":"+h.port, auth, h.user, []string{h.to}, []byte(body))
+	sender, err := mail.ParseAddress(sig.Email)
 	if err != nil {
+		sse.PatchElementTempl(views.ContactError("Enter a valid email address."),
+			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
+		return
+	}
+	sender.Name = strings.TrimSpace(strings.NewReplacer("\r", " ", "\n", " ").Replace(sig.Name))
+	body := contactMessage(h.user, h.to, *sender, sig.Message)
+	auth := smtp.PlainAuth("", h.user, h.pass, h.host)
+	if err := smtp.SendMail(h.host+":"+h.port, auth, h.user, []string{h.to}, body); err != nil {
+		log.Printf("contact: send failed: %v", err)
 		sse.PatchElementTempl(views.ContactError("Failed to send. Please try again."),
 			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
 		return
 	}
 	sse.PatchElementTempl(views.ContactSuccess(), datastar.WithSelectorID("contact-form"), datastar.WithModeOuter())
+}
+
+// contactMessage builds the email. From must match the authenticated mailbox
+// (Spacemail rejects a mismatch with the envelope sender), so the visitor goes
+// in Reply-To. mail.Address encodes the name, which blocks header injection.
+func contactMessage(from, to string, visitor mail.Address, message string) []byte {
+	return []byte(fmt.Sprintf(
+		"From: %s\r\nTo: %s\r\nReply-To: %s\r\nSubject: Contact from go.tmox.net\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n%s",
+		from, to, visitor.String(), message))
 }
