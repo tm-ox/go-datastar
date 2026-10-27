@@ -13,6 +13,11 @@ import (
 	views "github.com/tm-ox/go-datastar/views/pages"
 )
 
+const (
+	maxContactName    = 100
+	maxContactMessage = 5000
+)
+
 type ContactHandler struct {
 	nav  []modules.NavItem
 	host string
@@ -50,13 +55,18 @@ func (h *ContactHandler) Send(w http.ResponseWriter, r *http.Request) {
 			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
 		return
 	}
+	if len(sig.Name) > maxContactName || len(sig.Message) > maxContactMessage {
+		sse.PatchElementTempl(views.ContactError("Message is too long."),
+			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
+		return
+	}
 	sender, err := mail.ParseAddress(sig.Email)
 	if err != nil {
 		sse.PatchElementTempl(views.ContactError("Enter a valid email address."),
 			datastar.WithSelectorID("contact-error"), datastar.WithModeOuter())
 		return
 	}
-	sender.Name = strings.TrimSpace(strings.NewReplacer("\r", " ", "\n", " ").Replace(sig.Name))
+	sender.Name = cleanName(sig.Name)
 	body := contactMessage(h.user, h.to, *sender, sig.Message)
 	auth := smtp.PlainAuth("", h.user, h.pass, h.host)
 	if err := smtp.SendMail(h.host+":"+h.port, auth, h.user, []string{h.to}, body); err != nil {
@@ -68,11 +78,21 @@ func (h *ContactHandler) Send(w http.ResponseWriter, r *http.Request) {
 	sse.PatchElementTempl(views.ContactSuccess(), datastar.WithSelectorID("contact-form"), datastar.WithModeOuter())
 }
 
+// cleanName flattens CR and LF so a visitor cannot add header lines.
+func cleanName(name string) string {
+	return strings.TrimSpace(strings.NewReplacer("\r", " ", "\n", " ").Replace(name))
+}
+
+// crlf gives the body SMTP line endings, whatever the browser sent.
+func crlf(s string) string {
+	return strings.ReplaceAll(strings.ReplaceAll(s, "\r\n", "\n"), "\n", "\r\n")
+}
+
 // contactMessage builds the email. From must match the authenticated mailbox
 // (Spacemail rejects a mismatch with the envelope sender), so the visitor goes
 // in Reply-To. mail.Address encodes the name, which blocks header injection.
 func contactMessage(from, to string, visitor mail.Address, message string) []byte {
 	return []byte(fmt.Sprintf(
 		"From: %s\r\nTo: %s\r\nReply-To: %s\r\nSubject: Contact from go.tmox.net\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n%s",
-		from, to, visitor.String(), message))
+		from, to, visitor.String(), crlf(message)))
 }
